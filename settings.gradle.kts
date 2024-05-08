@@ -17,3 +17,4 @@ rootProject.name = "chartrainer"
 include(":app")
 include(":domain")
 include(":data")
+include(":presentation")

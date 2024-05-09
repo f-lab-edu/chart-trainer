@@ -57,7 +57,6 @@ dependencies {
     implementation(Dependency.ANDROIDX_CORE)
     testImplementation(Dependency.Test.JUNIT)
     androidTestImplementation(Dependency.Test.JUNIT_EXT)
-
 }
 
 configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {

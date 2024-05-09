@@ -1,4 +1,4 @@
-package com.yessorae.chartrainer.ui.theme
+package com.yessorae.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build

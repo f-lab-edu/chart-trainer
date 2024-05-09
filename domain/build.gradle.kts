@@ -1,7 +1,9 @@
+import Dependency
+
 plugins {
     id("java-library")
-    id("org.jetbrains.kotlin.jvm")
-    id("org.jlleitschuh.gradle.ktlint")
+    id(Plugin.KOTLIN_JVM)
+    id(Plugin.KTLINT)
 }
 
 java {
@@ -10,5 +12,5 @@ java {
 }
 
 dependencies {
-    implementation("javax.inject:javax.inject:1")
+    implementation(Dependency.JAVAX_INJECT)
 }

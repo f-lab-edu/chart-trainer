@@ -1,4 +1,4 @@
-package com.yessorae.chartrainer
+package com.yessorae.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.yessorae.chartrainer.ui.theme.ChartrainerTheme
+import com.yessorae.presentation.ui.theme.ChartrainerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -2,6 +2,7 @@ object Dependency {
     const val HILT = "com.google.dagger:hilt-android:2.44"
     const val HILT_COMPILER = "com.google.dagger:hilt-android-compiler:2.44"
     const val JAVAX_INJECT = "javax.inject:javax.inject:1"
+    const val KOTLINX_COROUTINSE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1"
 
     const val ANDROIDX_CORE = "androidx.core:core-ktx:1.9.0" // 1.13.1
 

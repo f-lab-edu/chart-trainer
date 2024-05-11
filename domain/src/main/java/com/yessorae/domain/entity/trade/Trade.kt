@@ -3,15 +3,24 @@ package com.yessorae.domain.entity.trade
 import com.yessorae.domain.entity.value.Money
 
 data class Trade(
-    val gameId: Long, // 차트게임 아이디
-    val ownedAverageStockPrice: Money, // 현재 가지고 있는 가격
-    val stockPrice: Money, // 1 주당 가격
-    val count: Int, // 거래량
-    val turn: Int, // 거래한 턴
-    val type: TradeType, // 매수/매도
-    val commission: Money, // 수수료
-    val profit: Money, // 실현 손익
-    val totalTradeMoney: Money // 총 거래금
+    // 차트게임 아이디
+    val gameId: Long,
+    // 현재 가지고 있는 가격
+    val ownedAverageStockPrice: Money,
+    // 1 주당 가격
+    val stockPrice: Money,
+    // 거래량
+    val count: Int,
+    // 거래한 턴
+    val turn: Int,
+    // 매수/매도
+    val type: TradeType,
+    // 수수료
+    val commission: Money,
+    // 실현 손익
+    val profit: Money,
+    // 총 거래금
+    val totalTradeMoney: Money,
     // TODO::LATER 세금
 ) {
     companion object {
@@ -22,16 +31,18 @@ data class Trade(
             count: Int,
             turn: Int,
             type: TradeType,
-            commissionRate: Double
+            commissionRate: Double,
         ): Trade {
-            val totalTradeMoney: Money = calculateTotalTradeMoney(
-                stockPrice = stockPrice,
-                count = count
-            )
-            val commission: Money = calculateCommission(
-                totalTradeMoney = totalTradeMoney,
-                commissionRate = commissionRate
-            )
+            val totalTradeMoney: Money =
+                calculateTotalTradeMoney(
+                    stockPrice = stockPrice,
+                    count = count,
+                )
+            val commission: Money =
+                calculateCommission(
+                    totalTradeMoney = totalTradeMoney,
+                    commissionRate = commissionRate,
+                )
             return Trade(
                 gameId = gameId,
                 ownedAverageStockPrice = ownedAverageStockPrice,
@@ -41,25 +52,26 @@ data class Trade(
                 type = type,
                 totalTradeMoney = totalTradeMoney,
                 commission = commission,
-                profit = calculateProfit(
-                    stockPrice = stockPrice,
-                    ownedAverageStockPrice = ownedAverageStockPrice,
-                    count = count,
-                    commission = commission
-                )
+                profit =
+                    calculateProfit(
+                        stockPrice = stockPrice,
+                        ownedAverageStockPrice = ownedAverageStockPrice,
+                        count = count,
+                        commission = commission,
+                    ),
             )
         }
 
         private fun calculateTotalTradeMoney(
             stockPrice: Money,
-            count: Int
+            count: Int,
         ): Money {
             return stockPrice * count
         }
 
         private fun calculateCommission(
             totalTradeMoney: Money,
-            commissionRate: Double
+            commissionRate: Double,
         ): Money {
             return totalTradeMoney * commissionRate
         }
@@ -68,10 +80,9 @@ data class Trade(
             stockPrice: Money,
             ownedAverageStockPrice: Money,
             count: Int,
-            commission: Money
+            commission: Money,
         ): Money {
             return ((stockPrice - ownedAverageStockPrice) * count) - commission
         }
     }
 }
-

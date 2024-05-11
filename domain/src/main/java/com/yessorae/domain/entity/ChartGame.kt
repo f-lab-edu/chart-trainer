@@ -6,13 +6,20 @@ import com.yessorae.domain.entity.value.Money
 
 data class ChartGame(
     val id: Int,
-    val chart: Chart, // 차트 데이터
-    val trades: List<Trade>, // 거래 내역
-    val currentTurn: Int, // 현재 턴
-    val totalTurn: Int, // 전체 턴
-    val startBalance: Money, // 게임 전 잔고
-    val currentBalance: Money, // 현재 잔고
-    val isGameEnd: Boolean // 게임 종료 여부
+    // 차트 데이터
+    val chart: Chart,
+    // 거래 내역
+    val trades: List<Trade>,
+    // 현재 턴
+    val currentTurn: Int,
+    // 전체 턴
+    val totalTurn: Int,
+    // 게임 전 잔고
+    val startBalance: Money,
+    // 현재 잔고
+    val currentBalance: Money,
+    // 게임 종료 여부
+    val isGameEnd: Boolean,
 ) {
     val totalProfit: Money by lazy {
         currentBalance - startBalance
@@ -39,27 +46,23 @@ data class ChartGame(
 
     internal fun getNextTurn(): ChartGame {
         return this.copy(
-            currentTurn = currentTurn + 1
+            currentTurn = currentTurn + 1,
         )
     }
 
-    internal fun createFromNewChart(
-        newChart: Chart
-    ): ChartGame {
+    internal fun createFromNewChart(newChart: Chart): ChartGame {
         return copy(
             chart = newChart,
             currentTurn = START_TURN,
             trades = emptyList(),
-            currentBalance = startBalance
+            currentBalance = startBalance,
         )
     }
 
-    internal fun createFromNewTrade(
-        newTrade: Trade
-    ): ChartGame {
+    internal fun createFromNewTrade(newTrade: Trade): ChartGame {
         return copy(
             trades = trades + newTrade,
-            currentBalance = currentBalance + newTrade.profit
+            currentBalance = currentBalance + newTrade.profit,
         )
     }
 
@@ -69,7 +72,7 @@ data class ChartGame(
         fun new(
             chart: Chart,
             totalTurn: Int,
-            startBalance: Money
+            startBalance: Money,
         ): ChartGame {
             return ChartGame(
                 id = 0,
@@ -79,9 +82,8 @@ data class ChartGame(
                 totalTurn = totalTurn,
                 startBalance = startBalance,
                 currentBalance = startBalance,
-                isGameEnd = false
+                isGameEnd = false,
             )
         }
     }
 }
-

@@ -1,7 +1,7 @@
 package com.yessorae.domain.entity.value
 
 data class Money(
-    val value: Double
+    val value: Double,
 ) {
     // TODO::LATER 화폐단위 바꿔주는 함수 추가
 

@@ -15,14 +15,25 @@ data class Trade(
     val turn: Int,
     // 매수/매도
     val type: TradeType,
-    // 수수료
-    val commission: Money,
-    // 실현 손익
-    val profit: Money,
-    // 총 거래금
-    val totalTradeMoney: Money,
+    // 수수료율
+    val commissionRate: Double,
     // TODO::LATER 세금
 ) {
+    // 총 거래금
+    val totalTradeMoney: Money by lazy {
+        stockPrice * count
+    }
+
+    // 수수료
+    val commission: Money by lazy {
+        totalTradeMoney * commissionRate
+    }
+
+    // 실현 손익
+    val profit: Money by lazy {
+        ((stockPrice - ownedAverageStockPrice) * count) - commission
+    }
+
     companion object {
         internal fun new(
             gameId: Long,
@@ -33,16 +44,6 @@ data class Trade(
             type: TradeType,
             commissionRate: Double,
         ): Trade {
-            val totalTradeMoney: Money =
-                calculateTotalTradeMoney(
-                    stockPrice = stockPrice,
-                    count = count,
-                )
-            val commission: Money =
-                calculateCommission(
-                    totalTradeMoney = totalTradeMoney,
-                    commissionRate = commissionRate,
-                )
             return Trade(
                 gameId = gameId,
                 ownedAverageStockPrice = ownedAverageStockPrice,
@@ -50,39 +51,8 @@ data class Trade(
                 count = count,
                 turn = turn,
                 type = type,
-                totalTradeMoney = totalTradeMoney,
-                commission = commission,
-                profit =
-                    calculateProfit(
-                        stockPrice = stockPrice,
-                        ownedAverageStockPrice = ownedAverageStockPrice,
-                        count = count,
-                        commission = commission,
-                    ),
+                commissionRate = commissionRate,
             )
-        }
-
-        private fun calculateTotalTradeMoney(
-            stockPrice: Money,
-            count: Int,
-        ): Money {
-            return stockPrice * count
-        }
-
-        private fun calculateCommission(
-            totalTradeMoney: Money,
-            commissionRate: Double,
-        ): Money {
-            return totalTradeMoney * commissionRate
-        }
-
-        private fun calculateProfit(
-            stockPrice: Money,
-            ownedAverageStockPrice: Money,
-            count: Int,
-            commission: Money,
-        ): Money {
-            return ((stockPrice - ownedAverageStockPrice) * count) - commission
         }
     }
 }

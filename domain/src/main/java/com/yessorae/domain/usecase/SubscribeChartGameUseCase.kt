@@ -7,7 +7,6 @@ import com.yessorae.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-// TODO::NOW 새로 만드는 역할까지 하는 게 괜찮을지? 일단 기술과 관련없는 기획자/유저입장에서 이름짓고 로직 작성중
 class SubscribeChartGameUseCase
     @Inject
     constructor(

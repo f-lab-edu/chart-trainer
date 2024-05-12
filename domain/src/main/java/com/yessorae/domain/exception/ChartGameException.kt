@@ -6,10 +6,10 @@ sealed class ChartGameException(override val message: String = "") : Exception(m
     ) : ChartGameException(message = message)
 
     data class CanNotUpdateNextTickException(
-        override val message: String
+        override val message: String,
     ) : ChartGameException(message = message)
 
     data class CanNotChangeTradeException(
-        override val message: String
+        override val message: String,
     ) : ChartGameException(message = message)
 }

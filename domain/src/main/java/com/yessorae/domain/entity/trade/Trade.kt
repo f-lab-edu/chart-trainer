@@ -20,7 +20,7 @@ data class Trade(
     // TODO::LATER 세금
 ) {
     // 총 거래금
-    val totalTradeMoney: Money =stockPrice * count
+    val totalTradeMoney: Money = stockPrice * count
 
     // 수수료
     val commission: Money = totalTradeMoney * commissionRate

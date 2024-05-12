@@ -29,9 +29,10 @@ data class ChartGame(
 
     val totalCommission: Money = Money(trades.sumOf { trade -> trade.commission.value })
 
-    val visibleTicks: List<Tick> = chart.ticks
-        .sortedBy { it.startTimestamp }
-        .subList(0, chart.ticks.size - totalTurn + currentTurn - 1)
+    val visibleTicks: List<Tick> =
+        chart.ticks
+            .sortedBy { it.startTimestamp }
+            .subList(0, chart.ticks.size - totalTurn + currentTurn - 1)
 
     // 게임 모든 턴을 끝까지 완료한 경우 true
     val isGameComplete: Boolean = currentTurn == totalTurn
@@ -64,7 +65,7 @@ data class ChartGame(
 
     internal fun createFromQuit(): ChartGame {
         return copy(
-            isQuit = true
+            isQuit = true,
         )
     }
 
@@ -84,7 +85,7 @@ data class ChartGame(
                 totalTurn = totalTurn,
                 startBalance = startBalance,
                 currentBalance = startBalance,
-                isQuit = false
+                isQuit = false,
             )
         }
     }

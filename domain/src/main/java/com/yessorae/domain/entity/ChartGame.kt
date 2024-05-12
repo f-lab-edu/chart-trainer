@@ -18,35 +18,31 @@ data class ChartGame(
     val startBalance: Money,
     // 현재 잔고
     val currentBalance: Money,
-    // 게임 종료 여부
-    val isGameEnd: Boolean,
+    // 유저의 게임 강제 종료 여부
+    val isQuit: Boolean,
 ) {
-    val totalProfit: Money by lazy {
-        currentBalance - startBalance
-    }
+    val totalProfit: Money = currentBalance - startBalance
 
-    val rateOfProfit: Double by lazy {
-        (totalProfit / startBalance).value * 100
-    }
+    val rateOfProfit: Double = (totalProfit / startBalance).value * 100
 
-    val tradeCount: Int by lazy {
-        trades.size
-    }
+    val tradeCount: Int = trades.size
 
-    val totalCommission: Money by lazy {
-        val totalValue = trades.sumOf { trade -> trade.commission.value }
-        Money(totalValue)
-    }
+    val totalCommission: Money = Money(trades.sumOf { trade -> trade.commission.value })
 
-    val visibleTicks: List<Tick> by lazy {
-        chart.ticks
-            .sortedBy { it.startTimestamp }
-            .subList(0, chart.ticks.size - totalTurn + currentTurn - 1)
-    }
+    val visibleTicks: List<Tick> = chart.ticks
+        .sortedBy { it.startTimestamp }
+        .subList(0, chart.ticks.size - totalTurn + currentTurn - 1)
+
+    // 게임 모든 턴을 끝까지 완료한 경우 true
+    val isGameComplete: Boolean = currentTurn == totalTurn
+
+    // 정상종료이든 강제종료이든 종료된 경우 true
+    val isGameEnd: Boolean = isQuit || isGameComplete
 
     internal fun getNextTurn(): ChartGame {
+        val nextTurn = currentTurn + 1
         return this.copy(
-            currentTurn = currentTurn + 1,
+            currentTurn = nextTurn,
         )
     }
 
@@ -66,6 +62,12 @@ data class ChartGame(
         )
     }
 
+    internal fun createFromQuit(): ChartGame {
+        return copy(
+            isQuit = true
+        )
+    }
+
     companion object {
         private const val START_TURN = 1
 
@@ -82,7 +84,7 @@ data class ChartGame(
                 totalTurn = totalTurn,
                 startBalance = startBalance,
                 currentBalance = startBalance,
-                isGameEnd = false,
+                isQuit = false
             )
         }
     }

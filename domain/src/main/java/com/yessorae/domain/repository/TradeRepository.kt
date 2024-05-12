@@ -4,4 +4,6 @@ import com.yessorae.domain.entity.trade.Trade
 
 interface TradeRepository {
     suspend fun saveTradeHistory(trade: Trade)
+
+    suspend fun deleteTradeHistoryAt(gameId: Long)
 }

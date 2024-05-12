@@ -11,4 +11,6 @@ interface ChartGameRepository {
     suspend fun fetchChartGame(gameId: Long): ChartGame
 
     suspend fun updateChartGame(chartGame: ChartGame)
+
+    suspend fun deleteChartGame(gameId: Long)
 }

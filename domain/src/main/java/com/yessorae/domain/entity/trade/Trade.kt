@@ -20,19 +20,13 @@ data class Trade(
     // TODO::LATER 세금
 ) {
     // 총 거래금
-    val totalTradeMoney: Money by lazy {
-        stockPrice * count
-    }
+    val totalTradeMoney: Money =stockPrice * count
 
     // 수수료
-    val commission: Money by lazy {
-        totalTradeMoney * commissionRate
-    }
+    val commission: Money = totalTradeMoney * commissionRate
 
     // 실현 손익
-    val profit: Money by lazy {
-        ((stockPrice - ownedAverageStockPrice) * count) - commission
-    }
+    val profit: Money = ((stockPrice - ownedAverageStockPrice) * count) - commission
 
     companion object {
         internal fun new(

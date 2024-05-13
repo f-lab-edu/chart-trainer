@@ -73,7 +73,11 @@ data class ChartGame(
     companion object {
         private const val START_TURN = 1
 
-        fun new(chart: Chart, totalTurn: Int, startBalance: Money): ChartGame {
+        fun new(
+            chart: Chart,
+            totalTurn: Int,
+            startBalance: Money
+        ): ChartGame {
             return ChartGame(
                 chart = chart,
                 trades = emptyList(),

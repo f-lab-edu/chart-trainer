@@ -5,7 +5,7 @@ import com.yessorae.domain.entity.tick.TickUnit
 import java.time.LocalDateTime
 
 data class Chart(
-    val id: Long,
+    val id: Long = 0,
     // ex. AAPL
     val tickerSymbol: String,
     // 차트 시작 날짜

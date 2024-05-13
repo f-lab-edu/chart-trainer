@@ -5,7 +5,7 @@ import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.entity.value.Money
 
 data class ChartGame(
-    val id: Int,
+    val id: Long,
     // 차트 데이터
     val chart: Chart,
     // 거래 내역
@@ -78,7 +78,7 @@ data class ChartGame(
             startBalance: Money,
         ): ChartGame {
             return ChartGame(
-                id = 0,
+                id = 0L,
                 chart = chart,
                 trades = emptyList(),
                 currentTurn = START_TURN,

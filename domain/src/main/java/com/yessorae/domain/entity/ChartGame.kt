@@ -25,7 +25,8 @@ data class ChartGame(
 
     val rateOfProfit: Double = (totalProfit / startBalance).value * 100
 
-    val tradeCount: Int = trades.size
+    val tradeCount: Int
+        get() = trades.size
 
     val totalCommission: Money = Money(trades.sumOf { trade -> trade.commission.value })
 

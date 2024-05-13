@@ -1,6 +1,7 @@
 package com.yessorae.domain.entity
 
 import com.yessorae.domain.entity.tick.Tick
+import com.yessorae.domain.entity.tick.TickUnit
 import java.time.LocalDateTime
 
 data class Chart(
@@ -13,4 +14,5 @@ data class Chart(
     val endDateTime: LocalDateTime,
     // 차트 데이터
     val ticks: List<Tick>,
+    val tickUnit: TickUnit
 )

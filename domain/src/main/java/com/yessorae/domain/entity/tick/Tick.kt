@@ -24,6 +24,5 @@ data class Tick(
     // 장외거래(場外去來, Over-the-counter)는
     // 주식, 채권, 상품선물, 파생금융상품과 같은 투자자산을 거래소(exchange)를 거치지 않고,
     // 양 당사자가 직접 거래하는 것을 의미
-    val isOverTheCounter: Boolean,
-    val unit: TickUnit,
+    val isOverTheCounter: Boolean
 )

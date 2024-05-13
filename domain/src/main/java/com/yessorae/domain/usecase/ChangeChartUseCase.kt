@@ -22,7 +22,7 @@ class ChangeChartUseCase
 
             chartGameRepository.updateChartGame(
                 chartGame =
-                    oldChartGame.createFromNewChart(
+                    oldChartGame.copyFrom(
                         newChart = chartRepository.fetchNewChartRandomly(),
                     ),
             )

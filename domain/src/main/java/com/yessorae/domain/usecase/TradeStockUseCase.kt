@@ -40,7 +40,7 @@ class TradeStockUseCase
                 chartGame =
                     chartGameRepository.fetchChartGame(
                         gameId = gameId,
-                    ).createFromNewTrade(
+                    ).copyFrom(
                         newTrade = trade,
                     ),
             )

@@ -48,7 +48,7 @@ data class ChartGame(
         )
     }
 
-    internal fun createFromNewChart(newChart: Chart): ChartGame {
+    internal fun copyFrom(newChart: Chart): ChartGame {
         return copy(
             chart = newChart,
             currentTurn = START_TURN,
@@ -57,7 +57,7 @@ data class ChartGame(
         )
     }
 
-    internal fun createFromNewTrade(newTrade: Trade): ChartGame {
+    internal fun copyFrom(newTrade: Trade): ChartGame {
         return copy(
             trades = trades + newTrade,
             currentBalance = currentBalance + newTrade.profit,

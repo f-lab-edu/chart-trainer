@@ -19,7 +19,7 @@ data class ChartGame(
     // 현재 잔고
     val currentBalance: Money,
     // 유저의 게임 강제 종료 여부
-    val isQuit: Boolean,
+    val isQuit: Boolean
 ) {
     val totalProfit: Money = currentBalance - startBalance
 
@@ -44,7 +44,7 @@ data class ChartGame(
     internal fun getNextTurn(): ChartGame {
         val nextTurn = currentTurn + 1
         return this.copy(
-            currentTurn = nextTurn,
+            currentTurn = nextTurn
         )
     }
 
@@ -53,31 +53,27 @@ data class ChartGame(
             chart = newChart,
             currentTurn = START_TURN,
             trades = emptyList(),
-            currentBalance = startBalance,
+            currentBalance = startBalance
         )
     }
 
     internal fun copyFrom(newTrade: Trade): ChartGame {
         return copy(
             trades = trades + newTrade,
-            currentBalance = currentBalance + newTrade.profit,
+            currentBalance = currentBalance + newTrade.profit
         )
     }
 
     internal fun createFromQuit(): ChartGame {
         return copy(
-            isQuit = true,
+            isQuit = true
         )
     }
 
     companion object {
         private const val START_TURN = 1
 
-        fun new(
-            chart: Chart,
-            totalTurn: Int,
-            startBalance: Money,
-        ): ChartGame {
+        fun new(chart: Chart, totalTurn: Int, startBalance: Money): ChartGame {
             return ChartGame(
                 chart = chart,
                 trades = emptyList(),
@@ -85,7 +81,7 @@ data class ChartGame(
                 totalTurn = totalTurn,
                 startBalance = startBalance,
                 currentBalance = startBalance,
-                isQuit = false,
+                isQuit = false
             )
         }
     }

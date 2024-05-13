@@ -16,7 +16,7 @@ data class Trade(
     // 매수/매도
     val type: TradeType,
     // 수수료율
-    val commissionRate: Double,
+    val commissionRate: Double
     // TODO::LATER 세금
 ) {
     // 총 거래금
@@ -36,7 +36,7 @@ data class Trade(
             count: Int,
             turn: Int,
             type: TradeType,
-            commissionRate: Double,
+            commissionRate: Double
         ): Trade {
             return Trade(
                 gameId = gameId,
@@ -45,7 +45,7 @@ data class Trade(
                 count = count,
                 turn = turn,
                 type = type,
-                commissionRate = commissionRate,
+                commissionRate = commissionRate
             )
         }
     }

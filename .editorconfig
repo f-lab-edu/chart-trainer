@@ -1,4 +1,4 @@
 root = true
 
 [*.{kt,kts}]
-ktlint_code_style = intellij_idea
+ktlint_code_style = android_studio

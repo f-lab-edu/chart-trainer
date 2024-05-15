@@ -7,9 +7,7 @@ import com.yessorae.domain.repository.UserRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
-class SubscribeChartGameUseCase
-@Inject
-constructor(
+class SubscribeChartGameUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val chartRepository: ChartRepository,
     private val chartGameRepository: ChartGameRepository

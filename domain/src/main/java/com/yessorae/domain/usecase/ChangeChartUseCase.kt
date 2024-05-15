@@ -5,9 +5,7 @@ import com.yessorae.domain.repository.ChartGameRepository
 import com.yessorae.domain.repository.ChartRepository
 import javax.inject.Inject
 
-class ChangeChartUseCase
-@Inject
-constructor(
+class ChangeChartUseCase @Inject constructor(
     private val chartRepository: ChartRepository,
     private val chartGameRepository: ChartGameRepository
 ) {

@@ -8,9 +8,7 @@ import com.yessorae.domain.repository.TradeRepository
 import com.yessorae.domain.repository.UserRepository
 import javax.inject.Inject
 
-class TradeStockUseCase
-@Inject
-constructor(
+class TradeStockUseCase @Inject constructor(
     private val chartGameRepository: ChartGameRepository,
     private val tradeRepository: TradeRepository,
     private val userRepository: UserRepository

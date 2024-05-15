@@ -4,9 +4,7 @@ import com.yessorae.domain.exception.ChartGameException
 import com.yessorae.domain.repository.ChartGameRepository
 import javax.inject.Inject
 
-class UpdateNextTickUseCase
-@Inject
-constructor(
+class UpdateNextTickUseCase @Inject constructor(
     private val chartGameRepository: ChartGameRepository
 ) {
     suspend operator fun invoke(gameId: Long) {

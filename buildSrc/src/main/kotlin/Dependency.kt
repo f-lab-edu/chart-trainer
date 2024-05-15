@@ -15,9 +15,13 @@ object Dependency {
     }
 
     object Data {
-        const val RETROFIT = "com.squareup.retrofit2:retrofit:2.11.0"
-        const val GSON = "com.google.code.gson:gson:2.10.1"
+        const val RETROFIT = "com.squareup.retrofit2:retrofit:${Version.RETROFIT}"
+        const val RETROFIT_GSON_CONVERTER = "com.squareup.retrofit2:converter-gson:${Version.RETROFIT}"
         const val OK_HTTP_3 = "com.squareup.okhttp3:logging-interceptor:4.12.0"
+
+        object Version {
+            const val RETROFIT = "2.11.0"
+        }
     }
 
     object Compose {

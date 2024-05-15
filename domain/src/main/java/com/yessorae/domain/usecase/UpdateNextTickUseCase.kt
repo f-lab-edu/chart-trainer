@@ -7,15 +7,19 @@ import javax.inject.Inject
 class UpdateNextTickUseCase @Inject constructor(
     private val chartGameRepository: ChartGameRepository
 ) {
-    suspend operator fun invoke(gameId: Long) {
+    suspend operator fun invoke(gameId: Long): Result<Unit> {
         val newChartGame = chartGameRepository.fetchChartGame(gameId = gameId).getNextTurn()
 
         if (newChartGame.isGameEnd) {
-            throw ChartGameException.CanNotUpdateNextTickException(
-                message = "can't update next tick because game has been end"
+            return Result.failure(
+                ChartGameException.CanNotUpdateNextTickException(
+                    message = "can't update next tick because game has been end"
+                )
             )
         }
 
         chartGameRepository.updateChartGame(chartGame = newChartGame)
+
+        return Result.success(Unit)
     }
 }

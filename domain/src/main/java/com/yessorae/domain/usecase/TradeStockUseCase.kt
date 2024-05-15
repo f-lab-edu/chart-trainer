@@ -35,8 +35,7 @@ class TradeStockUseCase @Inject constructor(
         tradeRepository.saveTradeHistory(trade = trade)
 
         chartGameRepository.updateChartGame(
-            chartGame =
-            chartGameRepository.fetchChartGame(
+            chartGame = chartGameRepository.fetchChartGame(
                 gameId = gameId
             ).copyFrom(
                 newTrade = trade

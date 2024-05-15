@@ -9,20 +9,22 @@ class ChangeChartUseCase @Inject constructor(
     private val chartRepository: ChartRepository,
     private val chartGameRepository: ChartGameRepository
 ) {
-    suspend operator fun invoke(gameId: Long) {
+    suspend operator fun invoke(gameId: Long): Result<Unit> {
         val oldChartGame = chartGameRepository.fetchChartGame(gameId = gameId)
 
         if (oldChartGame.isGameEnd) {
-            throw ChartGameException.CanNotChangeChartException(
-                message = "can't change chart because game has been end"
+            return Result.failure(
+                ChartGameException.CanNotChangeChartException(
+                    message = "can't change chart because game has been end"
+                )
             )
         }
 
         chartGameRepository.updateChartGame(
-            chartGame =
-            oldChartGame.copyFrom(
+            chartGame = oldChartGame.copyFrom(
                 newChart = chartRepository.fetchNewChartRandomly()
             )
         )
+        return Result.success(value = Unit)
     }
 }

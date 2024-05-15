@@ -51,12 +51,12 @@ dependencies {
     implementation(project(path = ":domain"))
     implementation(project(path = ":presentation"))
 
-    implementation(Dependency.HILT)
-    kapt(Dependency.HILT_COMPILER)
+    implementation(Dependency.Common.HILT)
+    kapt(Dependency.Common.HILT_COMPILER)
 
-    implementation(Dependency.ANDROIDX_CORE)
-    testImplementation(Dependency.Test.JUNIT)
-    androidTestImplementation(Dependency.Test.JUNIT_EXT)
+    implementation(Dependency.Common.ANDROIDX_CORE)
+    testImplementation(Dependency.Common.JUNIT)
+    androidTestImplementation(Dependency.Common.JUNIT_EXT)
 }
 
 configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {

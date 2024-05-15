@@ -38,9 +38,9 @@ android {
 dependencies {
     implementation(project(path = ":domain"))
 
-    implementation(Dependency.HILT)
-    kapt(Dependency.HILT_COMPILER)
+    implementation(Dependency.Common.HILT)
+    kapt(Dependency.Common.HILT_COMPILER)
 
-    testImplementation(Dependency.Test.JUNIT)
-    androidTestImplementation(Dependency.Test.JUNIT_EXT)
+    testImplementation(Dependency.Common.JUNIT)
+    androidTestImplementation(Dependency.Common.JUNIT_EXT)
 }

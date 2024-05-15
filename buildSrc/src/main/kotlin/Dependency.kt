@@ -1,10 +1,22 @@
 object Dependency {
-    const val HILT = "com.google.dagger:hilt-android:2.44"
-    const val HILT_COMPILER = "com.google.dagger:hilt-android-compiler:2.44"
-    const val JAVAX_INJECT = "javax.inject:javax.inject:1"
-    const val KOTLINX_COROUTINSE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1"
+    object Common {
+        const val HILT = "com.google.dagger:hilt-android:2.44"
+        const val HILT_COMPILER = "com.google.dagger:hilt-android-compiler:2.44"
 
-    const val ANDROIDX_CORE = "androidx.core:core-ktx:1.9.0" // 1.13.1
+        const val ANDROIDX_CORE = "androidx.core:core-ktx:1.9.0" // 1.13.1
+
+        const val JUNIT = "junit:junit:4.13.2"
+        const val JUNIT_EXT = "androidx.test.ext:junit:1.1.5"
+    }
+
+    object PlatformIndependent {
+        const val JAVAX_INJECT = "javax.inject:javax.inject:1"
+        const val KOTLINX_COROUTINSE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1"
+    }
+
+    object Data {
+        const val RETROFIT = "com.squareup.retrofit2:retrofit:2.11.0"
+    }
 
     object Compose {
         const val BOM = "androidx.compose:compose-bom:2023.03.00"
@@ -21,8 +33,7 @@ object Dependency {
     }
 
     object Test {
-        const val JUNIT = "junit:junit:4.13.2"
-        const val JUNIT_EXT = "androidx.test.ext:junit:1.1.5"
+
     }
 }
 

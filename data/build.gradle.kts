@@ -26,17 +26,27 @@ android {
             )
         }
     }
+    
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 }
 
 dependencies {
     implementation(project(path = ":domain"))
+
+    implementation(Dependency.Data.RETROFIT)
+    implementation(Dependency.Data.GSON)
+    implementation(Dependency.Data.OK_HTTP_3)
 
     implementation(Dependency.Common.HILT)
     kapt(Dependency.Common.HILT_COMPILER)

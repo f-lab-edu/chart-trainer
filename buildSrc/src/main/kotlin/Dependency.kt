@@ -15,12 +15,17 @@ object Dependency {
     }
 
     object Data {
+        const val ROOM_RUNTIME = "androidx.room:room-runtime:${Version.ROOM}"
+        const val ROOM_COMPILER = "androidx.room:room-compiler:${Version.ROOM}"
+        const val ROOM_KAPT = "androidx.room:room-compiler:${Version.ROOM}"
+        const val ROOM_COROUTINE = "androidx.room:room-ktx:${Version.ROOM}"
         const val RETROFIT = "com.squareup.retrofit2:retrofit:${Version.RETROFIT}"
         const val RETROFIT_GSON_CONVERTER = "com.squareup.retrofit2:converter-gson:${Version.RETROFIT}"
         const val OK_HTTP_3 = "com.squareup.okhttp3:logging-interceptor:4.12.0"
 
         object Version {
             const val RETROFIT = "2.11.0"
+            const val ROOM = "2.6.1"
         }
     }
 

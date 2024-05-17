@@ -12,4 +12,8 @@ sealed class ChartGameException(override val message: String = "") : Exception(m
     data class CanNotChangeTradeException(
         override val message: String
     ) : ChartGameException(message = message)
+
+    data class UnknownException(
+        val sight: String
+    ) : ChartGameException(message = "occurred at $sight}")
 }

@@ -15,14 +15,15 @@ import javax.inject.Singleton
 object CommonNetworkModule {
     @Provides
     @Singleton
-    fun provideOkHttpCallFactory(): Call.Factory = OkHttpClient.Builder()
-        .addInterceptor(
-            HttpLoggingInterceptor()
-                .apply {
-                    if (BuildConfig.DEBUG) {
-                        setLevel(HttpLoggingInterceptor.Level.BODY)
+    fun provideOkHttpCallFactory(): Call.Factory =
+        OkHttpClient.Builder()
+            .addInterceptor(
+                HttpLoggingInterceptor()
+                    .apply {
+                        if (BuildConfig.DEBUG) {
+                            setLevel(HttpLoggingInterceptor.Level.BODY)
+                        }
                     }
-                },
-        )
-        .build()
+            )
+            .build()
 }

@@ -32,17 +32,15 @@ import javax.inject.Singleton
 object PolygonNetworkModule {
     @Provides
     @Singleton
-    fun provideRetrofit(
-        okhttpCallFactory: Call.Factory
-    ): Retrofit = Retrofit.Builder()
-        .baseUrl(PolygonConstant.BASE_URL)
-        .callFactory(okhttpCallFactory)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    fun provideRetrofit(okhttpCallFactory: Call.Factory): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(PolygonConstant.BASE_URL)
+            .callFactory(okhttpCallFactory)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
     @Provides
     @Singleton
-    fun provideChartApi(
-        retrofit: Retrofit
-    ): PolygonChartApi = retrofit.create(PolygonChartApi::class.java)
+    fun provideChartApi(retrofit: Retrofit): PolygonChartApi =
+        retrofit.create(PolygonChartApi::class.java)
 }

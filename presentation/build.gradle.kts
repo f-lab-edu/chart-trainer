@@ -51,8 +51,6 @@ dependencies {
     implementation(Dependency.Common.HILT)
     kapt(Dependency.Common.HILT_COMPILER)
 
-
-
     implementation(Dependency.Compose.LIFECYCLE_RUNTIME)
     implementation(Dependency.Compose.ACTIVITY_COMPOSE) // 1.9.0
     implementation(platform(Dependency.Compose.BOM))

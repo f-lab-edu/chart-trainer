@@ -13,5 +13,7 @@ import javax.inject.Singleton
 abstract class DataSourceModule {
     @Binds
     @Singleton
-    abstract fun bindsChartNetworkDataSource(polygonChartNetworkDataSource: PolygonChartNetworkDataSource): ChartNetworkDataSource
+    abstract fun bindsChartNetworkDataSource(
+        polygonChartNetworkDataSource: PolygonChartNetworkDataSource
+    ): ChartNetworkDataSource
 }

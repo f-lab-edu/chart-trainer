@@ -24,7 +24,8 @@ class PolygonChartNetworkDataSource @Inject constructor(
                 timeSpan = tickUnit.toPathValue(),
                 from = from,
                 to = to
-            ).asDomainModel(tickUnit = tickUnit)
+            )
+            .asDomainModel(tickUnit = tickUnit)
     }
 }
 

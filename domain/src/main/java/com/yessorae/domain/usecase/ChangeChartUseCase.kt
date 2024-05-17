@@ -5,9 +5,9 @@ import com.yessorae.domain.common.delegateEmptyResultFlow
 import com.yessorae.domain.exception.ChartGameException
 import com.yessorae.domain.repository.ChartGameRepository
 import com.yessorae.domain.repository.ChartRepository
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
 class ChangeChartUseCase @Inject constructor(
     private val chartRepository: ChartRepository,

@@ -22,7 +22,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
+                "proguard-rules.pro"
             )
         }
     }
@@ -71,7 +71,7 @@ dependencies {
 configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
     additionalEditorconfig.set(
         mapOf(
-            "ktlint_function_naming_ignore_when_annotated_with" to "Composable",
-        ),
+            "ktlint_function_naming_ignore_when_annotated_with" to "Composable"
+        )
     )
 }

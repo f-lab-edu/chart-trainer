@@ -13,4 +13,5 @@ java {
 
 dependencies {
     implementation(Dependency.JAVAX_INJECT)
+    implementation(Dependency.KOTLINX_COROUTINSE)
 }

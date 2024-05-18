@@ -6,7 +6,6 @@ import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
 import com.yessorae.domain.repository.ChartGameRepository
-import com.yessorae.domain.repository.TradeRepository
 import com.yessorae.domain.repository.UserRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +13,6 @@ import kotlinx.coroutines.flow.flow
 
 class TradeStockUseCase @Inject constructor(
     private val chartGameRepository: ChartGameRepository,
-    private val tradeRepository: TradeRepository,
     private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(
@@ -35,8 +33,6 @@ class TradeStockUseCase @Inject constructor(
                 type = type,
                 commissionRate = userRepository.fetchCommissionRateConfig()
             )
-
-            tradeRepository.saveTradeHistory(trade = trade)
 
             chartGameRepository.updateChartGame(
                 chartGame = chartGameRepository.fetchChartGame(

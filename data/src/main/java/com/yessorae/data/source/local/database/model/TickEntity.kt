@@ -31,7 +31,6 @@ data class TickEntity(
 ) {
     companion object {
         const val NAME = "table_tick"
-        const val COL_GAME_ID = "game_id"
         const val COL_CHART_ID = "chart_id"
         const val COL_OPEN_PRICE = "open_price"
         const val COL_MAX_PRICE = "max_price"

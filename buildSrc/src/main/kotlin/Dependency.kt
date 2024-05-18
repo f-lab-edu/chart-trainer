@@ -15,6 +15,7 @@ object Dependency {
     }
 
     object Data {
+        const val DATA_STORE = "androidx.datastore:datastore-preferences:${Version.DATA_STORE}"
         const val ROOM_RUNTIME = "androidx.room:room-runtime:${Version.ROOM}"
         const val ROOM_COMPILER = "androidx.room:room-compiler:${Version.ROOM}"
         const val ROOM_KAPT = "androidx.room:room-compiler:${Version.ROOM}"
@@ -24,6 +25,7 @@ object Dependency {
         const val OK_HTTP_3 = "com.squareup.okhttp3:logging-interceptor:4.12.0"
 
         object Version {
+            const val DATA_STORE = "1.1.1"
             const val RETROFIT = "2.11.0"
             const val ROOM = "2.6.1"
         }

@@ -60,6 +60,8 @@ android {
 dependencies {
     implementation(project(path = ":domain"))
 
+    implementation(Dependency.Data.DATA_STORE)
+
     implementation(Dependency.Data.ROOM_RUNTIME)
     annotationProcessor(Dependency.Data.ROOM_COMPILER)
     kapt(Dependency.Data.ROOM_KAPT)

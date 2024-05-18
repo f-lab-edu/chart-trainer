@@ -1,6 +1,8 @@
-package com.yessorae.data.common
+package com.yessorae.data.source.local.database.converter
 
 import androidx.room.TypeConverter
+import com.yessorae.data.util.toLocalDateTime
+import com.yessorae.data.util.toMilliSecond
 import java.time.LocalDateTime
 
 class LocalDateTimeConverter {

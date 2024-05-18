@@ -4,8 +4,7 @@ import com.yessorae.data.source.network.ChartNetworkDataSource
 import com.yessorae.data.source.network.polygon.api.PolygonChartApi
 import com.yessorae.data.source.network.polygon.common.PolygonConstant.TIME_SPAN_DAY_PATH_VALUE
 import com.yessorae.data.source.network.polygon.common.PolygonConstant.TIME_SPAN_HOUR_PATH_VALUE
-import com.yessorae.data.source.network.polygon.model.chart.asDomainModel
-import com.yessorae.domain.entity.Chart
+import com.yessorae.data.source.network.polygon.model.chart.ChartDto
 import com.yessorae.domain.entity.tick.TickUnit
 import javax.inject.Inject
 
@@ -17,7 +16,7 @@ class PolygonChartNetworkDataSource @Inject constructor(
         tickUnit: TickUnit,
         from: String,
         to: String
-    ): Chart {
+    ): ChartDto {
         return api
             .getChartData(
                 ticker = ticker,
@@ -25,7 +24,6 @@ class PolygonChartNetworkDataSource @Inject constructor(
                 from = from,
                 to = to
             )
-            .asDomainModel(tickUnit = tickUnit)
     }
 }
 

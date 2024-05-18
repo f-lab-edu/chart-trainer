@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class DataSourceModule {
+abstract class NetworkDataSourceModule {
     @Binds
     @Singleton
     abstract fun bindsChartNetworkDataSource(

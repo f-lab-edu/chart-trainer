@@ -16,7 +16,7 @@ class SubscribeChartGameUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(gameId: Long?): Flow<Result<ChartGame>> {
         if (gameId == null) {
-            val newGameId = chartGameRepository.saveChartGame(
+            val newGameId = chartGameRepository.createNewChartGame(
                 chartGame = ChartGame.new(
                     chart = chartRepository.fetchNewChartRandomly(),
                     totalTurn = userRepository.fetchTotalTurnConfig(),
@@ -25,12 +25,12 @@ class SubscribeChartGameUseCase @Inject constructor(
             )
 
             return chartGameRepository
-                .fetchChartFlowStream(gameId = newGameId)
+                .fetchChartFlow(gameId = newGameId)
                 .delegateValueResultFlow()
         }
 
         return chartGameRepository
-            .fetchChartFlowStream(gameId = gameId)
+            .fetchChartFlow(gameId = gameId)
             .delegateValueResultFlow()
     }
 }

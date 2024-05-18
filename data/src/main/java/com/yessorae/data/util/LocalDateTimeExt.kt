@@ -1,4 +1,4 @@
-package com.yessorae.data.common
+package com.yessorae.data.util
 
 import java.time.LocalDateTime
 import java.time.ZoneOffset

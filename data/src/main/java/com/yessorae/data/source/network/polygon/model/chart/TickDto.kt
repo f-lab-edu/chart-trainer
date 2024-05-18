@@ -1,7 +1,7 @@
 package com.yessorae.data.source.network.polygon.model.chart
 
 import com.google.gson.annotations.SerializedName
-import com.yessorae.data.common.toLocalDateTime
+import com.yessorae.data.util.toLocalDateTime
 import com.yessorae.domain.entity.tick.Tick
 
 data class TickDto(

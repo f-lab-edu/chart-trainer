@@ -4,13 +4,11 @@ import com.yessorae.domain.entity.ChartGame
 import kotlinx.coroutines.flow.Flow
 
 interface ChartGameRepository {
-    suspend fun saveChartGame(chartGame: ChartGame): Long
+    suspend fun createNewChartGame(chartGame: ChartGame): Long
 
-    fun fetchChartFlowStream(gameId: Long): Flow<ChartGame>
+    fun fetchChartFlow(gameId: Long): Flow<ChartGame>
 
     suspend fun fetchChartGame(gameId: Long): ChartGame
 
     suspend fun updateChartGame(chartGame: ChartGame)
-
-    suspend fun deleteChartGame(gameId: Long)
 }

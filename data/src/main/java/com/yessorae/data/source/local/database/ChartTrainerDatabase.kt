@@ -11,12 +11,8 @@ import com.yessorae.data.source.local.database.dao.TickDao
 import com.yessorae.data.source.local.database.dao.TradeDao
 import com.yessorae.data.source.local.database.model.ChartEntity
 import com.yessorae.data.source.local.database.model.ChartGameEntity
-import com.yessorae.data.source.local.database.model.ChartGameTable
-import com.yessorae.data.source.local.database.model.ChartTable
 import com.yessorae.data.source.local.database.model.TickEntity
-import com.yessorae.data.source.local.database.model.TickTable
 import com.yessorae.data.source.local.database.model.TradeEntity
-import com.yessorae.data.source.local.database.model.TradeTable
 
 @Database(
     entities = [

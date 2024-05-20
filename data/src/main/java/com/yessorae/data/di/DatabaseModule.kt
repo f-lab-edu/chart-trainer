@@ -19,6 +19,6 @@ object DatabaseModule {
         Room.databaseBuilder(
             context = context,
             klass = ChartTrainerDatabase::class.java,
-            name = "chart-trainer-database"
+            name = ChartTrainerDatabase.NAME
         ).build()
 }

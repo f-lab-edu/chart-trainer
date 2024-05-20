@@ -32,4 +32,8 @@ abstract class ChartTrainerDatabase : RoomDatabase() {
     abstract fun getChartGameDao(): ChartGameDao
     abstract fun getTickDao(): TickDao
     abstract fun getTradeDao(): TradeDao
+
+    companion object {
+        const val NAME = "chart-trainer-database"
+    }
 }

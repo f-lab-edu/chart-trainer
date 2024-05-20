@@ -8,7 +8,7 @@ import com.yessorae.data.source.local.database.model.ChartEntity
 interface ChartDao : BaseDao<ChartEntity> {
     @Query(
         """
-        SELECT * FROM ${ChartEntity.NAME} WHERE id = :id
+            SELECT * FROM ${ChartEntity.NAME} WHERE id = :id
         """
     )
     suspend fun getChart(id: Long): ChartEntity

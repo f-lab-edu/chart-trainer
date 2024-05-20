@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id(Plugin.ANDROID_LIBRARY)
     id(Plugin.KOTLIN_ANDROID)
@@ -5,6 +7,11 @@ plugins {
     id(Plugin.HILT)
     kotlin(Plugin.KAPT)
 }
+
+val properties = Properties()
+val localPropertiesFile = rootProject.file("local.properties").inputStream()
+properties.load(localPropertiesFile)
+localPropertiesFile.close()
 
 android {
     namespace = "com.yessorae.data"
@@ -18,6 +25,14 @@ android {
     }
 
     buildTypes {
+        defaultConfig {
+            buildConfigField(
+                "String",
+                "POLYGON_API_KEY",
+                "${properties["POLYGON_API_KEY"]}"
+            )
+        }
+
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -26,21 +41,32 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
+
     kotlinOptions {
         jvmTarget = "17"
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 }
 
 dependencies {
     implementation(project(path = ":domain"))
 
-    implementation(Dependency.HILT)
-    kapt(Dependency.HILT_COMPILER)
+    implementation(Dependency.Data.RETROFIT)
+    implementation(Dependency.Data.RETROFIT_GSON_CONVERTER)
+    implementation(Dependency.Data.OK_HTTP_3)
 
-    testImplementation(Dependency.Test.JUNIT)
-    androidTestImplementation(Dependency.Test.JUNIT_EXT)
+    implementation(Dependency.Common.HILT)
+    kapt(Dependency.Common.HILT_COMPILER)
+
+    testImplementation(Dependency.Common.JUNIT)
+    androidTestImplementation(Dependency.Common.JUNIT_EXT)
 }

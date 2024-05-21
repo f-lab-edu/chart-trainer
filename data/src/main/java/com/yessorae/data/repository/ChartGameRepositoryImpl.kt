@@ -10,6 +10,7 @@ import com.yessorae.data.source.local.database.model.TickEntity
 import com.yessorae.data.source.local.database.model.TradeEntity
 import com.yessorae.data.source.local.database.model.asDomainModel
 import com.yessorae.data.source.local.database.model.asEntity
+import com.yessorae.data.source.network.polygon.util.DatabaseTransactionHelper
 import com.yessorae.domain.entity.ChartGame
 import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.repository.ChartGameRepository
@@ -31,7 +32,8 @@ class ChartGameRepositoryImpl @Inject constructor(
     private val tradeDao: TradeDao,
     private val tickDao: TickDao,
     @Dispatcher(ChartTrainerDispatcher.IO)
-    private val dispatcher: CoroutineDispatcher
+    private val dispatcher: CoroutineDispatcher,
+    private val transactionHelper: DatabaseTransactionHelper
 ) : ChartGameRepository {
     override suspend fun createNewChartGame(chartGame: ChartGame): Long =
         withContext(dispatcher) {
@@ -73,16 +75,20 @@ class ChartGameRepositoryImpl @Inject constructor(
 
     override suspend fun updateChartGame(chartGame: ChartGame) =
         withContext(dispatcher) {
-            listOf(
-                launch {
-                    tradeDao.insertOrReplaceAll(entities = chartGame.trades.map(Trade::asEntity))
-                },
-                launch {
-                    chartDao.update(entity = chartGame.chart.asEntity())
-                },
-                launch {
-                    chartGameDao.update(chartGame.asEntity())
-                }
-            ).joinAll()
+            transactionHelper.runTransaction {
+                listOf(
+                    launch {
+                        tradeDao.insertOrReplaceAll(
+                            entities = chartGame.trades.map(Trade::asEntity)
+                        )
+                    },
+                    launch {
+                        chartDao.update(entity = chartGame.chart.asEntity())
+                    },
+                    launch {
+                        chartGameDao.update(chartGame.asEntity())
+                    }
+                ).joinAll()
+            }
         }
 }

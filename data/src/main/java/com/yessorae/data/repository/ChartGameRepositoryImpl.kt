@@ -76,19 +76,17 @@ class ChartGameRepositoryImpl @Inject constructor(
     override suspend fun updateChartGame(chartGame: ChartGame) =
         withContext(dispatcher) {
             transactionHelper.runTransaction {
-                listOf(
-                    launch {
-                        tradeDao.insertOrReplaceAll(
-                            entities = chartGame.trades.map(Trade::asEntity)
-                        )
-                    },
-                    launch {
-                        chartDao.update(entity = chartGame.chart.asEntity())
-                    },
-                    launch {
-                        chartGameDao.update(chartGame.asEntity())
-                    }
-                ).joinAll()
+                launch {
+                    tradeDao.insertOrReplaceAll(
+                        entities = chartGame.trades.map(Trade::asEntity)
+                    )
+                }
+                launch {
+                    chartDao.update(entity = chartGame.chart.asEntity())
+                }
+                launch {
+                    chartGameDao.update(chartGame.asEntity())
+                }
             }
         }
 }

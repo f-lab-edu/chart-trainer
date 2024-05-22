@@ -14,7 +14,6 @@ import com.yessorae.data.source.network.polygon.util.DatabaseTransactionHelper
 import com.yessorae.domain.entity.ChartGame
 import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.repository.ChartGameRepository
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -22,9 +21,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 class ChartGameRepositoryImpl @Inject constructor(
     private val chartGameDao: ChartGameDao,
@@ -76,19 +75,17 @@ class ChartGameRepositoryImpl @Inject constructor(
     override suspend fun updateChartGame(chartGame: ChartGame) =
         withContext(dispatcher) {
             transactionHelper.runTransaction {
-                listOf(
-                    launch {
-                        tradeDao.insertOrReplaceAll(
-                            entities = chartGame.trades.map(Trade::asEntity)
-                        )
-                    },
-                    launch {
-                        chartDao.update(entity = chartGame.chart.asEntity())
-                    },
-                    launch {
-                        chartGameDao.update(chartGame.asEntity())
-                    }
-                ).joinAll()
+                launch {
+                    tradeDao.insertOrReplaceAll(
+                        entities = chartGame.trades.map(Trade::asEntity)
+                    )
+                }
+                launch {
+                    chartDao.update(entity = chartGame.chart.asEntity())
+                }
+                launch {
+                    chartGameDao.update(chartGame.asEntity())
+                }
             }
         }
 }

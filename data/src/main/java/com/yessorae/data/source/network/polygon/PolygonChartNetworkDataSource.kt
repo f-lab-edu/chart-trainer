@@ -1,6 +1,6 @@
 package com.yessorae.data.source.network.polygon
 
-import com.yessorae.data.source.network.ChartNetworkDataSource
+import com.yessorae.data.source.ChartNetworkDataSource
 import com.yessorae.data.source.network.polygon.api.PolygonChartApi
 import com.yessorae.data.source.network.polygon.common.PolygonConstant.TIME_SPAN_DAY_PATH_VALUE
 import com.yessorae.data.source.network.polygon.common.PolygonConstant.TIME_SPAN_HOUR_PATH_VALUE

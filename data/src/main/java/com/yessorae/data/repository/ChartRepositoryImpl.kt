@@ -2,8 +2,8 @@ package com.yessorae.data.repository
 
 import com.yessorae.data.di.ChartTrainerDispatcher
 import com.yessorae.data.di.Dispatcher
+import com.yessorae.data.source.ChartNetworkDataSource
 import com.yessorae.data.source.local.preference.ChartTrainerPreferencesDataSource
-import com.yessorae.data.source.network.ChartNetworkDataSource
 import com.yessorae.data.source.network.polygon.model.chart.asDomainModel
 import com.yessorae.domain.common.ChartRequestArgumentHelper
 import com.yessorae.domain.entity.Chart

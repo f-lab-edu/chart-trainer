@@ -1,4 +1,4 @@
-package com.yessorae.data.source.network
+package com.yessorae.data.source
 
 import com.yessorae.data.source.network.polygon.model.chart.ChartDto
 import com.yessorae.domain.entity.tick.TickUnit

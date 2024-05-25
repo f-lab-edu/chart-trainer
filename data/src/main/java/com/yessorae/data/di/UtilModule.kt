@@ -3,7 +3,9 @@ package com.yessorae.data.di
 import com.yessorae.data.source.network.polygon.util.ChartTrainerDatabaseTransactionHelper
 import com.yessorae.data.source.network.polygon.util.DatabaseTransactionHelper
 import com.yessorae.data.source.network.polygon.util.DefaultChartRequestArgumentHelper
+import com.yessorae.data.util.DefaultChartTrainerLoggerImpl
 import com.yessorae.domain.common.ChartRequestArgumentHelper
+import com.yessorae.domain.common.ChartTrainerLogger
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -24,4 +26,10 @@ abstract class UtilModule {
     abstract fun bindsChartTrainerDatabaseTransactionHelper(
         chartTrainerDatabaseTransactionHelper: ChartTrainerDatabaseTransactionHelper
     ): DatabaseTransactionHelper
+
+    @Binds
+    @Singleton
+    abstract fun bindsDefaultChartTrainerLogger(
+        chartTrainerLogger: DefaultChartTrainerLoggerImpl
+    ): ChartTrainerLogger
 }

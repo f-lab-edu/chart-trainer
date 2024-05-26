@@ -1,4 +1,4 @@
-package com.yessorae.presentation.ui.theme
+package com.yessorae.presentation.ui.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 

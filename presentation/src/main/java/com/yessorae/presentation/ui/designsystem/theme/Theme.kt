@@ -1,4 +1,4 @@
-package com.yessorae.presentation.ui.theme
+package com.yessorae.presentation.ui.designsystem.theme
 
 import android.app.Activity
 import android.os.Build

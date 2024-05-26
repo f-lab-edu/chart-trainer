@@ -36,4 +36,3 @@ sealed interface SellingOrderUiUserAction {
         val keyPad: TradeOrderKeyPad
     ) : SellingOrderUiUserAction
 }
-

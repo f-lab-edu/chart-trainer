@@ -20,7 +20,6 @@ class DefaultChartTrainerLoggerImpl @Inject constructor() : ChartTrainerLogger {
         // crashlytics 같은 것을 추가할 수 있음
     }
 
-
     companion object {
         const val TAG = "SR-N"
         const val STACK_TRACE_DEPTH = 5

@@ -7,7 +7,7 @@ data class ChartGameScreenState(
     val totalTurn: String = "",
     val gameProgress: Float = 0f,
     val showLoading: Boolean = false,
-    //아래와 같이 라이브러리에 맞춘 형태로 지양하는 UI 모델 형태이다. 변경 고민중.
+    // 아래와 같이 라이브러리에 맞춘 형태로 지양하는 UI 모델 형태이다. 변경 고민중.
     val transactionVolume: List<Double> = listOf(),
     val candleStickChart: CandleStickChartUi = CandleStickChartUi(),
     val buyingOrderUi: BuyingOrderUi? = null,
@@ -19,7 +19,7 @@ data class CandleStickChartUi(
     val opening: List<Double> = listOf(),
     val closing: List<Double> = listOf(),
     val low: List<Double> = listOf(),
-    val high: List<Double> = listOf(),
+    val high: List<Double> = listOf()
 )
 
 data class BuyingOrderUi(
@@ -44,13 +44,15 @@ data class SellingOrderUi(
     val totalSellingStockPrice: Double = currentStockPrice * (stockCountInput?.toInt() ?: 0)
 }
 
-fun List<Tick>.asTransactionVolume(): List<Double> = this.map { tick ->
-    tick.transactionCount.toDouble()
-}
+fun List<Tick>.asTransactionVolume(): List<Double> =
+    this.map { tick ->
+        tick.transactionCount.toDouble()
+    }
 
-fun List<Tick>.asCandleStickChartUiState(): CandleStickChartUi = CandleStickChartUi(
-    opening = this.map { tick -> tick.openPrice.value },
-    closing = this.map { tick -> tick.closePrice.value },
-    low = this.map { tick -> tick.minPrice.value },
-    high = this.map { tick -> tick.maxPrice.value },
-)
+fun List<Tick>.asCandleStickChartUiState(): CandleStickChartUi =
+    CandleStickChartUi(
+        opening = this.map { tick -> tick.openPrice.value },
+        closing = this.map { tick -> tick.closePrice.value },
+        low = this.map { tick -> tick.minPrice.value },
+        high = this.map { tick -> tick.maxPrice.value }
+    )

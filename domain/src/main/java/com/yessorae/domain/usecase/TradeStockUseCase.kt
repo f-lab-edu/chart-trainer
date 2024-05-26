@@ -15,9 +15,7 @@ class TradeStockUseCase @Inject constructor(
     private val chartGameRepository: ChartGameRepository,
     private val userRepository: UserRepository
 ) {
-    operator fun invoke(
-        param: Param
-    ): Flow<Result<Unit>> =
+    operator fun invoke(param: Param): Flow<Result<Unit>> =
         flow<Nothing> {
             val trade = Trade.new(
                 gameId = param.gameId,
@@ -37,7 +35,6 @@ class TradeStockUseCase @Inject constructor(
                 )
             )
         }.delegateEmptyResultFlow()
-
 
     data class Param(
         val gameId: Long,

@@ -24,6 +24,7 @@ import com.yessorae.presentation.ui.chartgame.model.TradeOrderKeyPad
 import com.yessorae.presentation.ui.chartgame.model.asCandleStickChartUiState
 import com.yessorae.presentation.ui.chartgame.model.asTransactionVolume
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -36,7 +37,6 @@ import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class ChartGameViewModel @Inject constructor(
@@ -64,15 +64,16 @@ class ChartGameViewModel @Inject constructor(
     private val _screenEvent = MutableSharedFlow<ChartGameEvent>()
     val screenEvent: SharedFlow<ChartGameEvent> = _screenEvent.asSharedFlow()
 
-    private fun subscribeChartGame() = viewModelScope.launch {
-        subscribeChartGameUseCase(gameId = gameIdFromPrevScreen).collectLatest { result ->
-            when (result) {
-                is Result.Loading -> _screenState.update { old -> old.copy(showLoading = true) }
-                is Result.Success -> updateGameData(result.data)
-                is Result.Failure -> handleError(result.throwable)
+    private fun subscribeChartGame() =
+        viewModelScope.launch {
+            subscribeChartGameUseCase(gameId = gameIdFromPrevScreen).collectLatest { result ->
+                when (result) {
+                    is Result.Loading -> _screenState.update { old -> old.copy(showLoading = true) }
+                    is Result.Success -> updateGameData(result.data)
+                    is Result.Failure -> handleError(result.throwable)
+                }
             }
         }
-    }
 
     private fun updateGameData(data: ChartGame) {
         _screenState.update { old ->
@@ -382,7 +383,6 @@ class ChartGameViewModel @Inject constructor(
         }
     }
 
-
     private fun hideBuyOrderUi() {
         _screenState.update { old ->
             old.copy(
@@ -401,26 +401,27 @@ class ChartGameViewModel @Inject constructor(
         }
     }
 
-    private fun tradeStock(tradeStockParam: TradeStockUseCase.Param) = viewModelScope.launch {
-        tradeStockUseCase(param = tradeStockParam).collectLatest { result ->
-            when (result) {
-                is Result.Loading -> {
-                    _screenState.update { old -> old.copy(showLoading = true) }
-                }
-
-                is Result.Success -> {
-                    when (tradeStockParam.type) {
-                        TradeType.Buy -> hideBuyOrderUi()
-                        TradeType.Sell -> hideSellOrderUi()
+    private fun tradeStock(tradeStockParam: TradeStockUseCase.Param) =
+        viewModelScope.launch {
+            tradeStockUseCase(param = tradeStockParam).collectLatest { result ->
+                when (result) {
+                    is Result.Loading -> {
+                        _screenState.update { old -> old.copy(showLoading = true) }
                     }
-                }
 
-                is Result.Failure -> {
-                    emitScreenEvent(ChartGameEvent.TradeFail)
+                    is Result.Success -> {
+                        when (tradeStockParam.type) {
+                            TradeType.Buy -> hideBuyOrderUi()
+                            TradeType.Sell -> hideSellOrderUi()
+                        }
+                    }
+
+                    is Result.Failure -> {
+                        emitScreenEvent(ChartGameEvent.TradeFail)
+                    }
                 }
             }
         }
-    }
 
     private fun updateNextTick(gameId: Long) {
         updateNextTickUseCase(gameId = gameId).launchIn(viewModelScope)
@@ -432,13 +433,15 @@ class ChartGameViewModel @Inject constructor(
         emitScreenEvent(event = ChartGameEvent.BackToPrev)
     }
 
-    private fun moveToChartTradeHistoryScreen(gameId: Long) = viewModelScope.launch {
-        emitScreenEvent(event = ChartGameEvent.MoveToTradeHistory(gameId = gameId))
-    }
+    private fun moveToChartTradeHistoryScreen(gameId: Long) =
+        viewModelScope.launch {
+            emitScreenEvent(event = ChartGameEvent.MoveToTradeHistory(gameId = gameId))
+        }
 
-    private fun emitScreenEvent(event: ChartGameEvent) = viewModelScope.launch {
-        _screenEvent.emit(event)
-    }
+    private fun emitScreenEvent(event: ChartGameEvent) =
+        viewModelScope.launch {
+            _screenEvent.emit(event)
+        }
 
     private fun handleError(throwable: Throwable) {
         logger.cehLog(

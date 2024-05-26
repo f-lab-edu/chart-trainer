@@ -3,6 +3,7 @@ package com.yessorae.data.source.network.polygon.model.chart
 import com.google.gson.annotations.SerializedName
 import com.yessorae.data.util.toLocalDateTime
 import com.yessorae.domain.entity.tick.Tick
+import com.yessorae.domain.entity.value.Money
 
 data class TickDto(
     @SerializedName("c")
@@ -25,12 +26,12 @@ data class TickDto(
 
 internal fun TickDto.asDomainModel() =
     Tick(
-        openPrice = openPrice,
-        closePrice = closePrice,
-        maxPrice = maxPrice,
-        minPrice = minPrice,
+        openPrice = Money(openPrice),
+        closePrice = Money(closePrice),
+        maxPrice = Money(maxPrice),
+        minPrice = Money(minPrice),
         transactionCount = transactionCount,
         startTimestamp = startTimestamp.toLocalDateTime(),
         tradingVolume = tradingVolume,
-        volumeWeightedAveragePrice = volumeWeightedAveragePrice
+        volumeWeightedAveragePrice = Money(volumeWeightedAveragePrice)
     )

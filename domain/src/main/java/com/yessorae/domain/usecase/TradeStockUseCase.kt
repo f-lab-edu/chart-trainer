@@ -15,31 +15,36 @@ class TradeStockUseCase @Inject constructor(
     private val chartGameRepository: ChartGameRepository,
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(
-        gameId: Long,
-        ownedAverageStockPrice: Money,
-        stockPrice: Money,
-        count: Int,
-        turn: Int,
-        type: TradeType
+    operator fun invoke(
+        param: Param
     ): Flow<Result<Unit>> =
         flow<Nothing> {
             val trade = Trade.new(
-                gameId = gameId,
-                ownedAverageStockPrice = ownedAverageStockPrice,
-                stockPrice = stockPrice,
-                count = count,
-                turn = turn,
-                type = type,
+                gameId = param.gameId,
+                ownedAverageStockPrice = param.ownedAverageStockPrice,
+                stockPrice = param.stockPrice,
+                count = param.count,
+                turn = param.turn,
+                type = param.type,
                 commissionRate = userRepository.fetchCommissionRateConfig()
             )
 
             chartGameRepository.updateChartGame(
                 chartGame = chartGameRepository.fetchChartGame(
-                    gameId = gameId
+                    gameId = param.gameId
                 ).copyFrom(
                     newTrade = trade
                 )
             )
         }.delegateEmptyResultFlow()
+
+
+    data class Param(
+        val gameId: Long,
+        val ownedAverageStockPrice: Money,
+        val stockPrice: Money,
+        val count: Int,
+        val turn: Int,
+        val type: TradeType
+    )
 }

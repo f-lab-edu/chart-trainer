@@ -430,7 +430,7 @@ class ChartGameViewModel @Inject constructor(
     private fun quitChartGame(gameId: Long) {
         // TODO::LATER 바로 뒤로가지 않고 컨펌 다이얼로그 보여주기
         quitChartGameUseCase(gameId = gameId).launchIn(viewModelScope)
-        emitScreenEvent(event = ChartGameEvent.BackToPrev)
+        emitScreenEvent(event = ChartGameEvent.MoveToBack)
     }
 
     private fun moveToChartTradeHistoryScreen(gameId: Long) =

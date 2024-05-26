@@ -35,6 +35,16 @@ data class ChartGame(
             .sortedBy { it.startTimestamp }
             .subList(0, chart.ticks.size - totalTurn + currentTurn - 1)
 
+    val ownedStockCount = trades.sumOf { trade -> trade.count }
+
+    private val ownedTotalStockPrice = trades.sumOf { trade -> trade.totalTradeMoney.value }
+
+    val ownedAverageStockPrice = Money(ownedTotalStockPrice / ownedStockCount)
+
+    val currentStockPrice: Money = visibleTicks.last().closePrice
+
+    val currentGameProgress: Float = currentTurn / totalTurn.toFloat() * 100f
+
     // 게임 모든 턴을 끝까지 완료한 경우 true
     val isGameComplete: Boolean = currentTurn == totalTurn
 

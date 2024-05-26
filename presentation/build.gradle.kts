@@ -64,10 +64,6 @@ dependencies {
     debugImplementation(Dependency.Presentation.UI_TOOLING)
     debugImplementation(Dependency.Presentation.UI_TEST_MANIFEST)
 
-    implementation(Dependency.Presentation.VICO_CORE)
-    implementation(Dependency.Presentation.VICO_COMPOSE)
-    implementation(Dependency.Presentation.VICO_COMPOSE_M3)
-
     implementation(Dependency.Common.ANDROIDX_CORE)
     testImplementation(Dependency.Common.JUNIT)
     androidTestImplementation(Dependency.Common.JUNIT_EXT)

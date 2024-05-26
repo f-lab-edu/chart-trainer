@@ -56,9 +56,6 @@ object Dependency {
         const val ACTIVITY_COMPOSE =
             "androidx.activity:activity-compose:${Version.ACTIVITY_COMPOSE}"
 
-        const val VICO_COMPOSE = "com.patrykandpatrick.vico:compose:${Version.VICO}"
-        const val VICO_COMPOSE_M3 = "com.patrykandpatrick.vico:compose-m3:${Version.VICO}"
-        const val VICO_CORE = "com.patrykandpatrick.vico:core:${Version.VICO}"
         const val UI_TOOLING = "androidx.compose.ui:ui-tooling"
         const val UI_TOOLING_PREVIEW = "androidx.compose.ui:ui-tooling-preview"
         const val JUNIT = "androidx.compose.ui:ui-test-junit4"
@@ -68,7 +65,6 @@ object Dependency {
             const val BOM = "2023.03.00"
             const val LIFECYCLE_RUNTIME = "2.7.0"
             const val ACTIVITY_COMPOSE = "1.8.2"
-            const val VICO = "2.0.0-alpha.19"// "1.14.0"
         }
     }
 }

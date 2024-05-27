@@ -10,5 +10,5 @@ object ChartTrainerIcons {
     val ChangeChart = Icons.Rounded.Refresh
     val Exit = Icons.AutoMirrored.Rounded.ExitToApp
     val TradeList = Icons.AutoMirrored.Rounded.List
-    val NextChart = Icons.Default.PlayArrow
+    val NextTick = Icons.Default.PlayArrow
 }

@@ -184,7 +184,7 @@ private fun ChartGameNextButton(
     ) {
         Column {
             Icon(
-                imageVector = ChartTrainerIcons.NextChart,
+                imageVector = ChartTrainerIcons.NextTick,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.background
             )

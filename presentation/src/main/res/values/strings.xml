@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">chartrainer</string>
+    <string name="chart_game_title">차트 게임</string>
     <string name="chart_game_next">다음</string>
 
     <!-- common -->
@@ -7,4 +8,6 @@
     <string name="common_sell">매도</string>
     <string name="common_day">일</string>
     <string name="common_hour">시</string>
+    <string name="common_total_profit">총 수익금</string>
+    <string name="common_total_rate_of_profit">총 수익률</string>
 </resources>

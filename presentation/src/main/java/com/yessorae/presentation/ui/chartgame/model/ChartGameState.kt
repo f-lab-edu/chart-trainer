@@ -5,6 +5,8 @@ import com.yessorae.domain.entity.tick.Tick
 data class ChartGameScreenState(
     val currentTurn: Int = 0,
     val totalTurn: Int = 0,
+    val totalProfit: Double = 0.0,
+    val rateOfProfit: Double = 0.0,
     val gameProgress: Float = 0f,
     val showLoading: Boolean = false,
     // 아래와 같이 라이브러리에 맞춘 형태로 지양하는 UI 모델 형태이다. 변경 고민중.
@@ -14,6 +16,7 @@ data class ChartGameScreenState(
     val sellingOrderUi: SellingOrderUi? = null,
     val onUserAction: (ChartGameScreenUserAction) -> Unit = {}
 ) {
+    val isStart = totalTurn > 0
     val enabledBuyButton: Boolean = currentTurn != totalTurn
     val enabledSellButton: Boolean = currentTurn == 0
     val enabledNextTurnButton: Boolean = currentTurn != totalTurn

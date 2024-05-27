@@ -3,8 +3,8 @@ package com.yessorae.presentation.ui.chartgame.model
 import com.yessorae.domain.entity.tick.Tick
 
 data class ChartGameScreenState(
-    val currentTurn: String = "",
-    val totalTurn: String = "",
+    val currentTurn: Int = 0,
+    val totalTurn: Int = 0,
     val gameProgress: Float = 0f,
     val showLoading: Boolean = false,
     // 아래와 같이 라이브러리에 맞춘 형태로 지양하는 UI 모델 형태이다. 변경 고민중.
@@ -13,7 +13,11 @@ data class ChartGameScreenState(
     val buyingOrderUi: BuyingOrderUi? = null,
     val sellingOrderUi: SellingOrderUi? = null,
     val onUserAction: (ChartGameScreenUserAction) -> Unit = {}
-)
+) {
+    val enabledBuyButton: Boolean = currentTurn != totalTurn
+    val enabledSellButton: Boolean = currentTurn == 0
+    val enabledNextTurnButton: Boolean = currentTurn != totalTurn
+}
 
 data class CandleStickChartUi(
     val opening: List<Double> = listOf(),

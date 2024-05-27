@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">chartrainer</string>
+    <string name="chart_game_next">다음</string>
+
+    <!-- common -->
+    <string name="common_buy">매수</string>
+    <string name="common_sell">매도</string>
+    <string name="common_day">일</string>
+    <string name="common_hour">시</string>
+</resources>

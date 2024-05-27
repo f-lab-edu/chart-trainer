@@ -75,7 +75,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun ChartrainerTheme(
+fun ChartTrainerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {

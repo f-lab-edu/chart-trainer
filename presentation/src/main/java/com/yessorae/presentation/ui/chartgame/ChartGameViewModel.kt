@@ -78,8 +78,8 @@ class ChartGameViewModel @Inject constructor(
     private fun updateGameData(data: ChartGame) {
         _screenState.update { old ->
             old.copy(
-                currentTurn = data.currentTurn.toString(),
-                totalTurn = data.totalTurn.toString(),
+                currentTurn = data.currentTurn,
+                totalTurn = data.totalTurn,
                 gameProgress = data.currentGameProgress,
                 showLoading = false,
                 transactionVolume = data.chart.ticks.asTransactionVolume(),

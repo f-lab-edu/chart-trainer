@@ -37,3 +37,11 @@ internal val Red30 = Color(0xFF93000A)
 internal val Red40 = Color(0xFFBA1A1A)
 internal val Red80 = Color(0xFFFFB4AB)
 internal val Red90 = Color(0xFFFFDAD6)
+
+// TODO::NOW Theme 과 관계없이 변하지 않는 컬러들 어떻게 더 용이하게 관리할지 고민
+val StockUpColor = Color(0xFFBA1A1A)
+val DisabledStockUpColor = Color(0x88BA1A1A)
+val StockDownColor = Color(0xFF1A1ABA)
+val DisabledStockDownColor = Color(0x881A1ABA)
+val WhiteTextColor = Color(0xFFFFFFFF)
+val DisabledWhiteTextColor = Color(0x88FFFFFF)

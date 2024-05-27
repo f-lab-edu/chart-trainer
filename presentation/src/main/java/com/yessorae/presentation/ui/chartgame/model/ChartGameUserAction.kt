@@ -1,9 +1,9 @@
 package com.yessorae.presentation.ui.chartgame.model
 
 sealed interface ChartGameScreenUserAction {
-    object ClickNewChartButtonScreen : ChartGameScreenUserAction
+    object ClickNewChartButton : ChartGameScreenUserAction
     object ClickChartGameScreenHistoryButton : ChartGameScreenUserAction
-    object ClickQuitGameButtonScreen : ChartGameScreenUserAction
+    object ClickQuitGameButton : ChartGameScreenUserAction
     object ClickBuyButton : ChartGameScreenUserAction
     object ClickSellButton : ChartGameScreenUserAction
     object ClickNextTickButton : ChartGameScreenUserAction

@@ -109,11 +109,11 @@ class ChartGameViewModel @Inject constructor(
         ownedStockCount: Int
     ) {
         when (userAction) {
-            is ChartGameScreenUserAction.ClickNewChartButtonScreen -> {
+            is ChartGameScreenUserAction.ClickNewChartButton -> {
                 changeChart(gameId = gameId)
             }
 
-            is ChartGameScreenUserAction.ClickQuitGameButtonScreen -> {
+            is ChartGameScreenUserAction.ClickQuitGameButton -> {
                 quitChartGame(gameId = gameId)
             }
 

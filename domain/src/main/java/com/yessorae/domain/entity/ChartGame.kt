@@ -41,7 +41,7 @@ data class ChartGame(
 
     val ownedAverageStockPrice = Money(ownedTotalStockPrice / ownedStockCount)
 
-    val currentStockPrice: Money = visibleTicks.last().closePrice
+    val currentStockPrice: Money = visibleTicks.lastOrNull()?.closePrice ?: Money(0.0)
 
     val currentGameProgress: Float = currentTurn / totalTurn.toFloat() * 100f
 

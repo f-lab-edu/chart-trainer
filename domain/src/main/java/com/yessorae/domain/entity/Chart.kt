@@ -9,9 +9,9 @@ data class Chart(
     // ex. AAPL
     val tickerSymbol: String,
     // 차트 시작 날짜
-    val startDateTime: LocalDateTime,
+    val startDateTime: LocalDateTime?,
     // 차트 끝 날짜
-    val endDateTime: LocalDateTime,
+    val endDateTime: LocalDateTime?,
     // 차트 데이터
     val ticks: List<Tick>,
     val tickUnit: TickUnit

@@ -22,8 +22,8 @@ data class ChartDto(
 fun ChartDto.asDomainModel(tickUnit: TickUnit): Chart {
     return Chart(
         tickerSymbol = ticker,
-        startDateTime = ticks.first().startTimestamp.toLocalDateTime(),
-        endDateTime = ticks.last().startTimestamp.toLocalDateTime(),
+        startDateTime = ticks.firstOrNull()?.startTimestamp?.toLocalDateTime(),
+        endDateTime = ticks.lastOrNull()?.startTimestamp?.toLocalDateTime(),
         ticks = ticks.map(TickDto::asDomainModel),
         tickUnit = tickUnit
     )

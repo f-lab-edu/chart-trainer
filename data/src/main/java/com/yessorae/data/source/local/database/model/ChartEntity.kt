@@ -15,9 +15,9 @@ data class ChartEntity(
     @ColumnInfo(name = COL_TICKER_SYMBOL)
     val tickerSymbol: String,
     @ColumnInfo(name = COL_START_DATE_TIME)
-    val startDateTime: LocalDateTime,
+    val startDateTime: LocalDateTime?,
     @ColumnInfo(name = COL_END_DATE_TIME)
-    val endDateTime: LocalDateTime,
+    val endDateTime: LocalDateTime?,
     @ColumnInfo(name = COL_TICK_UNIT)
     val tickUnit: TickUnit
 ) {

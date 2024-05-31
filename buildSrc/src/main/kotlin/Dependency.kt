@@ -71,7 +71,7 @@ object Dependency {
             const val LIFECYCLE_RUNTIME = "2.7.0"
             const val ACTIVITY_COMPOSE = "1.8.2"
             const val VIEWMODEL_COMPOSE = "2.6.1"
-            const val VICO = "2.0.0-alpha.19"// "1.14.0"
+            const val VICO = "2.0.0-alpha.20"
         }
     }
 }

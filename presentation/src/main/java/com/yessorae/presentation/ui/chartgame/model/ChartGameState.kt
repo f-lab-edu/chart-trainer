@@ -27,7 +27,14 @@ data class CandleStickChartUi(
     val closing: List<Double> = listOf(),
     val low: List<Double> = listOf(),
     val high: List<Double> = listOf()
-)
+) {
+    private val isEmpty: Boolean =
+        opening.isEmpty() || closing.isEmpty() || low.isEmpty() || high.isEmpty()
+    val displayable: Boolean = isEmpty.not() &&
+            opening.size == closing.size &&
+            closing.size == low.size &&
+            low.size == high.size
+}
 
 data class BuyingOrderUi(
     val show: Boolean = false,

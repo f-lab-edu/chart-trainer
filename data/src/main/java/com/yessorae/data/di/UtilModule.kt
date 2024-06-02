@@ -1,5 +1,7 @@
 package com.yessorae.data.di
 
+import com.yessorae.data.source.network.polygon.util.ChartTrainerDatabaseTransactionHelper
+import com.yessorae.data.source.network.polygon.util.DatabaseTransactionHelper
 import com.yessorae.data.source.network.polygon.util.DefaultChartRequestArgumentHelper
 import com.yessorae.domain.common.ChartRequestArgumentHelper
 import dagger.Binds
@@ -16,4 +18,10 @@ abstract class UtilModule {
     abstract fun bindsRandomChartArgumentGenerator(
         defaultRandomChartArgumentGenerator: DefaultChartRequestArgumentHelper
     ): ChartRequestArgumentHelper
+
+    @Binds
+    @Singleton
+    abstract fun bindsChartTrainerDatabaseTransactionHelper(
+        chartTrainerDatabaseTransactionHelper: ChartTrainerDatabaseTransactionHelper
+    ): DatabaseTransactionHelper
 }

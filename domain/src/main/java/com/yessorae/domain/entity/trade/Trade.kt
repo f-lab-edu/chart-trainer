@@ -3,6 +3,7 @@ package com.yessorae.domain.entity.trade
 import com.yessorae.domain.entity.value.Money
 
 data class Trade(
+    val id: Long = 0,
     // 차트게임 아이디
     val gameId: Long,
     // 현재 가지고 있는 가격

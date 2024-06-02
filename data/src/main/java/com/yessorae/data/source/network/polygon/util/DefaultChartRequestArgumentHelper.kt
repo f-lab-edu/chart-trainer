@@ -54,17 +54,17 @@ class DefaultChartRequestArgumentHelper @Inject constructor() : ChartRequestArgu
         return tickers.random()
     }
 
-    override fun getStartDate(): String {
-        return LocalDate.now()
-            .minusDays(1)
-            .convertToString()
-    }
-
-    override fun getEndDate(): String {
+    override fun getFromDate(): String {
         return LocalDate.now()
             .minusDays(1)
             .minusYears(1)
             .minusMonths(6)
+            .convertToString()
+    }
+
+    override fun getToDate(): String {
+        return LocalDate.now()
+            .minusDays(1)
             .convertToString()
     }
 

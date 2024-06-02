@@ -29,8 +29,8 @@ class ChartRepositoryImpl @Inject constructor(
                 .getChart(
                     ticker = chartRequestArgumentHelper.getRandomTicker(),
                     tickUnit = appPreferences.getTickUnit(),
-                    from = chartRequestArgumentHelper.getStartDate(),
-                    to = chartRequestArgumentHelper.getEndDate()
+                    from = chartRequestArgumentHelper.getFromDate(),
+                    to = chartRequestArgumentHelper.getToDate()
                 )
                 .asDomainModel(TickUnit.DAY)
 

@@ -84,7 +84,7 @@ fun CandleChartUi(
                     AxisValueOverrider.adaptiveYValues(1.01f)
                 }
             ),
-            endAxis = rememberEndAxis()
+            endAxis = rememberEndAxis(guideline = null)
         ),
         scrollState = scrollState,
         zoomState = zoomState,

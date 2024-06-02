@@ -23,7 +23,7 @@ fun ShortCutChip(
     Box(
         modifier = modifier
             .background(
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.surfaceContainerHighest,
                 shape = MaterialTheme.shapes.small
             )
             .clip(shape = MaterialTheme.shapes.small)

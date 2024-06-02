@@ -288,7 +288,7 @@ fun TradeOrderUiBuyPreview() {
         tradeOrderUi = TradeOrderUi.Buy(
             showKeyPad = true,
             maxAvailableStockCount = 1231,
-            currentStockPrice = 489342798.0,
+            currentStockPrice = 4893.12,
             stockCountInput = null,
             onUserAction = {}
         )
@@ -302,7 +302,7 @@ fun TradeOrderUiSellPreview() {
         tradeOrderUi = TradeOrderUi.Sell(
             showKeyPad = false,
             maxAvailableStockCount = 1231,
-            currentStockPrice = 489342798.0,
+            currentStockPrice = 4893.12,
             stockCountInput = "123",
             onUserAction = {}
         )

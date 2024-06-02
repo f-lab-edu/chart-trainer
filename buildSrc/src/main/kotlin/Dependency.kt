@@ -46,13 +46,15 @@ object Dependency {
         }
     }
 
-    object Compose {
+    object Presentation {
         const val BOM = "androidx.compose:compose-bom:${Version.BOM}"
         const val UI = "androidx.compose.ui:ui"
         const val UI_GRAPHICS = "androidx.compose.ui:ui-graphics"
         const val MATERIAL_3 = "androidx.compose.material3:material3"
-        const val LIFECYCLE_RUNTIME = "androidx.lifecycle:lifecycle-runtime-ktx:${Version.LIFECYCLE_RUNTIME}"
-        const val ACTIVITY_COMPOSE = "androidx.activity:activity-compose:${Version.ACTIVITY_COMPOSE}"
+        const val LIFECYCLE_RUNTIME =
+            "androidx.lifecycle:lifecycle-runtime-ktx:${Version.LIFECYCLE_RUNTIME}"
+        const val ACTIVITY_COMPOSE =
+            "androidx.activity:activity-compose:${Version.ACTIVITY_COMPOSE}"
 
         const val UI_TOOLING = "androidx.compose.ui:ui-tooling"
         const val UI_TOOLING_PREVIEW = "androidx.compose.ui:ui-tooling-preview"
@@ -64,7 +66,6 @@ object Dependency {
             const val LIFECYCLE_RUNTIME = "2.7.0"
             const val ACTIVITY_COMPOSE = "1.8.2"
         }
-
     }
 }
 

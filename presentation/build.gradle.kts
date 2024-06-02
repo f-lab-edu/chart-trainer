@@ -49,19 +49,20 @@ dependencies {
     implementation(project(path = ":domain"))
 
     implementation(Dependency.Common.HILT)
+    implementation("androidx.navigation:navigation-runtime-ktx:2.7.7")
     kapt(Dependency.Common.HILT_COMPILER)
 
-    implementation(Dependency.Compose.LIFECYCLE_RUNTIME)
-    implementation(Dependency.Compose.ACTIVITY_COMPOSE) // 1.9.0
-    implementation(platform(Dependency.Compose.BOM))
-    implementation(Dependency.Compose.UI)
-    implementation(Dependency.Compose.UI_GRAPHICS)
-    implementation(Dependency.Compose.UI_TOOLING_PREVIEW)
-    implementation(Dependency.Compose.MATERIAL_3)
-    androidTestImplementation(platform(Dependency.Compose.BOM))
-    androidTestImplementation(Dependency.Compose.JUNIT)
-    debugImplementation(Dependency.Compose.UI_TOOLING)
-    debugImplementation(Dependency.Compose.UI_TEST_MANIFEST)
+    implementation(Dependency.Presentation.LIFECYCLE_RUNTIME)
+    implementation(Dependency.Presentation.ACTIVITY_COMPOSE) // 1.9.0
+    implementation(platform(Dependency.Presentation.BOM))
+    implementation(Dependency.Presentation.UI)
+    implementation(Dependency.Presentation.UI_GRAPHICS)
+    implementation(Dependency.Presentation.UI_TOOLING_PREVIEW)
+    implementation(Dependency.Presentation.MATERIAL_3)
+    androidTestImplementation(platform(Dependency.Presentation.BOM))
+    androidTestImplementation(Dependency.Presentation.JUNIT)
+    debugImplementation(Dependency.Presentation.UI_TOOLING)
+    debugImplementation(Dependency.Presentation.UI_TEST_MANIFEST)
 
     implementation(Dependency.Common.ANDROIDX_CORE)
     testImplementation(Dependency.Common.JUNIT)

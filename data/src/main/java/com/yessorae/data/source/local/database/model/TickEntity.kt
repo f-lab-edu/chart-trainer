@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.yessorae.domain.entity.tick.Tick
+import com.yessorae.domain.entity.value.Money
 import java.time.LocalDateTime
 
 @Entity(tableName = TickEntity.NAME)
@@ -45,12 +46,12 @@ data class TickEntity(
 
 fun TickEntity.asDomainModel() =
     Tick(
-        openPrice = openPrice,
-        maxPrice = maxPrice,
-        minPrice = minPrice,
-        closePrice = closePrice,
+        openPrice = Money(openPrice),
+        maxPrice = Money(maxPrice),
+        minPrice = Money(minPrice),
+        closePrice = Money(closePrice),
         transactionCount = transactionCount,
         startTimestamp = startTimestamp,
         tradingVolume = tradingVolume,
-        volumeWeightedAveragePrice = volumeWeightedAveragePrice
+        volumeWeightedAveragePrice = Money(volumeWeightedAveragePrice)
     )

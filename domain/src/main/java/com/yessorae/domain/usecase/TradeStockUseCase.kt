@@ -15,31 +15,35 @@ class TradeStockUseCase @Inject constructor(
     private val chartGameRepository: ChartGameRepository,
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(
-        gameId: Long,
-        ownedAverageStockPrice: Money,
-        stockPrice: Money,
-        count: Int,
-        turn: Int,
-        type: TradeType
-    ): Flow<Result<Unit>> =
+    operator fun invoke(param: Param): Flow<Result<Unit>> =
         flow<Nothing> {
-            val trade = Trade.new(
-                gameId = gameId,
-                ownedAverageStockPrice = ownedAverageStockPrice,
-                stockPrice = stockPrice,
-                count = count,
-                turn = turn,
-                type = type,
-                commissionRate = userRepository.fetchCommissionRateConfig()
-            )
-
-            chartGameRepository.updateChartGame(
-                chartGame = chartGameRepository.fetchChartGame(
-                    gameId = gameId
-                ).copyFrom(
-                    newTrade = trade
+            with(param) {
+                val trade = Trade.new(
+                    gameId = gameId,
+                    ownedAverageStockPrice = ownedAverageStockPrice,
+                    stockPrice = stockPrice,
+                    count = count,
+                    turn = turn,
+                    type = type,
+                    commissionRate = userRepository.fetchCommissionRateConfig()
                 )
-            )
+
+                chartGameRepository.updateChartGame(
+                    chartGame = chartGameRepository.fetchChartGame(
+                        gameId = gameId
+                    ).copyFrom(
+                        newTrade = trade
+                    )
+                )
+            }
         }.delegateEmptyResultFlow()
+
+    data class Param(
+        val gameId: Long,
+        val ownedAverageStockPrice: Money,
+        val stockPrice: Money,
+        val count: Int,
+        val turn: Int,
+        val type: TradeType
+    )
 }

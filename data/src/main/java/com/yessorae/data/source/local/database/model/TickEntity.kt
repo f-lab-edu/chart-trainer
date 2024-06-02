@@ -54,3 +54,16 @@ fun TickEntity.asDomainModel() =
         tradingVolume = tradingVolume,
         volumeWeightedAveragePrice = volumeWeightedAveragePrice
     )
+
+fun Tick.asEntity(chartId: Long) =
+    TickEntity(
+        chartId = chartId,
+        openPrice = openPrice,
+        maxPrice = maxPrice,
+        minPrice = minPrice,
+        closePrice = closePrice,
+        transactionCount = transactionCount,
+        startTimestamp = startTimestamp,
+        tradingVolume = tradingVolume,
+        volumeWeightedAveragePrice = volumeWeightedAveragePrice
+    )

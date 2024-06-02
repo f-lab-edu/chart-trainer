@@ -40,6 +40,11 @@ class ChartTrainerLocalDBDataSourceImpl @Inject constructor(
             entity = entity
         )
 
+    override suspend fun insertChart(entity: ChartEntity): Long = chartDao.insert(entity = entity)
+
+    override suspend fun insertTicks(entities: List<TickEntity>) =
+        tickDao.insertAll(entities = entities)
+
     override suspend fun updateChartGame(entity: ChartGameEntity) =
         chartGameDao.update(
             entity = entity

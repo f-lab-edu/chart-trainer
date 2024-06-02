@@ -6,7 +6,8 @@ import com.yessorae.domain.entity.tick.TickUnit
 import com.yessorae.presentation.R
 
 @Composable
-fun provideTickUnitText(tickUnit: TickUnit) = when (tickUnit) {
-    TickUnit.DAY -> stringResource(id = R.string.common_day)
-    TickUnit.HOUR -> stringResource(id = R.string.common_hour)
-}
+fun provideTickUnitText(tickUnit: TickUnit) =
+    when (tickUnit) {
+        TickUnit.DAY -> stringResource(id = R.string.common_day)
+        TickUnit.HOUR -> stringResource(id = R.string.common_hour)
+    }

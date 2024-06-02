@@ -1,6 +1,7 @@
 package com.yessorae.presentation.ui.designsystem.util
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.ExitToApp
 import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material.icons.filled.PlayArrow
@@ -11,4 +12,5 @@ object ChartTrainerIcons {
     val Exit = Icons.AutoMirrored.Rounded.ExitToApp
     val TradeList = Icons.AutoMirrored.Rounded.List
     val NextTick = Icons.Default.PlayArrow
+    val Delete = Icons.AutoMirrored.Filled.ArrowBack
 }

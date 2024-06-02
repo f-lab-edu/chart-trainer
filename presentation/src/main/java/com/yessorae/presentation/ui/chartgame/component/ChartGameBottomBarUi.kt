@@ -40,7 +40,7 @@ import com.yessorae.presentation.ui.designsystem.theme.DisabledStockUpColor
 import com.yessorae.presentation.ui.designsystem.theme.DisabledWhiteTextColor
 import com.yessorae.presentation.ui.designsystem.theme.StockDownColor
 import com.yessorae.presentation.ui.designsystem.theme.StockUpColor
-import com.yessorae.presentation.ui.designsystem.theme.WhiteTextColor
+import com.yessorae.presentation.ui.designsystem.theme.TradeTextColor
 import com.yessorae.presentation.ui.designsystem.util.ChartTrainerIcons
 import com.yessorae.presentation.ui.designsystem.util.DevicePreviews
 import com.yessorae.presentation.ui.designsystem.util.Margin
@@ -117,7 +117,7 @@ fun ChartGameBottomBarUi(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 DefaultTextButton(
                     text = stringResource(id = R.string.common_buy),
@@ -125,7 +125,7 @@ fun ChartGameBottomBarUi(
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.textButtonColors(
                         containerColor = StockUpColor,
-                        contentColor = WhiteTextColor,
+                        contentColor = TradeTextColor,
                         disabledContainerColor = DisabledStockUpColor,
                         disabledContentColor = DisabledWhiteTextColor
                     ),
@@ -142,7 +142,7 @@ fun ChartGameBottomBarUi(
                         .weight(1f),
                     colors = ButtonDefaults.textButtonColors(
                         containerColor = StockDownColor,
-                        contentColor = WhiteTextColor,
+                        contentColor = TradeTextColor,
                         disabledContainerColor = DisabledStockDownColor,
                         disabledContentColor = DisabledWhiteTextColor
                     ),
@@ -168,7 +168,6 @@ private fun ChartGameNextButton(
     onClick: () -> Unit,
     enabled: Boolean
 ) {
-
     Box(
         modifier = modifier
             .clickable(
@@ -211,7 +210,6 @@ fun ChartGameBottomBarUiPreview() {
         enabledNextTurnButton = true,
         onClickBuyButton = {},
         onClickSellButton = {},
-        onClickNextTurnButton = {},
+        onClickNextTurnButton = {}
     )
 }
-

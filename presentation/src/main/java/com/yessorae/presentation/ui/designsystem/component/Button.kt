@@ -12,7 +12,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -47,12 +46,11 @@ fun ChartTrainerCustomButton(
         shape = shape,
         colors = colors,
         elevation = elevation,
-        border =border,
+        border = border,
         contentPadding = contentPadding,
         interactionSource = interactionSource,
         content = content
     )
-
 }
 
 @Composable
@@ -74,10 +72,9 @@ fun DefaultTextButton(
         interactionSource = interactionSource
     ) {
         Text(
-            text = text,
+            text = text
         )
     }
-
 }
 
 @Composable
@@ -87,14 +84,14 @@ fun DefaultIconButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     colors: IconButtonColors = IconButtonDefaults.iconButtonColors(),
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     IconButton(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
         colors = colors,
-        interactionSource = interactionSource,
+        interactionSource = interactionSource
     ) {
         Icon(imageVector = imageVector, contentDescription = null)
     }
@@ -137,4 +134,3 @@ fun DefaultIconButtonPreview() {
         DefaultIconButton(onClick = {}, imageVector = ChartTrainerIcons.ChangeChart)
     }
 }
-

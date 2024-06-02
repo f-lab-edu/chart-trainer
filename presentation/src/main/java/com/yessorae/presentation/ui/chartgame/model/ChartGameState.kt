@@ -12,8 +12,7 @@ data class ChartGameScreenState(
     // 아래와 같이 라이브러리에 맞춘 형태로 지양하는 UI 모델 형태이다. 변경 고민중.
     val transactionVolume: List<Double> = listOf(),
     val candleStickChart: CandleStickChartUi = CandleStickChartUi(),
-    val buyingOrderUi: BuyingOrderUi? = null,
-    val sellingOrderUi: SellingOrderUi? = null,
+    val tradeOrderUi: TradeOrderUi = TradeOrderUi.Hide,
     val onUserAction: (ChartGameScreenUserAction) -> Unit = {}
 ) {
     val isStart = totalTurn > 0
@@ -31,31 +30,88 @@ data class CandleStickChartUi(
     private val isEmpty: Boolean =
         opening.isEmpty() || closing.isEmpty() || low.isEmpty() || high.isEmpty()
     val displayable: Boolean = isEmpty.not() &&
-            opening.size == closing.size &&
-            closing.size == low.size &&
-            low.size == high.size
+        opening.size == closing.size &&
+        closing.size == low.size &&
+        low.size == high.size
 }
 
-data class BuyingOrderUi(
-    val show: Boolean = false,
-    val showKeyPad: Boolean = false,
-    val maxAvailableStockCount: Int = 0,
-    val currentStockPrice: Double = 0.0,
-    val stockCountInput: String? = null,
-    val onUserAction: (BuyingOrderUiUserAction) -> Unit = {}
-) {
-    val totalBuyingStockPrice: Double = currentStockPrice * (stockCountInput?.toInt() ?: 0)
-}
+sealed class TradeOrderUi {
+    data class Buy(
+        val showKeyPad: Boolean = false,
+        val maxAvailableStockCount: Int = 0,
+        val currentStockPrice: Double = 0.0,
+        val stockCountInput: String? = null,
+        val onUserAction: (TradeOrderUiUserAction) -> Unit = {}
+    ) : TradeOrderUi() {
+        val totalBuyingStockPrice: Double by lazy {
+            getTotalBuyingStockPrice(
+                currentStockPrice = currentStockPrice,
+                stockCountInput = stockCountInput
+            )
+        }
+    }
 
-data class SellingOrderUi(
-    val show: Boolean = false,
-    val showKeyPad: Boolean = false,
-    val maxAvailableStockCount: Int = 0,
-    val currentStockPrice: Double = 0.0,
-    val stockCountInput: String? = null,
-    val onUserAction: (SellingOrderUiUserAction) -> Unit = {}
-) {
-    val totalSellingStockPrice: Double = currentStockPrice * (stockCountInput?.toInt() ?: 0)
+    data class Sell(
+        val showKeyPad: Boolean = false,
+        val maxAvailableStockCount: Int = 0,
+        val currentStockPrice: Double = 0.0,
+        val stockCountInput: String? = null,
+        val onUserAction: (TradeOrderUiUserAction) -> Unit = {}
+    ) : TradeOrderUi() {
+        val totalBuyingStockPrice: Double by lazy {
+            getTotalBuyingStockPrice(
+                currentStockPrice = currentStockPrice,
+                stockCountInput = stockCountInput
+            )
+        }
+    }
+
+    object Hide : TradeOrderUi()
+
+    fun show(): Boolean = this !is Hide
+
+    companion object {
+        private fun getTotalBuyingStockPrice(
+            currentStockPrice: Double,
+            stockCountInput: String?
+        ): Double = currentStockPrice * (stockCountInput?.toInt() ?: 0)
+
+        fun TradeOrderUi.copy(
+            showKeyPad: Boolean? = null,
+            maxAvailableStockCount: Int? = null,
+            currentStockPrice: Double? = null,
+            stockCountInput: String? = null,
+            onUserAction: ((TradeOrderUiUserAction) -> Unit)? = null
+        ): TradeOrderUi {
+            return when (val old = this) {
+                is Buy -> {
+                    Buy(
+                        showKeyPad = showKeyPad ?: old.showKeyPad,
+                        maxAvailableStockCount = maxAvailableStockCount
+                            ?: old.maxAvailableStockCount,
+                        currentStockPrice = currentStockPrice ?: old.currentStockPrice,
+                        stockCountInput = stockCountInput ?: old.stockCountInput,
+                        onUserAction = onUserAction ?: old.onUserAction
+                    )
+                }
+
+                is Sell -> {
+                    Sell(
+                        showKeyPad = showKeyPad ?: old.showKeyPad,
+                        maxAvailableStockCount = maxAvailableStockCount
+                            ?: old.maxAvailableStockCount,
+                        currentStockPrice = currentStockPrice ?: old.currentStockPrice,
+                        stockCountInput = stockCountInput ?: old.stockCountInput,
+                        onUserAction = onUserAction ?: old.onUserAction
+                    )
+                }
+
+                is Hide -> {
+                    Hide
+                }
+            }
+        }
+    }
 }
 
 fun List<Tick>.asTransactionVolume(): List<Double> =

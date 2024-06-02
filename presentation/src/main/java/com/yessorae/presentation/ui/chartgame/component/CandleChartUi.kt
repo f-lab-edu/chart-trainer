@@ -43,6 +43,9 @@ import com.patrykandpatrick.vico.core.common.shape.Corner
 import com.patrykandpatrick.vico.core.common.shape.Shape
 import com.yessorae.presentation.ui.chartgame.model.CandleStickChartUi
 import com.yessorae.presentation.ui.designsystem.util.DevicePreviews
+import com.yessorae.presentation.ui.designsystem.util.UiConstants.SHADOW_DY_DP
+import com.yessorae.presentation.ui.designsystem.util.UiConstants.SHADOW_RADIUS_DP
+import com.yessorae.presentation.ui.designsystem.util.UiConstants.SHADOW_RADIUS_MULTIPLIER
 
 @Composable
 fun CandleChartUi(
@@ -77,17 +80,18 @@ fun CandleChartUi(
                 candleSpacing = 4.dp,
                 scaleCandleWicks = true,
                 verticalAxisPosition = AxisPosition.Vertical.Start,
-                axisValueOverrider = remember { AxisValueOverrider.adaptiveYValues(1.01f) },
+                axisValueOverrider = remember {
+                    AxisValueOverrider.adaptiveYValues(1.01f)
+                }
             ),
-            endAxis = rememberEndAxis(
-            ),
+            endAxis = rememberEndAxis()
         ),
         scrollState = scrollState,
         zoomState = zoomState,
         modelProducer = modelProducer,
         marker = marker,
         modifier = modifier,
-        horizontalLayout = HorizontalLayout.Segmented,
+        horizontalLayout = HorizontalLayout.Segmented
     )
 }
 
@@ -97,47 +101,63 @@ private fun rememberMarker(
     showIndicator: Boolean = true
 ): CartesianMarker {
     val labelBackgroundShape = Shape.markerCornered(Corner.FullyRounded)
-    val labelBackground =
-        rememberShapeComponent(labelBackgroundShape, MaterialTheme.colorScheme.surface)
-            .setShadow(
-                radius = LABEL_BACKGROUND_SHADOW_RADIUS_DP,
-                dy = LABEL_BACKGROUND_SHADOW_DY_DP,
-                applyElevationOverlay = true
-            )
-    val label =
-        rememberTextComponent(
-            color = MaterialTheme.colorScheme.onSurface,
-            background = labelBackground,
-            padding = Dimensions.of(8.dp, 4.dp),
-            typeface = Typeface.MONOSPACE,
-            textAlignment = Layout.Alignment.ALIGN_CENTER,
-            minWidth = TextComponent.MinWidth.fixed(40.dp)
-        )
-    val indicatorFrontComponent =
-        rememberShapeComponent(Shape.Pill, MaterialTheme.colorScheme.surface)
+
+    val labelBackground = rememberShapeComponent(
+        labelBackgroundShape,
+        MaterialTheme.colorScheme.surface
+    ).setShadow(
+        radius = SHADOW_RADIUS_DP,
+        dy = SHADOW_DY_DP,
+        applyElevationOverlay = true
+    )
+
+    val label = rememberTextComponent(
+        color = MaterialTheme.colorScheme.onSurface,
+        background = labelBackground,
+        padding = Dimensions.of(8.dp, 4.dp),
+        typeface = Typeface.MONOSPACE,
+        textAlignment = Layout.Alignment.ALIGN_CENTER,
+        minWidth = TextComponent.MinWidth.fixed(40.dp)
+    )
+
+    val indicatorFrontComponent = rememberShapeComponent(
+        Shape.Pill,
+        MaterialTheme.colorScheme.surface
+    )
+
     val indicatorCenterComponent = rememberShapeComponent(Shape.Pill)
+
     val indicatorRearComponent = rememberShapeComponent(Shape.Pill)
-    val indicator =
-        rememberLayeredComponent(
-            rear = indicatorRearComponent,
-            front =
-            rememberLayeredComponent(
-                rear = indicatorCenterComponent,
-                front = indicatorFrontComponent,
-                padding = Dimensions.of(5.dp)
-            ),
-            padding = Dimensions.of(10.dp)
-        )
+
+    val indicator = rememberLayeredComponent(
+        rear = indicatorRearComponent,
+        front = rememberLayeredComponent(
+            rear = indicatorCenterComponent,
+            front = indicatorFrontComponent,
+            padding = Dimensions.of(5.dp)
+        ),
+        padding = Dimensions.of(10.dp)
+    )
+
     val guideline = rememberAxisGuidelineComponent()
 
-    return remember(label, labelPosition, indicator, showIndicator, guideline) {
+    return remember(
+        label,
+        labelPosition,
+        indicator,
+        showIndicator,
+        guideline
+    ) {
         object : DefaultCartesianMarker(
             label = label,
             labelPosition = labelPosition,
-            indicator = if (showIndicator) indicator else null,
+            indicator = if (showIndicator) {
+                indicator
+            } else {
+                null
+            },
             indicatorSizeDp = 36f,
-            setIndicatorColor =
-            if (showIndicator) {
+            setIndicatorColor = if (showIndicator) {
                 { color ->
                     indicatorRearComponent.color = color.copyColor(alpha = .15f)
                     indicatorCenterComponent.color = color
@@ -155,36 +175,29 @@ private fun rememberMarker(
             ) {
                 with(context) {
                     outInsets.top =
-                        (
-                                CLIPPING_FREE_SHADOW_RADIUS_MULTIPLIER * LABEL_BACKGROUND_SHADOW_RADIUS_DP -
-                                        LABEL_BACKGROUND_SHADOW_DY_DP
-                                )
-                            .pixels
+                        (SHADOW_RADIUS_MULTIPLIER * SHADOW_RADIUS_DP - SHADOW_DY_DP).pixels
                     if (labelPosition == LabelPosition.AroundPoint) return
-                    outInsets.top += label.getHeight(context) + labelBackgroundShape.tickSizeDp.pixels
+                    outInsets.top +=
+                        label.getHeight(context) + labelBackgroundShape.tickSizeDp.pixels
                 }
             }
         }
     }
 }
 
-private const val LABEL_BACKGROUND_SHADOW_RADIUS_DP = 4f
-private const val LABEL_BACKGROUND_SHADOW_DY_DP = 2f
-private const val CLIPPING_FREE_SHADOW_RADIUS_MULTIPLIER = 1.4f
-
 @DevicePreviews
 @Composable
 fun CandleChartUiPreview() {
     val partial =
-        (getRandomCandlestickLayerModelPartial().complete() as CandlestickCartesianLayerModel).series
+        getRandomCandlestickLayerModelPartial().complete() as CandlestickCartesianLayerModel
+    val series = partial.series
     CandleChartUi(
         modifier = Modifier.fillMaxWidth(),
         candleStickChart = CandleStickChartUi(
-            opening = partial.map { it.opening.toDouble() },
-            closing = partial.map { it.closing.toDouble() },
-            low = partial.map { it.low.toDouble() },
-            high = partial.map { it.high.toDouble() }
+            opening = series.map { it.opening.toDouble() },
+            closing = series.map { it.closing.toDouble() },
+            low = series.map { it.low.toDouble() },
+            high = series.map { it.high.toDouble() }
         )
     )
-
 }

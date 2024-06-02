@@ -14,13 +14,13 @@ data class TickEntity(
     @ColumnInfo(name = COL_CHART_ID)
     val chartId: Long,
     @ColumnInfo(name = COL_OPEN_PRICE)
-    val openPrice: Double,
+    val openPrice: Money,
     @ColumnInfo(name = COL_MAX_PRICE)
-    val maxPrice: Double,
+    val maxPrice: Money,
     @ColumnInfo(name = COL_MIN_PRICE)
-    val minPrice: Double,
+    val minPrice: Money,
     @ColumnInfo(name = COL_CLOSE_PRICE)
-    val closePrice: Double,
+    val closePrice: Money,
     @ColumnInfo(name = COL_TRANSACTION_COUNT)
     val transactionCount: Int,
     @ColumnInfo(name = COL_START_TIMESTAMP)
@@ -28,7 +28,7 @@ data class TickEntity(
     @ColumnInfo(name = COL_TRADING_VOLUME)
     val tradingVolume: Int,
     @ColumnInfo(name = COL_VOLUME_WEIGHTED_AVERAGE_PRICE)
-    val volumeWeightedAveragePrice: Double
+    val volumeWeightedAveragePrice: Money
 ) {
     companion object {
         const val NAME = "table_tick"
@@ -46,12 +46,25 @@ data class TickEntity(
 
 fun TickEntity.asDomainModel() =
     Tick(
-        openPrice = Money(openPrice),
-        maxPrice = Money(maxPrice),
-        minPrice = Money(minPrice),
-        closePrice = Money(closePrice),
+        openPrice = openPrice,
+        maxPrice = maxPrice,
+        minPrice = minPrice,
+        closePrice = closePrice,
         transactionCount = transactionCount,
         startTimestamp = startTimestamp,
         tradingVolume = tradingVolume,
-        volumeWeightedAveragePrice = Money(volumeWeightedAveragePrice)
+        volumeWeightedAveragePrice = volumeWeightedAveragePrice
+    )
+
+fun Tick.asEntity(chartId: Long) =
+    TickEntity(
+        chartId = chartId,
+        openPrice = openPrice,
+        maxPrice = maxPrice,
+        minPrice = minPrice,
+        closePrice = closePrice,
+        transactionCount = transactionCount,
+        startTimestamp = startTimestamp,
+        tradingVolume = tradingVolume,
+        volumeWeightedAveragePrice = volumeWeightedAveragePrice
     )

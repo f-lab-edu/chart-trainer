@@ -1,18 +1,14 @@
 package com.yessorae.presentation.ui.designsystem.theme
 
 import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
@@ -42,7 +38,7 @@ private val DarkColorScheme = darkColorScheme(
     onSurfaceVariant = PurpleGray80,
     inverseSurface = DarkPurpleGray90,
     inverseOnSurface = DarkPurpleGray10,
-    outline = PurpleGray60,
+    outline = PurpleGray60
 )
 
 // TODO::LATER UI 다듬는 이슈에서 변경 예정
@@ -71,7 +67,7 @@ private val LightColorScheme = lightColorScheme(
     onSurfaceVariant = PurpleGray30,
     inverseSurface = DarkPurpleGray20,
     inverseOnSurface = DarkPurpleGray95,
-    outline = PurpleGray50,
+    outline = PurpleGray50
 )
 
 @Composable

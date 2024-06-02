@@ -19,7 +19,6 @@ import com.yessorae.presentation.ui.designsystem.theme.StockDownColor
 import com.yessorae.presentation.ui.designsystem.theme.StockUpColor
 import com.yessorae.presentation.ui.designsystem.util.ChartTrainerIcons
 import com.yessorae.presentation.ui.designsystem.util.DevicePreviews
-import java.math.BigDecimal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

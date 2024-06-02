@@ -12,6 +12,6 @@ java {
 }
 
 dependencies {
-    implementation(Dependency.JAVAX_INJECT)
-    implementation(Dependency.KOTLINX_COROUTINSE)
+    implementation(Dependency.PlatformIndependent.JAVAX_INJECT)
+    implementation(Dependency.PlatformIndependent.KOTLINX_COROUTINSE)
 }

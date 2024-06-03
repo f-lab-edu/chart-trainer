@@ -300,7 +300,8 @@ private fun TradeOrder(
                 colors = ButtonDefaults.textButtonColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                     contentColor = tradeColor
-                )
+                ),
+                shape = MaterialTheme.shapes.small
             )
 
             DefaultTextButton(
@@ -310,7 +311,8 @@ private fun TradeOrder(
                 colors = ButtonDefaults.textButtonColors(
                     containerColor = tradeColor,
                     contentColor = TradeTextColor
-                )
+                ),
+                shape = MaterialTheme.shapes.small
             )
         }
     }

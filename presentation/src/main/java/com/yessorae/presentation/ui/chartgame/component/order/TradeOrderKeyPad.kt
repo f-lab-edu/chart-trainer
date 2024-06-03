@@ -1,6 +1,5 @@
 package com.yessorae.presentation.ui.chartgame.component.order
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -28,7 +27,7 @@ fun TradeOrderKeyPad(
     show: Boolean,
     onClick: (TradeOrderKeyPad) -> Unit
 ) {
-    AnimatedVisibility(visible = show) {
+    if (show) {
         HorizontalGrid(
             modifier = modifier.background(color = MaterialTheme.colorScheme.background),
             columns = 3

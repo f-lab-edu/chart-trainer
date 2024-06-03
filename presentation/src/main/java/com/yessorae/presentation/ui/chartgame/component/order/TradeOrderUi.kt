@@ -185,7 +185,7 @@ private fun TradeOrder(
 
         // short-cut
         Row(
-            horizontalArrangement = Arrangement.spacedBy(space = 2.dp),
+            horizontalArrangement = Arrangement.spacedBy(space = 4.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)

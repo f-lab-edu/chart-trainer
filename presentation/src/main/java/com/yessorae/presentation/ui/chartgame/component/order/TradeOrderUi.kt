@@ -247,7 +247,7 @@ private fun TradeOrder(
                         fontWeight = FontWeight.Bold
                     ),
                     block = {
-                        append("$currentStockPrice")
+                        append("%.2f".format(currentStockPrice))
                     }
                 )
                 append(stringResource(id = R.string.common_money_unit))
@@ -263,7 +263,7 @@ private fun TradeOrder(
                         fontWeight = FontWeight.Bold
                     ),
                     block = {
-                        append("$totalBuyingStockPrice ")
+                        append("%.2f".format(totalBuyingStockPrice))
                     }
                 )
                 append(stringResource(id = R.string.common_money_unit))

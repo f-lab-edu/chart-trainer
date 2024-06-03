@@ -232,7 +232,7 @@ class ChartGameViewModel @Inject constructor(
                     val newStockCount = maxAvailableStockCount * percentage
                     old.copy(
                         tradeOrderUi = old.tradeOrderUi.copy(
-                            stockCountInput = newStockCount.toString()
+                            stockCountInput = newStockCount.toInt().toString()
                         )
                     )
                 }

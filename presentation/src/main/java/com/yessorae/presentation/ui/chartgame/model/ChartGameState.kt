@@ -3,6 +3,7 @@ package com.yessorae.presentation.ui.chartgame.model
 import com.yessorae.domain.common.DefaultValues.defaultTickUnit
 import com.yessorae.domain.entity.tick.Tick
 import com.yessorae.domain.entity.tick.TickUnit
+import java.lang.NumberFormatException
 
 data class ChartGameScreenState(
     val currentTurn: Int = 0,
@@ -32,10 +33,6 @@ data class CandleStickChartUi(
 ) {
     private val isEmpty: Boolean =
         opening.isEmpty() || closing.isEmpty() || low.isEmpty() || high.isEmpty()
-    val displayable: Boolean = isEmpty.not() &&
-        opening.size == closing.size &&
-        closing.size == low.size &&
-        low.size == high.size
 }
 
 sealed class TradeOrderUi {
@@ -77,7 +74,14 @@ sealed class TradeOrderUi {
         private fun getTotalBuyingStockPrice(
             currentStockPrice: Double,
             stockCountInput: String?
-        ): Double = currentStockPrice * (stockCountInput?.toInt() ?: 0)
+        ): Double {
+            val input = try {
+                stockCountInput?.toInt() ?: 0
+            } catch (e: NumberFormatException) {
+                0
+            }
+            return currentStockPrice * input
+        }
 
         fun TradeOrderUi.copy(
             showKeyPad: Boolean? = null,

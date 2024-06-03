@@ -1,8 +1,5 @@
 package com.yessorae.presentation.ui.chartgame.component.order
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideIn
-import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,18 +10,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.yessorae.presentation.R
 import com.yessorae.presentation.ui.chartgame.model.PercentageOrderShortCut
@@ -41,16 +41,11 @@ fun TradeOrderUi(
     modifier: Modifier = Modifier,
     tradeOrderUi: TradeOrderUi
 ) {
-    AnimatedVisibility(
-        visible = tradeOrderUi.show(),
-        modifier = modifier,
-        enter = slideIn { size -> IntOffset(0, size.height) },
-        exit = slideOut { size -> IntOffset(0, size.height) }
-    ) {
+    if (tradeOrderUi.show()) {
         when (tradeOrderUi) {
             is TradeOrderUi.Buy -> {
-                TradeOrder(
-                    modifier = Modifier.fillMaxWidth(),
+                TradeOrderBottomSheet(
+                    modifier = modifier.fillMaxWidth(),
                     tradeColor = StockUpColor,
                     tradeText = stringResource(id = R.string.common_buy),
                     showKeyPad = tradeOrderUi.showKeyPad,
@@ -63,8 +58,8 @@ fun TradeOrderUi(
             }
 
             is TradeOrderUi.Sell -> {
-                TradeOrder(
-                    modifier = Modifier.fillMaxWidth(),
+                TradeOrderBottomSheet(
+                    modifier = modifier.fillMaxWidth(),
                     tradeColor = StockDownColor,
                     tradeText = stringResource(id = R.string.common_sell),
                     showKeyPad = tradeOrderUi.showKeyPad,
@@ -81,6 +76,46 @@ fun TradeOrderUi(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TradeOrderBottomSheet(
+    modifier: Modifier = Modifier,
+    tradeColor: Color,
+    tradeText: String,
+    showKeyPad: Boolean,
+    maxAvailableStockCount: Int = 0,
+    currentStockPrice: Double = 0.0,
+    stockCountInput: String? = null,
+    totalBuyingStockPrice: Double,
+    onUserAction: (TradeOrderUiUserAction) -> Unit = {}
+) {
+    ModalBottomSheet(
+        onDismissRequest = { onUserAction(TradeOrderUiUserAction.DoSystemBack) },
+        sheetState = rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+            confirmValueChange = { false }
+        ),
+        sheetMaxWidth = LocalConfiguration.current.screenWidthDp.dp,
+        shape = MaterialTheme.shapes.large,
+        containerColor = Color.Transparent,
+        tonalElevation = 10.dp,
+        dragHandle = null,
+        content = {
+            TradeOrder(
+                modifier = modifier,
+                tradeColor = tradeColor,
+                tradeText = tradeText,
+                showKeyPad = showKeyPad,
+                maxAvailableStockCount = maxAvailableStockCount,
+                currentStockPrice = currentStockPrice,
+                stockCountInput = stockCountInput,
+                totalBuyingStockPrice = totalBuyingStockPrice,
+                onUserAction = onUserAction
+            )
+        }
+    )
 }
 
 @Composable

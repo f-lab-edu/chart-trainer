@@ -22,7 +22,7 @@ sealed interface TradeOrderUiUserAction {
 
     data class ClickKeyPad(
         val keyPad: TradeOrderKeyPad,
-        val stockCountInput: String?
+        val stockCountInput: String
     ) : TradeOrderUiUserAction
 
     data class ClickRatioShortCut(

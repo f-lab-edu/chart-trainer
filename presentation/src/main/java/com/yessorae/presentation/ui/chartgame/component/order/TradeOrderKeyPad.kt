@@ -37,7 +37,7 @@ fun TradeOrderKeyPad(
 
             (1..9).forEach { number ->
                 KeyPadItem(
-                    onClick = { onClick(TradeOrderKeyPad.Number("0")) },
+                    onClick = { onClick(TradeOrderKeyPad.Number("$number")) },
                     content = {
                         Text(
                             text = "$number",
@@ -49,7 +49,7 @@ fun TradeOrderKeyPad(
             }
 
             KeyPadItem(
-                onClick = { onClick(TradeOrderKeyPad.Number("0")) },
+                onClick = { onClick(TradeOrderKeyPad.DeleteAll) },
                 content = {
                     Text(
                         text = stringResource(id = R.string.trade_order_delete_all),

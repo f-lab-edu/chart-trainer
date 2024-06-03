@@ -244,21 +244,26 @@ class ChartGameViewModel @Inject constructor(
                         tradeOrderUi = old.tradeOrderUi.copy(
                             stockCountInput = when (val keyPad = userAction.keyPad) {
                                 is TradeOrderKeyPad.Number -> {
-                                    val oldValue = userAction.stockCountInput ?: ""
-                                    val newValue = oldValue + keyPad.value
-                                    newValue.toInt().coerceAtMost(maxAvailableStockCount).toString()
+                                    val oldValue = userAction.stockCountInput
+                                    if (oldValue.isEmpty() && keyPad.value == "0") {
+                                        ""
+                                    } else {
+                                        val newValue = oldValue + keyPad.value
+                                        newValue.toInt().coerceAtMost(maxAvailableStockCount)
+                                            .toString()
+                                    }
                                 }
 
                                 is TradeOrderKeyPad.Delete -> {
                                     val oldInput = userAction.stockCountInput
-                                    if (oldInput.isNullOrEmpty()) {
-                                        null
-                                    } else {
+                                    if (oldInput.isNotEmpty()) {
                                         oldInput.take(oldInput.length - 1)
+                                    } else {
+                                        oldInput
                                     }
                                 }
 
-                                is TradeOrderKeyPad.DeleteAll -> null
+                                is TradeOrderKeyPad.DeleteAll -> ""
                             }
                         )
                     )
@@ -358,17 +363,17 @@ class ChartGameViewModel @Inject constructor(
                         tradeOrderUi = old.tradeOrderUi.copy(
                             stockCountInput = when (val keyPad = userAction.keyPad) {
                                 is TradeOrderKeyPad.Number -> {
-                                    val oldValue = userAction.stockCountInput ?: ""
+                                    val oldValue = userAction.stockCountInput
                                     val newValue = oldValue + keyPad.value
                                     newValue.toInt().coerceAtMost(ownedStockCount).toString()
                                 }
 
                                 is TradeOrderKeyPad.Delete -> {
                                     val oldInput = userAction.stockCountInput
-                                    if (oldInput.isNullOrEmpty()) {
-                                        null
-                                    } else {
+                                    if (oldInput.isNotEmpty()) {
                                         oldInput.take(oldInput.length - 1)
+                                    } else {
+                                        oldInput
                                     }
                                 }
 

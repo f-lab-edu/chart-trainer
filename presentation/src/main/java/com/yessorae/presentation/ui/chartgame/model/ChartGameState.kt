@@ -40,7 +40,7 @@ sealed class TradeOrderUi {
         val showKeyPad: Boolean = false,
         val maxAvailableStockCount: Int = 0,
         val currentStockPrice: Double = 0.0,
-        val stockCountInput: String? = null,
+        val stockCountInput: String = "",
         val onUserAction: (TradeOrderUiUserAction) -> Unit = {}
     ) : TradeOrderUi() {
         val totalBuyingStockPrice: Double by lazy {
@@ -55,7 +55,7 @@ sealed class TradeOrderUi {
         val showKeyPad: Boolean = false,
         val maxAvailableStockCount: Int = 0,
         val currentStockPrice: Double = 0.0,
-        val stockCountInput: String? = null,
+        val stockCountInput: String = "",
         val onUserAction: (TradeOrderUiUserAction) -> Unit = {}
     ) : TradeOrderUi() {
         val totalBuyingStockPrice: Double by lazy {

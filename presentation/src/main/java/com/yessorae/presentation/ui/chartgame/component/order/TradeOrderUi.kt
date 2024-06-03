@@ -87,7 +87,7 @@ private fun TradeOrderBottomSheet(
     showKeyPad: Boolean,
     maxAvailableStockCount: Int = 0,
     currentStockPrice: Double = 0.0,
-    stockCountInput: String? = null,
+    stockCountInput: String,
     totalBuyingStockPrice: Double,
     onUserAction: (TradeOrderUiUserAction) -> Unit = {}
 ) {
@@ -126,7 +126,7 @@ private fun TradeOrder(
     showKeyPad: Boolean,
     maxAvailableStockCount: Int = 0,
     currentStockPrice: Double = 0.0,
-    stockCountInput: String? = null,
+    stockCountInput: String = "",
     totalBuyingStockPrice: Double,
     onUserAction: (TradeOrderUiUserAction) -> Unit = {}
 ) {
@@ -197,7 +197,7 @@ private fun TradeOrder(
                 .padding(horizontal = 16.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            if (stockCountInput.isNullOrEmpty()) {
+            if (stockCountInput.isEmpty()) {
                 Text(
                     text = stringResource(id = R.string.trade_order_input_request),
                     style = MaterialTheme.typography.bodySmall,
@@ -324,7 +324,7 @@ fun TradeOrderUiBuyPreview() {
             showKeyPad = true,
             maxAvailableStockCount = 1231,
             currentStockPrice = 4893.12,
-            stockCountInput = null,
+            stockCountInput = "",
             onUserAction = {}
         )
     )

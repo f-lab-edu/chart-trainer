@@ -2,6 +2,6 @@ package com.yessorae.domain.common
 
 interface ChartRequestArgumentHelper {
     fun getRandomTicker(): String
-    fun getStartDate(): String
-    fun getEndDate(): String
+    fun getFromDate(): String
+    fun getToDate(): String
 }

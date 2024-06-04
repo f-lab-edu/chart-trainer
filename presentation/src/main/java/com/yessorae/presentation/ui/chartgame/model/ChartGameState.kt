@@ -20,8 +20,8 @@ data class ChartGameScreenState(
     val onUserAction: (ChartGameScreenUserAction) -> Unit = {}
 ) {
     val isBeforeStart = currentTurn <= 1
-    val enabledBuyButton: Boolean = currentTurn != totalTurn
-    val enabledSellButton: Boolean = currentTurn == 0
+    val enabledBuyButton: Boolean = currentTurn > 0
+    val enabledSellButton: Boolean = currentTurn > 0 && totalProfit != 0.0
     val enabledNextTurnButton: Boolean = currentTurn != totalTurn
 }
 

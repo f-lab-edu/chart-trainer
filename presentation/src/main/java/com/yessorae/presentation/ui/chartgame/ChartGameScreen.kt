@@ -59,7 +59,7 @@ fun ChartGameScreen(viewModel: ChartGameViewModel = viewModel()) {
     Scaffold(
         topBar = {
             ChartGameTopAppBarUi(
-                isStart = state.isStart,
+                isBeforeStart = state.isBeforeStart,
                 totalProfit = state.totalProfit,
                 totalRateOfProfit = state.rateOfProfit,
                 onClickNewChartButton = {

@@ -24,7 +24,7 @@ import com.yessorae.presentation.ui.designsystem.util.DevicePreviews
 @Composable
 fun ChartGameTopAppBarUi(
     modifier: Modifier = Modifier,
-    isStart: Boolean,
+    isBeforeStart: Boolean,
     totalProfit: Double,
     totalRateOfProfit: Double,
     onClickNewChartButton: () -> Unit,
@@ -34,7 +34,7 @@ fun ChartGameTopAppBarUi(
     TopAppBar(
         title = {
             ChartGameTopAppBarTitle(
-                isStart = isStart,
+                isBeforeStart = isBeforeStart,
                 totalProfit = totalProfit,
                 totalRateOfProfit = totalRateOfProfit
             )
@@ -60,7 +60,7 @@ fun ChartGameTopAppBarUi(
 
 @Composable
 private fun ChartGameTopAppBarTitle(
-    isStart: Boolean,
+    isBeforeStart: Boolean,
     totalProfit: Double,
     totalRateOfProfit: Double
 ) {
@@ -72,7 +72,7 @@ private fun ChartGameTopAppBarTitle(
         "%.2f".format(totalRateOfProfit) + "%"
     }
 
-    if (isStart) {
+    if (isBeforeStart) {
         Text(
             text = stringResource(id = R.string.chart_game_title),
             style = MaterialTheme.typography.titleMedium
@@ -90,10 +90,18 @@ private fun ChartGameTopAppBarTitle(
                 Text(
                     text = totalProfitText,
                     style = MaterialTheme.typography.labelLarge,
-                    color = if (totalProfit > 0) {
-                        StockUpColor
-                    } else {
-                        StockDownColor
+                    color = when (totalProfit) {
+                        0.0 -> {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+
+                        else -> {
+                            if (totalRateOfProfit > 0) {
+                                StockUpColor
+                            } else {
+                                StockDownColor
+                            }
+                        }
                     }
                 )
             }
@@ -108,10 +116,18 @@ private fun ChartGameTopAppBarTitle(
                 Text(
                     text = totalRateOfProfitText,
                     style = MaterialTheme.typography.labelLarge,
-                    color = if (totalRateOfProfit > 0) {
-                        StockUpColor
-                    } else {
-                        StockDownColor
+                    color = when (totalRateOfProfit) {
+                        0.0 -> {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+
+                        else -> {
+                            if (totalRateOfProfit > 0) {
+                                StockUpColor
+                            } else {
+                                StockDownColor
+                            }
+                        }
                     }
                 )
             }
@@ -123,7 +139,7 @@ private fun ChartGameTopAppBarTitle(
 @Composable
 fun ChartGameTopAppBarUiPreview() {
     ChartGameTopAppBarUi(
-        isStart = true,
+        isBeforeStart = true,
         totalProfit = 0.0,
         totalRateOfProfit = 0.0,
         onClickNewChartButton = {},
@@ -136,7 +152,7 @@ fun ChartGameTopAppBarUiPreview() {
 @Composable
 fun ChartGameTopAppBarUiPreview2() {
     ChartGameTopAppBarUi(
-        isStart = false,
+        isBeforeStart = false,
         totalProfit = 1234.56421,
         totalRateOfProfit = 120.621,
         onClickNewChartButton = {},

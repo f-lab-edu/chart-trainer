@@ -19,7 +19,7 @@ data class ChartGameScreenState(
     val tradeOrderUi: TradeOrderUi = TradeOrderUi.Hide,
     val onUserAction: (ChartGameScreenUserAction) -> Unit = {}
 ) {
-    val isStart = totalTurn > 0
+    val isBeforeStart = currentTurn <= 1
     val enabledBuyButton: Boolean = currentTurn != totalTurn
     val enabledSellButton: Boolean = currentTurn == 0
     val enabledNextTurnButton: Boolean = currentTurn != totalTurn

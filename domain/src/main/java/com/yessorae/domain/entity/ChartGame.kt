@@ -43,7 +43,7 @@ data class ChartGame(
 
     val currentStockPrice: Money = visibleTicks.lastOrNull()?.closePrice ?: Money(0.0)
 
-    val currentGameProgress: Float = currentTurn / totalTurn.toFloat() * 100f
+    val currentGameProgress: Float = currentTurn / totalTurn.toFloat()
 
     // 게임 모든 턴을 끝까지 완료한 경우 true
     val isGameComplete: Boolean = currentTurn == totalTurn

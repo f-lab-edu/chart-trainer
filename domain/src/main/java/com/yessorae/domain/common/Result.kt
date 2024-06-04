@@ -3,6 +3,7 @@ package com.yessorae.domain.common
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.flow.onStart
 
@@ -31,7 +32,7 @@ private fun <T> Flow<T>.mapToSuccessResult(): Flow<Result<T>> {
 }
 
 private fun Flow<Result<Unit>>.emitSuccessResultOnEmpty(): Flow<Result<Unit>> {
-    return this.onEmpty {
+    return this.onCompletion {
         emit(Result.Success(data = Unit))
     }
 }

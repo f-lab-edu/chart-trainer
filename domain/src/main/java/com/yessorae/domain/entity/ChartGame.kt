@@ -39,7 +39,13 @@ data class ChartGame(
 
     private val ownedTotalStockPrice = trades.sumOf { trade -> trade.totalTradeMoney.value }
 
-    val ownedAverageStockPrice = Money(ownedTotalStockPrice / ownedStockCount)
+    val ownedAverageStockPrice = Money(
+        if (ownedStockCount != 0) {
+            ownedTotalStockPrice / ownedStockCount
+        } else {
+            0.0
+        }
+    )
 
     val currentStockPrice: Money = visibleTicks.lastOrNull()?.closePrice ?: Money(0.0)
 

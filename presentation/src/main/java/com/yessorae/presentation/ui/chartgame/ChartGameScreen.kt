@@ -21,6 +21,7 @@ import com.yessorae.presentation.ui.chartgame.component.ChartGameTopAppBarUi
 import com.yessorae.presentation.ui.chartgame.component.order.TradeOrderUi
 import com.yessorae.presentation.ui.chartgame.model.ChartGameEvent
 import com.yessorae.presentation.ui.chartgame.model.ChartGameScreenUserAction
+import com.yessorae.presentation.ui.designsystem.component.ChartTrainerLoadingProgressBar
 import com.yessorae.presentation.ui.designsystem.util.showToast
 import kotlinx.coroutines.flow.collectLatest
 
@@ -110,6 +111,11 @@ fun ChartGameScreen(viewModel: ChartGameViewModel = viewModel()) {
             }
 
             TradeOrderUi(tradeOrderUi = state.tradeOrderUi)
+
+            ChartTrainerLoadingProgressBar(
+                modifier = Modifier.fillMaxSize(),
+                show = state.showLoading
+            )
         }
     }
 }

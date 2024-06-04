@@ -11,7 +11,7 @@ data class ChartGameScreenState(
     val totalProfit: Double = 0.0,
     val rateOfProfit: Double = 0.0,
     val gameProgress: Float = 0f,
-    val showLoading: Boolean = false,
+    val showLoading: Boolean = true,
     val tickUnit: TickUnit = defaultTickUnit,
     // 아래와 같이 라이브러리에 맞춘 형태로 지양하는 UI 모델 형태이다. 변경 고민중.
     val transactionVolume: List<Double> = listOf(),

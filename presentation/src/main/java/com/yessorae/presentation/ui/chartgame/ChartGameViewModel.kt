@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onSubscription
@@ -146,9 +147,15 @@ class ChartGameViewModel @Inject constructor(
         }
     }
 
-    private fun changeChart(gameId: Long) {
-        changeChartUseCase(gameId = gameId).launchIn(viewModelScope)
-    }
+    private fun changeChart(gameId: Long) =
+        viewModelScope.launch {
+            changeChartUseCase(gameId = gameId).collect { result ->
+                when (result) {
+                    is Result.Loading -> _screenState.update { old -> old.copy(showLoading = true) }
+                    else -> _screenState.update { old -> old.copy(showLoading = false) }
+                }
+            }
+        }
 
     private fun showBuyOrderUi(
         gameId: Long,
@@ -438,6 +445,7 @@ class ChartGameViewModel @Inject constructor(
         }
 
     private fun handleError(throwable: Throwable) {
+        _screenState.update { old -> old.copy(showLoading = false) }
         logger.cehLog(
             throwable = throwable
         )

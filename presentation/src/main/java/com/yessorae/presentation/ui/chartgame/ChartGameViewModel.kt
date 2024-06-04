@@ -82,8 +82,8 @@ class ChartGameViewModel @Inject constructor(
                 totalTurn = data.totalTurn,
                 gameProgress = data.currentGameProgress,
                 showLoading = false,
-                transactionVolume = data.chart.ticks.asTransactionVolume(),
-                candleStickChart = data.chart.ticks.asCandleStickChartUiState(),
+                transactionVolume = data.visibleTicks.asTransactionVolume(),
+                candleStickChart = data.visibleTicks.asCandleStickChartUiState(),
                 onUserAction = { userAction ->
                     handleChartGameScreenUserAction(
                         userAction = userAction,

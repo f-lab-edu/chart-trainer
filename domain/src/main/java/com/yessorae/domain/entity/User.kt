@@ -1,5 +1,6 @@
 package com.yessorae.domain.entity
 
+import com.yessorae.domain.common.DefaultValues
 import com.yessorae.domain.entity.value.Money
 
 data class User(
@@ -11,4 +12,13 @@ data class User(
 //    val isAnonnymous: Boolean,
 //    val profileImg: String?,
 //    val nickname: String,
-)
+) {
+    companion object {
+        fun createInitialUser() = User(
+            balance = Money(DefaultValues.FIRST_CURRENT_BALANCE),
+            winCount = 0,
+            loseCount = 0,
+            averageRateOfProfit = 0.0
+        )
+    }
+}

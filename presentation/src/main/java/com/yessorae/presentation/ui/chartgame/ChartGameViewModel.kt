@@ -98,6 +98,7 @@ class ChartGameViewModel @Inject constructor(
                     transactionVolume = visibleTicks.asTransactionVolume(),
                     candleStickChart = visibleTicks.asCandleStickChartUiState(),
                     isGameComplete = isGameComplete,
+                    isGameEnd = isGameEnd,
                     onUserAction = { userAction ->
                         handleChartGameScreenUserAction(
                             userAction = userAction,

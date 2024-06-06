@@ -27,6 +27,7 @@ fun ChartGameTopAppBarUi(
     isBeforeStart: Boolean,
     totalProfit: Double,
     totalRateOfProfit: Double,
+    enableChangeChartButton: Boolean,
     onClickNewChartButton: () -> Unit,
     onClickChartHistoryButton: () -> Unit,
     onClickQuitGameButton: () -> Unit
@@ -42,8 +43,10 @@ fun ChartGameTopAppBarUi(
         actions = {
             DefaultIconButton(
                 imageVector = ChartTrainerIcons.ChangeChart,
-                onClick = onClickNewChartButton
+                onClick = onClickNewChartButton,
+                enabled = enableChangeChartButton
             )
+
             DefaultIconButton(
                 imageVector = ChartTrainerIcons.TradeList,
                 onClick = onClickChartHistoryButton
@@ -142,6 +145,7 @@ fun ChartGameTopAppBarUiPreview() {
         isBeforeStart = true,
         totalProfit = 0.0,
         totalRateOfProfit = 0.0,
+        enableChangeChartButton = false,
         onClickNewChartButton = {},
         onClickChartHistoryButton = {},
         onClickQuitGameButton = {}
@@ -155,6 +159,7 @@ fun ChartGameTopAppBarUiPreview2() {
         isBeforeStart = false,
         totalProfit = 1234.56421,
         totalRateOfProfit = 120.621,
+        enableChangeChartButton = false,
         onClickNewChartButton = {},
         onClickChartHistoryButton = {},
         onClickQuitGameButton = {}

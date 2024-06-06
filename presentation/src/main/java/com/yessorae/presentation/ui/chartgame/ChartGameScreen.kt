@@ -74,6 +74,7 @@ fun ChartGameScreen(viewModel: ChartGameViewModel = viewModel()) {
                 isBeforeStart = state.isBeforeStart,
                 totalProfit = state.totalProfit,
                 totalRateOfProfit = state.rateOfProfit,
+                enableChangeChartButton = state.enableChangeChartButton,
                 onClickNewChartButton = {
                     state.onUserAction(ChartGameScreenUserAction.ClickNewChartButton)
                 },

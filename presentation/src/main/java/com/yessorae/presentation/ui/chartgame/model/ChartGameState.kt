@@ -17,13 +17,15 @@ data class ChartGameScreenState(
     val transactionVolume: List<Double> = listOf(),
     val candleStickChart: CandleStickChartUi = CandleStickChartUi(),
     val isGameComplete: Boolean = false,
+    val isGameEnd: Boolean = false,
     val tradeOrderUi: TradeOrderUi = TradeOrderUi.Hide,
     val onUserAction: (ChartGameScreenUserAction) -> Unit = {}
 ) {
     val isBeforeStart = currentTurn <= 1
-    val enabledBuyButton: Boolean = currentTurn > 0
-    val enabledSellButton: Boolean = currentTurn > 0 && totalProfit != 0.0
-    val enabledNextTurnButton: Boolean = currentTurn != totalTurn
+    val enableChangeChartButton: Boolean = isGameEnd.not()
+    val enabledBuyButton: Boolean = (currentTurn > 0 || totalProfit > 0.0) && isGameEnd.not()
+    val enabledSellButton: Boolean = (currentTurn > 0 && totalProfit > 0.0) && isGameEnd.not()
+    val enabledNextTurnButton: Boolean = currentTurn != totalTurn && isGameEnd.not()
 }
 
 data class CandleStickChartUi(

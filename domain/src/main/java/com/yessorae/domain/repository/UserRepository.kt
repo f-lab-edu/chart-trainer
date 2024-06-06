@@ -1,11 +1,12 @@
 package com.yessorae.domain.repository
 
-import com.yessorae.domain.entity.value.Money
+import com.yessorae.domain.entity.User
+import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    suspend fun fetchCommissionRateConfig(): Double
+    fun fetchUserAsFlow(): Flow<User>
+    suspend fun fetchUser(): User
+    suspend fun updateUser(user: User)
 
-    suspend fun fetchTotalTurnConfig(): Int
-
-    suspend fun fetchCurrentBalance(): Money
 }
+

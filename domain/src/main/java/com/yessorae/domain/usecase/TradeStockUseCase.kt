@@ -6,14 +6,14 @@ import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
 import com.yessorae.domain.repository.ChartGameRepository
-import com.yessorae.domain.repository.UserRepository
+import com.yessorae.domain.repository.SettingRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class TradeStockUseCase @Inject constructor(
     private val chartGameRepository: ChartGameRepository,
-    private val userRepository: UserRepository
+    private val settingRepository: SettingRepository
 ) {
     operator fun invoke(param: Param): Flow<Result<Unit>> =
         flow<Nothing> {
@@ -25,7 +25,7 @@ class TradeStockUseCase @Inject constructor(
                     count = count,
                     turn = turn,
                     type = type,
-                    commissionRate = userRepository.fetchCommissionRateConfig()
+                    commissionRate = settingRepository.fetchCommissionRate()
                 )
 
                 chartGameRepository.updateChartGame(

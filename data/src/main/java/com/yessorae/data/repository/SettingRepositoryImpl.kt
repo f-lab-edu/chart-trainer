@@ -3,11 +3,12 @@ package com.yessorae.data.repository
 import com.yessorae.data.di.ChartTrainerDispatcher
 import com.yessorae.data.di.Dispatcher
 import com.yessorae.data.source.local.preference.ChartTrainerPreferencesDataSource
+import com.yessorae.domain.entity.tick.TickUnit
 import com.yessorae.domain.repository.SettingRepository
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 class SettingRepositoryImpl @Inject constructor(
     private val appPreference: ChartTrainerPreferencesDataSource,
@@ -37,6 +38,18 @@ class SettingRepositoryImpl @Inject constructor(
         }
 
     override suspend fun updateTotalTurn(turn: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun fetchTickUnitAsFlow(): Flow<TickUnit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun fetchTickUnit(): TickUnit {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateTickUnit(tickUnit: TickUnit) {
         TODO("Not yet implemented")
     }
 }

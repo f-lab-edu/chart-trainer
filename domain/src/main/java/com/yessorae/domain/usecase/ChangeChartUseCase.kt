@@ -5,13 +5,13 @@ import com.yessorae.domain.common.delegateEmptyResultFlow
 import com.yessorae.domain.exception.ChartGameException
 import com.yessorae.domain.repository.ChartGameRepository
 import com.yessorae.domain.repository.ChartRepository
-import com.yessorae.domain.repository.UserRepository
+import com.yessorae.domain.repository.SettingRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class ChangeChartUseCase @Inject constructor(
-    private val userRepository: UserRepository,
+    private val settingRepository: SettingRepository,
     private val chartRepository: ChartRepository,
     private val chartGameRepository: ChartGameRepository
 ) {
@@ -28,7 +28,7 @@ class ChangeChartUseCase @Inject constructor(
             chartGameRepository.updateChartGame(
                 chartGame = oldChartGame.copyFrom(
                     newChart = chartRepository.fetchNewChartRandomly(
-                        totalTurn = userRepository.fetchTotalTurnConfig()
+                        totalTurn = settingRepository.fetchTotalTurn()
                     )
                 )
             )

@@ -7,6 +7,4 @@ interface UserRepository {
     fun fetchUserAsFlow(): Flow<User>
     suspend fun fetchUser(): User
     suspend fun updateUser(user: User)
-
 }
-

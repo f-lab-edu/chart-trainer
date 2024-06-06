@@ -14,11 +14,12 @@ data class User(
 //    val nickname: String,
 ) {
     companion object {
-        fun createInitialUser() = User(
-            balance = Money(DefaultValues.FIRST_CURRENT_BALANCE),
-            winCount = 0,
-            loseCount = 0,
-            averageRateOfProfit = 0.0
-        )
+        fun createInitialUser() =
+            User(
+                balance = Money(DefaultValues.FIRST_CURRENT_BALANCE),
+                winCount = 0,
+                loseCount = 0,
+                averageRateOfProfit = 0.0
+            )
     }
 }

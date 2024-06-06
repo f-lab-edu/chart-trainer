@@ -2,8 +2,8 @@ package com.yessorae.data.repository
 
 import com.yessorae.domain.entity.User
 import com.yessorae.domain.repository.UserRepository
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class UserRepositoryImpl @Inject constructor() : UserRepository {
     override fun fetchUserAsFlow(): Flow<User> {

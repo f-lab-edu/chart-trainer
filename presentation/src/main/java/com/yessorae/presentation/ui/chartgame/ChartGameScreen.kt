@@ -46,7 +46,9 @@ fun ChartGameScreen(viewModel: ChartGameViewModel = viewModel()) {
                 }
 
                 is ChartGameEvent.HardToFetchTrade -> {
-                    context.showToast(context.getString(R.string.chart_game_toast_hard_to_fetch_trade))
+                    context.showToast(
+                        context.getString(R.string.chart_game_toast_hard_to_fetch_trade)
+                    )
                 }
 
                 is ChartGameEvent.MoveToBack -> {

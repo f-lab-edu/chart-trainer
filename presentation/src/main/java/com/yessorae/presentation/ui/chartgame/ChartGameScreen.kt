@@ -45,6 +45,10 @@ fun ChartGameScreen(viewModel: ChartGameViewModel = viewModel()) {
                     context.showToast(context.getString(R.string.chart_game_toast_trade_fail))
                 }
 
+                is ChartGameEvent.HardToFetchTrade -> {
+                    context.showToast(context.getString(R.string.chart_game_toast_hard_to_fetch_trade))
+                }
+
                 is ChartGameEvent.MoveToBack -> {
                     // TODO::LATER #23-navigation 셋업과 함께 추가될 내용
                 }

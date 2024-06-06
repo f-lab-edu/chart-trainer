@@ -8,6 +8,7 @@ import com.yessorae.domain.common.Result
 import com.yessorae.domain.entity.ChartGame
 import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
+import com.yessorae.domain.exception.ChartGameException
 import com.yessorae.domain.usecase.ChangeChartUseCase
 import com.yessorae.domain.usecase.QuitChartGameUseCase
 import com.yessorae.domain.usecase.SubscribeChartGameUseCase
@@ -69,7 +70,17 @@ class ChartGameViewModel @Inject constructor(
                 when (result) {
                     is Result.Loading -> _screenState.update { old -> old.copy(showLoading = true) }
                     is Result.Success -> updateGameData(result.data)
-                    is Result.Failure -> handleError(result.throwable)
+                    is Result.Failure -> {
+                        when (result.throwable) {
+                            is ChartGameException.HardToFetchTradeException -> {
+                                emitScreenEvent(event = ChartGameEvent.HardToFetchTrade)
+                            }
+
+                            else -> {
+                                handleCommonFailure(result.throwable)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -446,7 +457,7 @@ class ChartGameViewModel @Inject constructor(
             _screenEvent.emit(event)
         }
 
-    private fun handleError(throwable: Throwable) {
+    private fun handleCommonFailure(throwable: Throwable) {
         _screenState.update { old -> old.copy(showLoading = false) }
         logger.cehLog(
             throwable = throwable

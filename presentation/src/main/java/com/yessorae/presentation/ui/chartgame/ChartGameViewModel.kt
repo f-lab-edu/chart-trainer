@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onSubscription
@@ -80,6 +79,8 @@ class ChartGameViewModel @Inject constructor(
             old.copy(
                 currentTurn = data.currentTurn,
                 totalTurn = data.totalTurn,
+                totalProfit = data.totalProfit.value,
+                rateOfProfit = data.rateOfProfit,
                 gameProgress = data.currentGameProgress,
                 showLoading = false,
                 transactionVolume = data.visibleTicks.asTransactionVolume(),
@@ -355,10 +356,11 @@ class ChartGameViewModel @Inject constructor(
 
             is TradeOrderUiUserAction.ClickRatioShortCut -> {
                 _screenState.update { old ->
+                    val percentage = (userAction.percentage.value / 100.0)
+                    val newStockCount = ownedStockCount * percentage
                     old.copy(
                         tradeOrderUi = old.tradeOrderUi.copy(
-                            stockCountInput =
-                            (ownedStockCount * (userAction.percentage.value / 100.0)).toString()
+                            stockCountInput = newStockCount.toInt().toString()
                         )
                     )
                 }

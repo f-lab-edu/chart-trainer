@@ -21,31 +21,46 @@ data class ChartGame(
     // 유저의 게임 강제 종료 여부
     val isQuit: Boolean
 ) {
-    val totalProfit: Money = currentBalance - startBalance
-
-    val rateOfProfit: Double = (totalProfit / startBalance).value * 100
-
-    val tradeCount: Int
-        get() = trades.size
-
-    val totalCommission: Money = Money(trades.sumOf { trade -> trade.commission.value })
-
     val visibleTicks: List<Tick> =
         chart.ticks
             .sortedBy { it.startTimestamp }
             .subList(0, chart.ticks.size - totalTurn + currentTurn - 1)
 
-    val ownedStockCount = trades.sumOf { trade -> trade.count }
-
-    private val ownedTotalStockPrice = trades.sumOf { trade -> trade.totalTradeMoney.value }
-
-    val ownedAverageStockPrice = Money(
-        if (ownedStockCount != 0) {
-            ownedTotalStockPrice / ownedStockCount
+    val ownedStockCount = trades.sumOf { trade ->
+        if (trade.type.isBuy()) {
+            trade.count
         } else {
-            0.0
+            -trade.count
         }
-    )
+    }
+
+    private val ownedTotalStockPrice = trades.sumOf { trade ->
+        if (trade.type.isBuy()) {
+            trade.totalTradeMoney.value
+        } else {
+            -(trade.totalTradeMoney.value)
+        }
+    }
+
+    val ownedAverageStockPrice = if (ownedStockCount != 0) {
+        Money(ownedTotalStockPrice / ownedStockCount)
+    } else {
+        Money(0.0)
+    }
+
+    private val currentClosePrice: Money = (visibleTicks.lastOrNull()?.closePrice ?: Money(0.0))
+
+    val totalProfit: Money = if (ownedStockCount != 0) {
+        currentClosePrice - ownedAverageStockPrice
+    } else {
+        Money(0.0)
+    }
+
+    val rateOfProfit: Double = if (ownedStockCount != 0) {
+        (totalProfit / ownedAverageStockPrice).value * 100
+    } else {
+        0.0
+    }
 
     val currentStockPrice: Money = visibleTicks.lastOrNull()?.closePrice ?: Money(0.0)
 
@@ -76,7 +91,7 @@ data class ChartGame(
     internal fun copyFrom(newTrade: Trade): ChartGame {
         return copy(
             trades = trades + newTrade,
-            currentBalance = currentBalance + newTrade.profit
+            currentBalance = currentBalance - newTrade.totalTradeMoney
         )
     }
 

@@ -46,9 +46,15 @@ fun ChartGameScreen(viewModel: ChartGameViewModel = viewModel()) {
                 }
 
                 is ChartGameEvent.HardToFetchTrade -> {
+                    // TODO::LATER #5-유저(익명) 정보 확인/수정 기능이 추가되면 Screen 뒤로가기 추가
                     context.showToast(
                         context.getString(R.string.chart_game_toast_hard_to_fetch_trade)
                     )
+                }
+
+                is ChartGameEvent.GameHasEnded -> {
+                    // TODO::LATER #5-유저(익명) 정보 확인/수정 기능이 추가되면 Screen 뒤로가기로 변경
+                    context.showToast(context.getString(R.string.chart_game_toast_game_has_ended))
                 }
 
                 is ChartGameEvent.MoveToBack -> {

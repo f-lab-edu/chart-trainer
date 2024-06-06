@@ -16,6 +16,7 @@ data class ChartGameScreenState(
     // 아래와 같이 라이브러리에 맞춘 형태로 지양하는 UI 모델 형태이다. 변경 고민중.
     val transactionVolume: List<Double> = listOf(),
     val candleStickChart: CandleStickChartUi = CandleStickChartUi(),
+    val isGameComplete: Boolean = false,
     val tradeOrderUi: TradeOrderUi = TradeOrderUi.Hide,
     val onUserAction: (ChartGameScreenUserAction) -> Unit = {}
 ) {

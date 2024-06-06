@@ -13,14 +13,14 @@ class UpdateNextTickUseCase @Inject constructor(
 ) {
     operator fun invoke(gameId: Long): Flow<Result<Unit>> =
         flow<Nothing> {
-            val newChartGame = chartGameRepository.fetchChartGame(gameId = gameId).getNextTurn()
+            val oldChartGame = chartGameRepository.fetchChartGame(gameId = gameId)
 
-            if (newChartGame.isGameEnd) {
+            if (oldChartGame.isGameEnd) {
                 throw ChartGameException.CanNotUpdateNextTickException(
                     message = "can't update next tick because game has been end"
                 )
             }
 
-            chartGameRepository.updateChartGame(chartGame = newChartGame)
+            chartGameRepository.updateChartGame(chartGame = oldChartGame.getNextTurn())
         }.delegateEmptyResultFlow()
 }

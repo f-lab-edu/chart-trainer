@@ -85,31 +85,37 @@ class ChartGameViewModel @Inject constructor(
             }
         }
 
-    private fun updateGameData(data: ChartGame) {
-        _screenState.update { old ->
-            old.copy(
-                currentTurn = data.currentTurn,
-                totalTurn = data.totalTurn,
-                totalProfit = data.totalProfit.value,
-                rateOfProfit = data.rateOfProfit,
-                gameProgress = data.currentGameProgress,
-                showLoading = false,
-                transactionVolume = data.visibleTicks.asTransactionVolume(),
-                candleStickChart = data.visibleTicks.asCandleStickChartUiState(),
-                onUserAction = { userAction ->
-                    handleChartGameScreenUserAction(
-                        userAction = userAction,
-                        gameId = data.id,
-                        ownedAverageStockPrice = data.ownedAverageStockPrice,
-                        currentBalance = data.currentBalance,
-                        currentStockPrice = data.currentStockPrice,
-                        currentTurn = data.currentTurn,
-                        ownedStockCount = data.ownedStockCount
-                    )
-                }
-            )
+    private fun updateGameData(data: ChartGame) =
+        with(data) {
+            _screenState.update { old ->
+                old.copy(
+                    currentTurn = currentTurn,
+                    totalTurn = totalTurn,
+                    totalProfit = totalProfit.value,
+                    rateOfProfit = rateOfProfit,
+                    gameProgress = currentGameProgress,
+                    showLoading = false,
+                    transactionVolume = visibleTicks.asTransactionVolume(),
+                    candleStickChart = visibleTicks.asCandleStickChartUiState(),
+                    isGameComplete = isGameComplete,
+                    onUserAction = { userAction ->
+                        handleChartGameScreenUserAction(
+                            userAction = userAction,
+                            gameId = id,
+                            ownedAverageStockPrice = ownedAverageStockPrice,
+                            currentBalance = currentBalance,
+                            currentStockPrice = currentStockPrice,
+                            currentTurn = currentTurn,
+                            ownedStockCount = ownedStockCount
+                        )
+                    }
+                )
+            }
+
+            if (isGameComplete) {
+                emitScreenEvent(event = ChartGameEvent.GameHasEnded)
+            }
         }
-    }
 
     private fun handleChartGameScreenUserAction(
         userAction: ChartGameScreenUserAction,

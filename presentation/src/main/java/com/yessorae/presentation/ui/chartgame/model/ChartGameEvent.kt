@@ -6,5 +6,6 @@ sealed interface ChartGameEvent {
     object HardToFetchTrade : ChartGameEvent
     object TradeFail : ChartGameEvent
     object MoveToBack : ChartGameEvent
+    object GameHasEnded : ChartGameEvent
     data class MoveToTradeHistory(val gameId: Long) : ChartGameEvent
 }

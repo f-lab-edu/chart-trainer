@@ -23,50 +23,14 @@ import com.yessorae.presentation.ui.chartgame.model.ChartGameEvent
 import com.yessorae.presentation.ui.chartgame.model.ChartGameScreenUserAction
 import com.yessorae.presentation.ui.designsystem.component.ChartTrainerLoadingProgressBar
 import com.yessorae.presentation.ui.designsystem.util.showToast
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun ChartGameScreen(viewModel: ChartGameViewModel = viewModel()) {
+    ChartGameEventHandler(screenEvent = viewModel.screenEvent)
+
     val state by viewModel.screenState.collectAsState()
-    val context = LocalContext.current
-
-    LaunchedEffect(key1 = Unit) {
-        viewModel.screenEvent.collectLatest { event ->
-            when (event) {
-                is ChartGameEvent.InputBuyingStockCount -> {
-                    context.showToast(context.getString(R.string.chart_game_toast_trade_buy))
-                }
-
-                is ChartGameEvent.InputSellingStockCount -> {
-                    context.showToast(context.getString(R.string.chart_game_toast_trade_sell))
-                }
-
-                is ChartGameEvent.TradeFail -> {
-                    context.showToast(context.getString(R.string.chart_game_toast_trade_fail))
-                }
-
-                is ChartGameEvent.HardToFetchTrade -> {
-                    // TODO::LATER #5-유저(익명) 정보 확인/수정 기능이 추가되면 Screen 뒤로가기 추가
-                    context.showToast(
-                        context.getString(R.string.chart_game_toast_hard_to_fetch_trade)
-                    )
-                }
-
-                is ChartGameEvent.GameHasEnded -> {
-                    // TODO::LATER #5-유저(익명) 정보 확인/수정 기능이 추가되면 Screen 뒤로가기로 변경
-                    context.showToast(context.getString(R.string.chart_game_toast_game_has_ended))
-                }
-
-                is ChartGameEvent.MoveToBack -> {
-                    // TODO::LATER #23-navigation 셋업과 함께 추가될 내용
-                }
-
-                is ChartGameEvent.MoveToTradeHistory -> {
-                    // TODO::LATER #6-트레이드 내역 확인 기능과 #23-navigation 셋업과 함께 추가될 내용
-                }
-            }
-        }
-    }
 
     Scaffold(
         topBar = {
@@ -129,6 +93,48 @@ fun ChartGameScreen(viewModel: ChartGameViewModel = viewModel()) {
                 modifier = Modifier.fillMaxSize(),
                 show = state.showLoading
             )
+        }
+    }
+}
+
+@Composable
+private fun ChartGameEventHandler(screenEvent: SharedFlow<ChartGameEvent>) {
+    val context = LocalContext.current
+    LaunchedEffect(key1 = Unit) {
+        screenEvent.collectLatest { event ->
+            when (event) {
+                is ChartGameEvent.InputBuyingStockCount -> {
+                    context.showToast(context.getString(R.string.chart_game_toast_trade_buy))
+                }
+
+                is ChartGameEvent.InputSellingStockCount -> {
+                    context.showToast(context.getString(R.string.chart_game_toast_trade_sell))
+                }
+
+                is ChartGameEvent.TradeFail -> {
+                    context.showToast(context.getString(R.string.chart_game_toast_trade_fail))
+                }
+
+                is ChartGameEvent.HardToFetchTrade -> {
+                    // TODO::LATER #5-유저(익명) 정보 확인/수정 기능이 추가되면 Screen 뒤로가기 추가
+                    context.showToast(
+                        context.getString(R.string.chart_game_toast_hard_to_fetch_trade)
+                    )
+                }
+
+                is ChartGameEvent.GameHasEnded -> {
+                    // TODO::LATER #5-유저(익명) 정보 확인/수정 기능이 추가되면 Screen 뒤로가기로 변경
+                    context.showToast(context.getString(R.string.chart_game_toast_game_has_ended))
+                }
+
+                is ChartGameEvent.MoveToBack -> {
+                    // TODO::LATER #23-navigation 셋업과 함께 추가될 내용
+                }
+
+                is ChartGameEvent.MoveToTradeHistory -> {
+                    // TODO::LATER #6-트레이드 내역 확인 기능과 #23-navigation 셋업과 함께 추가될 내용
+                }
+            }
         }
     }
 }

@@ -8,11 +8,17 @@ object Dependency {
         const val JUNIT = "junit:junit:${Version.JUNIT}"
         const val JUNIT_EXT = "androidx.test.ext:junit:${Version.JUNIT_EXT}"
 
+        const val KOTOIN_SERIALIZATION_JSON =
+            "org.jetbrains.kotlinx:kotlinx-serialization-json:${Version.KOTOIN_SERIALIZATION_JSON}"
+
         object Version {
             const val HILT = "2.44"
             const val ANDROIDX_CORE = "1.9.0"
             const val JUNIT = "4.13.2"
             const val JUNIT_EXT = "1.1.5"
+
+            // 1.5.0 이 Kotlin 버전 1.8.10 을 디폴트로 사용
+            const val KOTOIN_SERIALIZATION_JSON = "1.5.0"
         }
     }
 
@@ -37,17 +43,12 @@ object Dependency {
         const val RETROFIT_GSON_CONVERTER =
             "com.squareup.retrofit2:converter-kotlinx-serialization:${Version.RETROFIT}"
         const val OK_HTTP_3 = "com.squareup.okhttp3:logging-interceptor:${Version.OK_HTTP_3}"
-        const val KOTOIN_SERIALIZATION_JSON =
-            "org.jetbrains.kotlinx:kotlinx-serialization-json:${Version.KOTOIN_SERIALIZATION_JSON}"
 
         object Version {
             const val DATA_STORE = "1.1.1"
             const val ROOM = "2.6.1"
             const val RETROFIT = "2.11.0"
             const val OK_HTTP_3 = "4.12.0"
-
-            // 1.5.0 이 Kotlin 버전 1.8.10 을 디폴트로 사용
-            const val KOTOIN_SERIALIZATION_JSON = "1.5.0"
         }
     }
 

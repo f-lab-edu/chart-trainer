@@ -7,10 +7,8 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.yessorae.domain.common.DefaultValues.DEFAULT_COMMISSION_RATE
 import com.yessorae.domain.common.DefaultValues.DEFAULT_TOTAL_TURN
-import com.yessorae.domain.common.DefaultValues.FIRST_CURRENT_BALANCE
 import com.yessorae.domain.common.DefaultValues.defaultTickUnit
 import com.yessorae.domain.entity.tick.TickUnit
-import com.yessorae.domain.entity.value.Money
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -34,10 +32,6 @@ class ChartTrainerPreferencesDataSource @Inject constructor(
         preferences[totalTurnKey] ?: DEFAULT_TOTAL_TURN
     }
 
-    val currentBalanceFlow: Flow<Money?> = data.map { preferences ->
-        Money(value = preferences[currentBalanceKey] ?: FIRST_CURRENT_BALANCE)
-    }
-
     val tickUnitFlow: Flow<TickUnit> = data.map { preferences ->
         preferences[tickUnitKey]?.let { value ->
             TickUnit.valueOf(value)
@@ -48,9 +42,6 @@ class ChartTrainerPreferencesDataSource @Inject constructor(
         commissionRateFlow.firstOrNull() ?: DEFAULT_COMMISSION_RATE
 
     suspend fun getTotalTurn(): Int = totalTurnFlow.firstOrNull() ?: DEFAULT_TOTAL_TURN
-
-    suspend fun getCurrentBalance(): Money =
-        currentBalanceFlow.firstOrNull() ?: Money(FIRST_CURRENT_BALANCE)
 
     suspend fun getTickUnit(): TickUnit = tickUnitFlow.firstOrNull() ?: defaultTickUnit
 }

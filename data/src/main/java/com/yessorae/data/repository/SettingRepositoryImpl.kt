@@ -3,8 +3,8 @@ package com.yessorae.data.repository
 import com.yessorae.data.source.local.preference.ChartTrainerPreferencesDataSource
 import com.yessorae.domain.entity.tick.TickUnit
 import com.yessorae.domain.repository.SettingRepository
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class SettingRepositoryImpl @Inject constructor(
     private val appPreference: ChartTrainerPreferencesDataSource

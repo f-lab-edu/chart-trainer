@@ -5,7 +5,6 @@ import com.yessorae.domain.entity.User
 import com.yessorae.domain.repository.UserRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 class UserRepositoryImpl @Inject constructor(
     private val chartTrainerPreferencesDataSource: ChartTrainerPreferencesDataSource

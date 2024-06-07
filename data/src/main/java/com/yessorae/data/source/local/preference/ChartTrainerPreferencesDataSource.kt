@@ -11,12 +11,12 @@ import com.yessorae.domain.common.DefaultValues.DEFAULT_TOTAL_TURN
 import com.yessorae.domain.common.DefaultValues.defaultTickUnit
 import com.yessorae.domain.entity.User
 import com.yessorae.domain.entity.tick.TickUnit
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import javax.inject.Inject
 
 class ChartTrainerPreferencesDataSource @Inject constructor(
     private val appPreference: DataStore<Preferences>

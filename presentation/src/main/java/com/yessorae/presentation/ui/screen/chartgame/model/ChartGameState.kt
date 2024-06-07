@@ -1,4 +1,4 @@
-package com.yessorae.presentation.ui.chartgame.model
+package com.yessorae.presentation.ui.screen.chartgame.model
 
 import com.yessorae.domain.common.DefaultValues.defaultTickUnit
 import com.yessorae.domain.entity.tick.Tick

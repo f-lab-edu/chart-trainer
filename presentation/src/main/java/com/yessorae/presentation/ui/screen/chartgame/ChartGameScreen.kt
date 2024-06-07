@@ -1,4 +1,4 @@
-package com.yessorae.presentation.ui.chartgame
+package com.yessorae.presentation.ui.screen.chartgame
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,12 +15,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yessorae.presentation.R
-import com.yessorae.presentation.ui.chartgame.component.CandleChartUi
-import com.yessorae.presentation.ui.chartgame.component.ChartGameBottomBarUi
-import com.yessorae.presentation.ui.chartgame.component.ChartGameTopAppBarUi
-import com.yessorae.presentation.ui.chartgame.component.order.TradeOrderUi
-import com.yessorae.presentation.ui.chartgame.model.ChartGameEvent
-import com.yessorae.presentation.ui.chartgame.model.ChartGameScreenUserAction
+import com.yessorae.presentation.ui.screen.chartgame.component.CandleChartUi
+import com.yessorae.presentation.ui.screen.chartgame.component.ChartGameBottomBarUi
+import com.yessorae.presentation.ui.screen.chartgame.component.ChartGameTopAppBarUi
+import com.yessorae.presentation.ui.screen.chartgame.component.order.TradeOrderUi
+import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameEvent
+import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenUserAction
 import com.yessorae.presentation.ui.designsystem.component.ChartTrainerLoadingProgressBar
 import com.yessorae.presentation.ui.designsystem.util.showToast
 import kotlinx.coroutines.flow.SharedFlow

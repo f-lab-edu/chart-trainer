@@ -1,4 +1,4 @@
-package com.yessorae.presentation.ui.chartgame.component.order
+package com.yessorae.presentation.ui.screen.chartgame.component.order
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,9 +27,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.yessorae.presentation.R
-import com.yessorae.presentation.ui.chartgame.model.PercentageOrderShortCut
-import com.yessorae.presentation.ui.chartgame.model.TradeOrderUi
-import com.yessorae.presentation.ui.chartgame.model.TradeOrderUiUserAction
+import com.yessorae.presentation.ui.screen.chartgame.model.PercentageOrderShortCut
+import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi
+import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUiUserAction
 import com.yessorae.presentation.ui.designsystem.component.DefaultTextButton
 import com.yessorae.presentation.ui.designsystem.theme.StockDownColor
 import com.yessorae.presentation.ui.designsystem.theme.StockUpColor

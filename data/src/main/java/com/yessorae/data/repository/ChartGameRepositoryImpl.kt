@@ -83,4 +83,16 @@ class ChartGameRepositoryImpl @Inject constructor(
                 }
             }
         }
+
+    override fun fetchLastChartGameId(): Flow<Long?> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun clearLastChartGameId() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateLastChartGameId(gameId: Long) {
+        TODO("Not yet implemented")
+    }
 }

@@ -15,11 +15,10 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
 class ChartTrainerPreferencesDataSource @Inject constructor(
-    private val appPreference: DataStore<Preferences>
+    appPreference: DataStore<Preferences>
 ) {
     private val commissionRateKey = doublePreferencesKey("commission_rate")
     private val totalTurnKey = intPreferencesKey("total_turn")
-    private val currentBalanceKey = doublePreferencesKey("current_balance")
     private val tickUnitKey = stringPreferencesKey("tick_unit")
 
     private val data: Flow<Preferences> = appPreference.data
@@ -28,7 +27,7 @@ class ChartTrainerPreferencesDataSource @Inject constructor(
         preferences[commissionRateKey] ?: DEFAULT_COMMISSION_RATE
     }
 
-    val totalTurnFlow: Flow<Int?> = data.map { preferences ->
+    val totalTurnFlow: Flow<Int> = data.map { preferences ->
         preferences[totalTurnKey] ?: DEFAULT_TOTAL_TURN
     }
 

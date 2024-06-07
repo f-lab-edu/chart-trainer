@@ -28,6 +28,8 @@ class SubscribeChartGameUseCase @Inject constructor(
                 )
             )
 
+            chartGameRepository.updateLastChartGameId(gameId = newGameId)
+
             return chartGameRepository
                 .fetchChartFlow(gameId = newGameId)
                 .delegateValueResultFlow()

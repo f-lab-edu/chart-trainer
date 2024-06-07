@@ -21,6 +21,12 @@ class UpdateNextTickUseCase @Inject constructor(
                 )
             }
 
-            chartGameRepository.updateChartGame(chartGame = oldChartGame.getNextTurn())
+            val newChartGame = oldChartGame.getNextTurn()
+
+            if (newChartGame.isGameEnd) {
+                chartGameRepository.clearLastChartGameId()
+            }
+
+            chartGameRepository.updateChartGame(chartGame = newChartGame)
         }.delegateEmptyResultFlow()
 }

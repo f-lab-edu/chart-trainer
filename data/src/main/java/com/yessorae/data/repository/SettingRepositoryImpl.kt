@@ -24,7 +24,5 @@ class SettingRepositoryImpl @Inject constructor(
 
     override fun fetchTickUnitAsFlow(): Flow<TickUnit> = appPreference.tickUnitFlow
 
-    override suspend fun fetchTickUnit(): TickUnit = appPreference.getTickUnit()
-
     override suspend fun updateTickUnit(tickUnit: TickUnit) = appPreference.updateTickUnit(tickUnit)
 }

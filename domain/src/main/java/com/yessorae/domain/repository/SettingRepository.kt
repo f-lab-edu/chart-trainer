@@ -13,6 +13,5 @@ interface SettingRepository {
     suspend fun updateTotalTurn(turn: Int)
 
     fun fetchTickUnitAsFlow(): Flow<TickUnit>
-    suspend fun fetchTickUnit(): TickUnit
     suspend fun updateTickUnit(tickUnit: TickUnit)
 }

@@ -27,14 +27,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.yessorae.presentation.R
-import com.yessorae.presentation.ui.screen.chartgame.model.PercentageOrderShortCut
-import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi
-import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUiUserAction
 import com.yessorae.presentation.ui.designsystem.component.DefaultTextButton
 import com.yessorae.presentation.ui.designsystem.theme.StockDownColor
 import com.yessorae.presentation.ui.designsystem.theme.StockUpColor
 import com.yessorae.presentation.ui.designsystem.theme.TradeTextColor
 import com.yessorae.presentation.ui.designsystem.util.DevicePreviews
+import com.yessorae.presentation.ui.screen.chartgame.model.PercentageOrderShortCut
+import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi
+import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUiUserAction
 
 @Composable
 fun TradeOrderUi(

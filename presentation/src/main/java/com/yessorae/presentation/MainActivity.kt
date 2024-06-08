@@ -10,8 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.yessorae.presentation.ui.screen.chartgame.ChartGameScreen
 import com.yessorae.presentation.ui.designsystem.theme.ChartTrainerTheme
+import com.yessorae.presentation.ui.screen.chartgame.ChartGameScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

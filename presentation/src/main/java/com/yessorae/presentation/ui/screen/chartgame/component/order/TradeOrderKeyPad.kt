@@ -16,10 +16,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.yessorae.presentation.R
-import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderKeyPad
 import com.yessorae.presentation.ui.designsystem.component.HorizontalGrid
 import com.yessorae.presentation.ui.designsystem.util.ChartTrainerIcons
 import com.yessorae.presentation.ui.designsystem.util.DevicePreviews
+import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderKeyPad
 
 @Composable
 fun TradeOrderKeyPad(

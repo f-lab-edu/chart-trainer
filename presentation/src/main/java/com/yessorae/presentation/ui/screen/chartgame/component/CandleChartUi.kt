@@ -41,11 +41,11 @@ import com.patrykandpatrick.vico.core.common.component.TextComponent
 import com.patrykandpatrick.vico.core.common.copyColor
 import com.patrykandpatrick.vico.core.common.shape.Corner
 import com.patrykandpatrick.vico.core.common.shape.Shape
-import com.yessorae.presentation.ui.screen.chartgame.model.CandleStickChartUi
 import com.yessorae.presentation.ui.designsystem.util.DevicePreviews
 import com.yessorae.presentation.ui.designsystem.util.UiConstants.SHADOW_DY_DP
 import com.yessorae.presentation.ui.designsystem.util.UiConstants.SHADOW_RADIUS_DP
 import com.yessorae.presentation.ui.designsystem.util.UiConstants.SHADOW_RADIUS_MULTIPLIER
+import com.yessorae.presentation.ui.screen.chartgame.model.CandleStickChartUi
 
 @Composable
 fun CandleChartUi(

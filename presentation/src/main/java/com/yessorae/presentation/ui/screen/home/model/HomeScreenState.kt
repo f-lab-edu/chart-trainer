@@ -5,27 +5,47 @@ import com.yessorae.domain.entity.tick.TickUnit
 import com.yessorae.domain.entity.value.Money
 
 data class HomeState(
-    val currentBalance: Money = Money(0.0),
-    val winCount: Int = 0,
-    val loseCount: Int = 0,
-    val averageRateOfProfit: Double = 0.0,
-    val commissionRate: Double = 0.0,
-    val totalTurn: Int = 0,
-    val tickUnit: TickUnit = DefaultValues.defaultTickUnit,
+    val userInfoUi: UserInfoUi = UserInfoUi(),
+    val settingInfoUi: SettingInfoUi = SettingInfoUi(),
+    val bottomButtonState: HomeBottomButtonUi = HomeBottomButtonUi.Loading,
     val screenLoading: Boolean = true,
-    val chartGameNavigationButtonLoading: Boolean = false,
-    val showQuitInProgressChartGameButton: Boolean = false,
-    val showKeepGoingChartGameButton: Boolean = false,
-    val showStartChartGameButton: Boolean = false,
     val error: Boolean = false,
     val settingBottomSheetState: SettingBottomSheetState = SettingBottomSheetState.None,
     val onUserAction: (HomeScreenUserAction) -> Unit = {}
+)
+
+data class SettingInfoUi(
+    val commissionRate: Float = 0f,
+    val totalTurn: Int = 0,
+    val tickUnit: TickUnit = DefaultValues.defaultTickUnit
+)
+
+data class UserInfoUi(
+    val currentBalance: Money = Money(0.0),
+    val winCount: Int = 0,
+    val loseCount: Int = 0,
+    val averageRateOfProfit: Float = 0f
 ) {
-    val rateOfWinning: Double = if (winCount + loseCount == 0) {
-        0.0
+    val rateOfWinning: Float = if (winCount + loseCount == 0) {
+        0f
     } else {
-        winCount / (winCount + loseCount).toDouble()
+        winCount / (winCount + loseCount).toFloat()
     }
+
+    val rateOfLosing: Float = if (rateOfWinning == 0f) {
+        0f
+    } else {
+        1 - rateOfWinning
+    }
+
+    val showWinningRateBar: Boolean =
+        (rateOfWinning != 0f && rateOfLosing != 0f) && rateOfWinning + rateOfLosing == 1f
+}
+sealed interface HomeBottomButtonUi {
+    object Loading : HomeBottomButtonUi
+    data class Success(
+        val hasOnGoingCharGame: Boolean
+    ) : HomeBottomButtonUi
 }
 
 sealed interface SettingBottomSheetState {

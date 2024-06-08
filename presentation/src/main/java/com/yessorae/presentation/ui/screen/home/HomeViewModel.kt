@@ -17,6 +17,7 @@ import com.yessorae.domain.usecase.SubscribeLastChartGameIdUseCase
 import com.yessorae.domain.usecase.SubscribeTickUnitSettingUseCase
 import com.yessorae.domain.usecase.SubscribeTotalTurnSettingUseCase
 import com.yessorae.domain.usecase.SubscribeUserUseCase
+import com.yessorae.presentation.ui.screen.home.model.HomeBottomButtonUi
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenEvent
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenUserAction
 import com.yessorae.presentation.ui.screen.home.model.HomeState
@@ -93,18 +94,24 @@ class HomeViewModel @Inject constructor(
 
             _screenState.update { old ->
                 old.copy(
-                    currentBalance = user.balance,
-                    winCount = user.winCount,
-                    loseCount = user.loseCount,
-                    averageRateOfProfit = user.averageRateOfProfit,
-                    commissionRate = commissionRate,
-                    tickUnit = tickUnit,
-                    totalTurn = totalTurn,
+                    userInfoUi = old.userInfoUi.copy(
+                        currentBalance = user.balance,
+                        winCount = user.winCount,
+                        loseCount = user.loseCount,
+                        averageRateOfProfit = user.averageRateOfProfit.toFloat()
+                    ),
+                    settingInfoUi = old.settingInfoUi.copy(
+                        commissionRate = commissionRate.toFloat(),
+                        tickUnit = tickUnit,
+                        totalTurn = totalTurn
+                    ),
                     screenLoading = loading,
-                    chartGameNavigationButtonLoading = lastChartGameIdResult.isLoading,
-                    showQuitInProgressChartGameButton = lastChartGameId != null,
-                    showKeepGoingChartGameButton = lastChartGameId != null,
-                    showStartChartGameButton = lastChartGameId == null,
+                    bottomButtonState = when (lastChartGameIdResult) {
+                        is Result.Loading -> HomeBottomButtonUi.Loading
+                        else -> HomeBottomButtonUi.Success(
+                            hasOnGoingCharGame = lastChartGameId != null
+                        )
+                    },
                     error = loading.not() && error,
                     onUserAction = { userAction ->
                         handleUserAction(

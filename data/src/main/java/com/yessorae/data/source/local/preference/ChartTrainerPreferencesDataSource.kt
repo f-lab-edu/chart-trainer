@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.yessorae.domain.common.DefaultValues.DEFAULT_COMMISSION_RATE
 import com.yessorae.domain.common.DefaultValues.DEFAULT_TOTAL_TURN
@@ -25,6 +26,7 @@ class ChartTrainerPreferencesDataSource @Inject constructor(
     private val commissionRateKey = doublePreferencesKey("commission_rate")
     private val totalTurnKey = intPreferencesKey("total_turn")
     private val tickUnitKey = stringPreferencesKey("tick_unit")
+    private val lastChartGameIdKey = longPreferencesKey("last_chart_game_id")
 
     private val data: Flow<Preferences> = appPreference.data
 
@@ -47,6 +49,10 @@ class ChartTrainerPreferencesDataSource @Inject constructor(
         preferences[tickUnitKey]?.let { value ->
             TickUnit.valueOf(value)
         } ?: defaultTickUnit
+    }
+
+    val lastChartGameIdFlow: Flow<Long?> = data.map { preferences ->
+        preferences[lastChartGameIdKey]
     }
 
     suspend fun getUser(): User = userFlow.firstOrNull() ?: User.createInitialUser()
@@ -80,6 +86,18 @@ class ChartTrainerPreferencesDataSource @Inject constructor(
     suspend fun updateTickUnit(tickUnit: TickUnit) {
         appPreference.edit { preferences ->
             preferences[tickUnitKey] = tickUnit.name
+        }
+    }
+
+    suspend fun clearLastChartGameId() {
+        appPreference.edit { preferences ->
+            preferences.remove(lastChartGameIdKey)
+        }
+    }
+
+    suspend fun updateLastChartGameId(gameId: Long) {
+        appPreference.edit { preferences ->
+            preferences[lastChartGameIdKey] = gameId
         }
     }
 }

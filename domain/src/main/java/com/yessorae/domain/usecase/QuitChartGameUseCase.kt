@@ -12,6 +12,7 @@ class QuitChartGameUseCase @Inject constructor(
 ) {
     operator fun invoke(gameId: Long): Flow<Result<Unit>> =
         flow<Nothing> {
+            chartGameRepository.clearLastChartGameId()
             val oldChartGame = chartGameRepository.fetchChartGame(gameId = gameId)
             chartGameRepository.updateChartGame(chartGame = oldChartGame.createFromQuit())
         }.delegateEmptyResultFlow()

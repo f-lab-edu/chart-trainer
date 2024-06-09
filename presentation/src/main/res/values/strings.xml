@@ -13,8 +13,14 @@
     <string name="home_lose">패</string>
     <string name="home_setting">설정</string>
     <string name="home_commission_rate">수수료</string>
+    <string name="home_commission_rate_setting">수수료 설정</string>
+    <string name="home_error_toast_commission_rate_setting">세자리 숫자로 입력해주세요</string>
+    <string name="home_done">완료</string>
     <string name="home_total_turn">전체 턴</string>
+    <string name="home_total_turn_setting">전체 턴 설정</string>
+    <string name="home_error_toast_turn_setting">50~100 으로 설정해주세요</string>
     <string name="home_tick_unit">봉 단위</string>
+    <string name="home_tick_unit_setting">봉 단위 설정</string>
     <string name="home_there_is_on_going_game">진행 중인 게임이 있습니다.</string>
     <string name="home_continue_game">이어 하기</string>
     <string name="home_quit_game">게임 종료</string>

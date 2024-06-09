@@ -10,7 +10,7 @@ data class HomeState(
     val bottomButtonState: HomeBottomButtonUi = HomeBottomButtonUi.Loading,
     val screenLoading: Boolean = true,
     val error: Boolean = false,
-    val settingBottomSheetState: SettingBottomSheetState = SettingBottomSheetState.None,
+    val settingDialogState: SettingDialogState = SettingDialogState.None,
     val onUserAction: (HomeScreenUserAction) -> Unit = {}
 )
 
@@ -41,6 +41,7 @@ data class UserInfoUi(
     val showWinningRateBar: Boolean =
         (rateOfWinning != 0f && rateOfLosing != 0f) && rateOfWinning + rateOfLosing == 1f
 }
+
 sealed interface HomeBottomButtonUi {
     object Loading : HomeBottomButtonUi
     data class Success(
@@ -48,9 +49,23 @@ sealed interface HomeBottomButtonUi {
     ) : HomeBottomButtonUi
 }
 
-sealed interface SettingBottomSheetState {
-    object None : SettingBottomSheetState
-    object CommissionRate : SettingBottomSheetState
-    object TotalTurn : SettingBottomSheetState
-    object TickUnit : SettingBottomSheetState
+sealed interface SettingDialogState {
+    object None : SettingDialogState
+    data class CommissionRate(
+        val initialValue: String,
+        val onDismissRequest: () -> Unit,
+        val onDone: (String) -> Unit
+    ) : SettingDialogState
+
+    data class TotalTurn(
+        val initialValue: String,
+        val onDismissRequest: () -> Unit,
+        val onDone: (String) -> Unit
+    ) : SettingDialogState
+
+    data class TickUnit(
+        val initialTickUnit: com.yessorae.domain.entity.tick.TickUnit,
+        val onDone: (com.yessorae.domain.entity.tick.TickUnit) -> Unit,
+        val onDismissRequest: () -> Unit
+    ) : SettingDialogState
 }

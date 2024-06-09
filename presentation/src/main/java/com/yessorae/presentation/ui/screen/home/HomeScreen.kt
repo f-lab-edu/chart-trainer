@@ -17,16 +17,22 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yessorae.presentation.R
 import com.yessorae.presentation.ui.designsystem.component.ChartTrainerLoadingProgressBar
 import com.yessorae.presentation.ui.designsystem.theme.Dimen
+import com.yessorae.presentation.ui.designsystem.util.showToast
+import com.yessorae.presentation.ui.screen.home.component.CommissionRateSettingDialog
 import com.yessorae.presentation.ui.screen.home.component.HomeBottomButton
 import com.yessorae.presentation.ui.screen.home.component.SettingInfoUi
+import com.yessorae.presentation.ui.screen.home.component.TickUnitSettingModelBottomSheet
+import com.yessorae.presentation.ui.screen.home.component.TotalTurnSettingDialog
 import com.yessorae.presentation.ui.screen.home.component.UserInfoUi
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenEvent
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenUserAction
+import com.yessorae.presentation.ui.screen.home.model.SettingDialogState
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -97,6 +103,36 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 )
             }
 
+            when (val data = screenState.settingDialogState) {
+                is SettingDialogState.CommissionRate -> {
+                    CommissionRateSettingDialog(
+                        initialValue = data.initialValue,
+                        onDismissRequest = data.onDismissRequest,
+                        onDone = data.onDone
+                    )
+                }
+
+                is SettingDialogState.TotalTurn -> {
+                    TotalTurnSettingDialog(
+                        initialValue = data.initialValue,
+                        onDismissRequest = data.onDismissRequest,
+                        onDone = data.onDone
+                    )
+                }
+
+                is SettingDialogState.TickUnit -> {
+                    TickUnitSettingModelBottomSheet(
+                        tickUnit = data.initialTickUnit,
+                        onDone = data.onDone,
+                        onDismissRequest = data.onDismissRequest
+                    )
+                }
+
+                else -> {
+                    // do nothing
+                }
+            }
+
             ChartTrainerLoadingProgressBar(
                 modifier = Modifier.fillMaxSize(),
                 show = screenState.screenLoading
@@ -107,11 +143,24 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
 
 @Composable
 fun HomeScreenEventHandler(screenEvent: SharedFlow<HomeScreenEvent>) {
+    val context = LocalContext.current
     LaunchedEffect(key1 = Unit) {
         screenEvent.collectLatest { event ->
             when (event) {
                 is HomeScreenEvent.NavigateToChartGameScreen -> {
                     // TODO::LATER CT-23 navigation 셋업 이후에 구현
+                }
+
+                is HomeScreenEvent.CommissionRateSettingError -> {
+                    context.showToast(
+                        text = context.getString(R.string.home_error_toast_commission_rate_setting)
+                    )
+                }
+
+                is HomeScreenEvent.TotalTurnSettingError -> {
+                    context.showToast(
+                        text = context.getString(R.string.home_error_toast_turn_setting)
+                    )
                 }
             }
         }

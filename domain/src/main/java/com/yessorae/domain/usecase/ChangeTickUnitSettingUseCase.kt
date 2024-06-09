@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flow
 class ChangeTickUnitSettingUseCase @Inject constructor(
     private val settingRepository: SettingRepository
 ) {
-    suspend operator fun invoke(tickUnit: TickUnit): Flow<Result<Unit>> =
+    operator fun invoke(tickUnit: TickUnit): Flow<Result<Unit>> =
         flow<Nothing> {
             settingRepository.updateTickUnit(tickUnit)
         }.delegateEmptyResultFlow()

@@ -30,8 +30,8 @@ class UpdateNextTickUseCase @Inject constructor(
                 val oldUser: User = userRepository.fetchUser()
                 userRepository.updateUser(
                     oldUser.copyFrom(
-                        profit = newChartGame.totalProfit.value,
-                        rateOfProfit = newChartGame.rateOfProfit
+                        profit = newChartGame.accumulatedTotalProfit.value,
+                        rateOfProfit = newChartGame.accumulatedRateOfProfit
                     )
                 )
                 chartGameRepository.clearLastChartGameId()

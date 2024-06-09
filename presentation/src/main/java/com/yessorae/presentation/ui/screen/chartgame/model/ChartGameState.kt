@@ -23,8 +23,8 @@ data class ChartGameScreenState(
 ) {
     val isBeforeStart = currentTurn <= 1
     val enableChangeChartButton: Boolean = isGameEnd.not()
-    val enabledBuyButton: Boolean = (currentTurn > 0 || totalProfit > 0.0) && isGameEnd.not()
-    val enabledSellButton: Boolean = (currentTurn > 0 && totalProfit > 0.0) && isGameEnd.not()
+    val enabledBuyButton: Boolean = (currentTurn > 0 || totalProfit != 0.0) && isGameEnd.not()
+    val enabledSellButton: Boolean = (currentTurn > 0 && totalProfit != 0.0) && isGameEnd.not()
     val enabledNextTurnButton: Boolean = currentTurn != totalTurn && isGameEnd.not()
 }
 

@@ -26,8 +26,12 @@ data class Trade(
     // 수수료
     val commission: Money = totalTradeMoney * commissionRate
 
-    // 실현 손익
-    val profit: Money = ((stockPrice - ownedAverageStockPrice) * count) - commission
+    // 실현 손익, 매도할 때만 유효
+    val profit: Money = if (type.isBuy()) {
+        Money(0.0)
+    } else {
+        ((stockPrice - ownedAverageStockPrice) * count) - commission
+    }
 
     companion object {
         internal fun new(

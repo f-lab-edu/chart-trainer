@@ -3,6 +3,7 @@ package com.yessorae.presentation.ui.screen.home.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -57,27 +58,33 @@ fun HomeBottomButton(
                             color = StockUpColor
                         )
 
-                        DefaultTextButton(
-                            text = stringResource(id = R.string.home_quit_game),
-                            onClick = onClickQuitInProgressChartGame,
-                            modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.textButtonColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                                contentColor = StockUpColor
-                            ),
-                            shape = MaterialTheme.shapes.small
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            DefaultTextButton(
+                                text = stringResource(id = R.string.home_quit_game),
+                                onClick = onClickQuitInProgressChartGame,
+                                modifier = Modifier.weight(1f),
+                                colors = ButtonDefaults.textButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                                    contentColor = StockUpColor
+                                ),
+                                shape = MaterialTheme.shapes.small
+                            )
 
-                        DefaultTextButton(
-                            text = stringResource(id = R.string.home_continue_game),
-                            onClick = onClickKeepGoingChartGame,
-                            modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.textButtonColors(
-                                containerColor = StockUpColor,
-                                contentColor = TradeTextColor
-                            ),
-                            shape = MaterialTheme.shapes.small
-                        )
+                            DefaultTextButton(
+                                text = stringResource(id = R.string.home_continue_game),
+                                onClick = onClickKeepGoingChartGame,
+                                modifier = Modifier.weight(1f),
+                                colors = ButtonDefaults.textButtonColors(
+                                    containerColor = StockUpColor,
+                                    contentColor = TradeTextColor
+                                ),
+                                shape = MaterialTheme.shapes.small
+                            )
+                        }
                     }
                 } else {
                     DefaultTextButton(

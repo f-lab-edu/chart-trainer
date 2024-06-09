@@ -24,8 +24,8 @@ class QuitChartGameUseCase @Inject constructor(
             val oldUser: User = userRepository.fetchUser()
             userRepository.updateUser(
                 oldUser.copyFrom(
-                    profit = oldChartGame.totalProfit.value,
-                    rateOfProfit = oldChartGame.rateOfProfit
+                    profit = oldChartGame.accumulatedTotalProfit.value,
+                    rateOfProfit = oldChartGame.accumulatedRateOfProfit
                 )
             )
         }.delegateEmptyResultFlow()

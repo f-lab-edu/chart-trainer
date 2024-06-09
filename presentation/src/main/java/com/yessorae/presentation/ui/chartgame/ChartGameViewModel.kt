@@ -91,8 +91,8 @@ class ChartGameViewModel @Inject constructor(
                 old.copy(
                     currentTurn = currentTurn,
                     totalTurn = totalTurn,
-                    totalProfit = totalProfit.value,
-                    rateOfProfit = rateOfProfit,
+                    totalProfit = accumulatedTotalProfit.value,
+                    rateOfProfit = accumulatedRateOfProfit,
                     gameProgress = currentGameProgress,
                     showLoading = false,
                     transactionVolume = visibleTicks.asTransactionVolume(),
@@ -105,7 +105,7 @@ class ChartGameViewModel @Inject constructor(
                             gameId = id,
                             ownedAverageStockPrice = ownedAverageStockPrice,
                             currentBalance = currentBalance,
-                            currentStockPrice = currentStockPrice,
+                            currentStockPrice = currentClosePrice,
                             currentTurn = currentTurn,
                             ownedStockCount = ownedStockCount
                         )

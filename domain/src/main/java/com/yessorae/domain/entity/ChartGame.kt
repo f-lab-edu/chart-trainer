@@ -21,11 +21,13 @@ data class ChartGame(
     // 유저의 게임 강제 종료 여부
     val isQuit: Boolean
 ) {
+    // 현재 턴의까지의 차트 데이터
     val visibleTicks: List<Tick> =
         chart.ticks
             .sortedBy { it.startTimestamp }
             .subList(0, chart.ticks.size - totalTurn + currentTurn - 1)
 
+    // 보유 주식 수량
     val ownedStockCount = trades.sumOf { trade ->
         if (trade.type.isBuy()) {
             trade.count
@@ -34,6 +36,7 @@ data class ChartGame(
         }
     }
 
+    // 보유 주식 총 가치
     private val ownedTotalStockPrice = trades.sumOf { trade ->
         if (trade.type.isBuy()) {
             trade.totalTradeMoney.value
@@ -42,28 +45,29 @@ data class ChartGame(
         }
     }
 
+    // 현재 보유 주식 평단가
     val ownedAverageStockPrice = if (ownedStockCount != 0) {
         Money(ownedTotalStockPrice / ownedStockCount)
     } else {
         Money(0.0)
     }
 
-    private val currentClosePrice: Money = (visibleTicks.lastOrNull()?.closePrice ?: Money(0.0))
+    // 현재 종가
+    val currentClosePrice: Money = (visibleTicks.lastOrNull()?.closePrice ?: Money(0.0))
 
-    val totalProfit: Money = if (ownedStockCount != 0) {
+    // 누적 수익
+    val accumulatedTotalProfit: Money = trades.fold(Money(0.0)) { acc, trade ->
+        acc + trade.profit
+    } + if (ownedStockCount != 0) {
         currentClosePrice - ownedAverageStockPrice
     } else {
         Money(0.0)
     }
 
-    val rateOfProfit: Double = if (ownedStockCount != 0) {
-        (totalProfit / ownedAverageStockPrice).value * 100
-    } else {
-        0.0
-    }
+    // 누적 수익률
+    val accumulatedRateOfProfit: Double = (accumulatedTotalProfit / startBalance).value
 
-    val currentStockPrice: Money = visibleTicks.lastOrNull()?.closePrice ?: Money(0.0)
-
+    // 현재 게임 진행률
     val currentGameProgress: Float = currentTurn / totalTurn.toFloat()
 
     // 게임 모든 턴을 끝까지 완료한 경우 true

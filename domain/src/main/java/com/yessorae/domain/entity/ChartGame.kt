@@ -47,7 +47,7 @@ data class ChartGame(
         if (trade.type.isBuy()) {
             trade.totalTradeMoney.value
         } else {
-            -(trade.totalTradeMoney.value)
+            -trade.totalTradeMoney.value
         }
     }
 

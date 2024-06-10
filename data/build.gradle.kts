@@ -75,7 +75,7 @@ dependencies {
     implementation(Dependency.Common.HILT)
     kapt(Dependency.Common.HILT_COMPILER)
 
-    implementation(Dependency.Data.KOTOIN_SERIALIZATION_JSON)
+    implementation(Dependency.Common.KOTOIN_SERIALIZATION_JSON)
 
     testImplementation(Dependency.Common.JUNIT)
     androidTestImplementation(Dependency.Common.JUNIT_EXT)

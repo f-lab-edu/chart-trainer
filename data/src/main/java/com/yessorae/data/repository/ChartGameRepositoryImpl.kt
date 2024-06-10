@@ -17,6 +17,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -85,14 +86,14 @@ class ChartGameRepositoryImpl @Inject constructor(
         }
 
     override fun fetchLastChartGameId(): Flow<Long?> {
-        TODO("Not yet implemented")
+        return emptyFlow() // TODO::LATER [CT-5-2] 에서 구현됨
     }
 
     override suspend fun clearLastChartGameId() {
-        TODO("Not yet implemented")
+        // TODO::LATER [CT-5-2] 에서 구현됨
     }
 
     override suspend fun updateLastChartGameId(gameId: Long) {
-        TODO("Not yet implemented")
+        // TODO::LATER [CT-5-2] 에서 구현됨
     }
 }

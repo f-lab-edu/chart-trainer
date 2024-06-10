@@ -51,7 +51,7 @@ class ChartRepositoryImpl @Inject constructor(
             )
 
         // 서버에서 가져온 차트가 totalTurn 보다 작으면 다시 요청
-        if ((dto.ticks?.size ?: 0) < totalTurn) {
+        if (dto.ticks.size < totalTurn) {
             return fetchNewChartRandomlyWithRetry(
                 currentRetryCount = currentRetryCount + 1,
                 totalTurn = totalTurn

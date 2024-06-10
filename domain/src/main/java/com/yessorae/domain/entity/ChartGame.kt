@@ -21,11 +21,17 @@ data class ChartGame(
     // 유저의 게임 강제 종료 여부
     val isQuit: Boolean
 ) {
+
+    private val sortedTicks = chart.ticks.sortedBy { it.startTimestamp }
+
+    private val lastVisibleIndex = (chart.ticks.size - 1) - (totalTurn - currentTurn)
+
     // 현재 턴의까지의 차트 데이터
-    val visibleTicks: List<Tick> =
-        chart.ticks
-            .sortedBy { it.startTimestamp }
-            .subList(0, chart.ticks.size - totalTurn + currentTurn - 1)
+    val visibleTicks: List<Tick> = if (chart.ticks.size <= lastVisibleIndex) {
+        sortedTicks
+    } else {
+        sortedTicks.subList(0, lastVisibleIndex)
+    }
 
     // 보유 주식 수량
     val ownedStockCount = trades.sumOf { trade ->
@@ -41,7 +47,7 @@ data class ChartGame(
         if (trade.type.isBuy()) {
             trade.totalTradeMoney.value
         } else {
-            -(trade.totalTradeMoney.value)
+            -trade.totalTradeMoney.value
         }
     }
 

@@ -118,15 +118,11 @@ fun HomeScreenEventHandler(screenEvent: SharedFlow<HomeScreenEvent>) {
                 }
 
                 is HomeScreenEvent.CommissionRateSettingError -> {
-                    context.showToast(
-                        text = context.getString(R.string.home_error_toast_commission_rate_setting)
-                    )
+                    context.showToast(id = R.string.home_error_toast_commission_rate_setting)
                 }
 
                 is HomeScreenEvent.TotalTurnSettingError -> {
-                    context.showToast(
-                        text = context.getString(R.string.home_error_toast_turn_setting)
-                    )
+                    context.showToast(id = R.string.home_error_toast_turn_setting)
                 }
             }
         }

@@ -13,7 +13,7 @@ data class ChartDto(
     @SerializedName("request_id")
     val requestId: String,
     @SerializedName("results")
-    val ticks: List<TickDto>?,
+    val ticks: List<TickDto> = listOf(),
     @SerializedName("resultsCount")
     val ticksCount: Int,
     val status: String
@@ -22,9 +22,9 @@ data class ChartDto(
 fun ChartDto.asDomainModel(tickUnit: TickUnit): Chart {
     return Chart(
         tickerSymbol = ticker,
-        startDateTime = ticks?.firstOrNull()?.startTimestamp?.toLocalDateTime(),
-        endDateTime = ticks?.lastOrNull()?.startTimestamp?.toLocalDateTime(),
-        ticks = ticks?.map(TickDto::asDomainModel) ?: listOf(),
+        startDateTime = ticks.firstOrNull()?.startTimestamp?.toLocalDateTime(),
+        endDateTime = ticks.lastOrNull()?.startTimestamp?.toLocalDateTime(),
+        ticks = ticks.map(TickDto::asDomainModel) ?: listOf(),
         tickUnit = tickUnit
     )
 }

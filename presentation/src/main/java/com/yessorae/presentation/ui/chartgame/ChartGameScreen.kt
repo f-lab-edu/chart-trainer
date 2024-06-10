@@ -104,27 +104,25 @@ private fun ChartGameEventHandler(screenEvent: SharedFlow<ChartGameEvent>) {
         screenEvent.collectLatest { event ->
             when (event) {
                 is ChartGameEvent.InputBuyingStockCount -> {
-                    context.showToast(context.getString(R.string.chart_game_toast_trade_buy))
+                    context.showToast(R.string.chart_game_toast_trade_buy)
                 }
 
                 is ChartGameEvent.InputSellingStockCount -> {
-                    context.showToast(context.getString(R.string.chart_game_toast_trade_sell))
+                    context.showToast(R.string.chart_game_toast_trade_sell)
                 }
 
                 is ChartGameEvent.TradeFail -> {
-                    context.showToast(context.getString(R.string.chart_game_toast_trade_fail))
+                    context.showToast(R.string.chart_game_toast_trade_fail)
                 }
 
                 is ChartGameEvent.HardToFetchTrade -> {
                     // TODO::LATER #5-유저(익명) 정보 확인/수정 기능이 추가되면 Screen 뒤로가기 추가
-                    context.showToast(
-                        context.getString(R.string.chart_game_toast_hard_to_fetch_trade)
-                    )
+                    context.showToast(R.string.chart_game_toast_hard_to_fetch_trade)
                 }
 
                 is ChartGameEvent.GameHasEnded -> {
                     // TODO::LATER #5-유저(익명) 정보 확인/수정 기능이 추가되면 Screen 뒤로가기로 변경
-                    context.showToast(context.getString(R.string.chart_game_toast_game_has_ended))
+                    context.showToast(R.string.chart_game_toast_game_has_ended)
                 }
 
                 is ChartGameEvent.MoveToBack -> {

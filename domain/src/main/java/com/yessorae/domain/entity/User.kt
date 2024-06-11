@@ -2,7 +2,9 @@ package com.yessorae.domain.entity
 
 import com.yessorae.domain.common.DefaultValues
 import com.yessorae.domain.entity.value.Money
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class User(
     val balance: Money,
     val winCount: Int,

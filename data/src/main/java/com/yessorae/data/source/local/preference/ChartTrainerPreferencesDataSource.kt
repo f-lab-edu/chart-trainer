@@ -7,21 +7,18 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.yessorae.domain.common.DefaultValues.DEFAULT_COMMISSION_RATE
 import com.yessorae.domain.common.DefaultValues.DEFAULT_TOTAL_TURN
-import com.yessorae.domain.common.DefaultValues.FIRST_CURRENT_BALANCE
 import com.yessorae.domain.common.DefaultValues.defaultTickUnit
 import com.yessorae.domain.entity.tick.TickUnit
-import com.yessorae.domain.entity.value.Money
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
 class ChartTrainerPreferencesDataSource @Inject constructor(
-    private val appPreference: DataStore<Preferences>
+    appPreference: DataStore<Preferences>
 ) {
     private val commissionRateKey = doublePreferencesKey("commission_rate")
     private val totalTurnKey = intPreferencesKey("total_turn")
-    private val currentBalanceKey = doublePreferencesKey("current_balance")
     private val tickUnitKey = stringPreferencesKey("tick_unit")
 
     private val data: Flow<Preferences> = appPreference.data
@@ -30,12 +27,8 @@ class ChartTrainerPreferencesDataSource @Inject constructor(
         preferences[commissionRateKey] ?: DEFAULT_COMMISSION_RATE
     }
 
-    val totalTurnFlow: Flow<Int?> = data.map { preferences ->
+    val totalTurnFlow: Flow<Int> = data.map { preferences ->
         preferences[totalTurnKey] ?: DEFAULT_TOTAL_TURN
-    }
-
-    val currentBalanceFlow: Flow<Money?> = data.map { preferences ->
-        Money(value = preferences[currentBalanceKey] ?: FIRST_CURRENT_BALANCE)
     }
 
     val tickUnitFlow: Flow<TickUnit> = data.map { preferences ->
@@ -48,9 +41,6 @@ class ChartTrainerPreferencesDataSource @Inject constructor(
         commissionRateFlow.firstOrNull() ?: DEFAULT_COMMISSION_RATE
 
     suspend fun getTotalTurn(): Int = totalTurnFlow.firstOrNull() ?: DEFAULT_TOTAL_TURN
-
-    suspend fun getCurrentBalance(): Money =
-        currentBalanceFlow.firstOrNull() ?: Money(FIRST_CURRENT_BALANCE)
 
     suspend fun getTickUnit(): TickUnit = tickUnitFlow.firstOrNull() ?: defaultTickUnit
 }

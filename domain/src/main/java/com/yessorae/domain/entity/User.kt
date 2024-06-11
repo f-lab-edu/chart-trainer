@@ -1,5 +1,6 @@
 package com.yessorae.domain.entity
 
+import com.yessorae.domain.common.DefaultValues
 import com.yessorae.domain.entity.value.Money
 
 data class User(
@@ -11,4 +12,28 @@ data class User(
 //    val isAnonnymous: Boolean,
 //    val profileImg: String?,
 //    val nickname: String,
-)
+) {
+    fun copyFrom(
+        profit: Double,
+        rateOfProfit: Double
+    ): User {
+        val oldTotalGameCount = winCount + loseCount
+        return User(
+            balance = balance + Money(profit),
+            winCount = winCount + (if (profit > 0) 1 else 0),
+            loseCount = loseCount + (if (profit < 0) 1 else 0),
+            averageRateOfProfit =
+            ((averageRateOfProfit * oldTotalGameCount) + rateOfProfit) / (oldTotalGameCount + 1)
+        )
+    }
+
+    companion object {
+        fun createInitialUser() =
+            User(
+                balance = Money(DefaultValues.FIRST_CURRENT_BALANCE),
+                winCount = 0,
+                loseCount = 0,
+                averageRateOfProfit = 0.0
+            )
+    }
+}

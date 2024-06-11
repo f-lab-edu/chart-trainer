@@ -28,7 +28,7 @@ class ChangeChartUseCase @Inject constructor(
             chartGameRepository.updateChartGame(
                 chartGame = oldChartGame.copyFrom(
                     newChart = chartRepository.fetchNewChartRandomly(
-                        totalTurn = userRepository.fetchTotalTurnConfig()
+                        totalTurn = userRepository.fetchTotalTurn()
                     )
                 )
             )

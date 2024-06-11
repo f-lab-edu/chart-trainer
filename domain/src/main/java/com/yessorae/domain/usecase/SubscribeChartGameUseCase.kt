@@ -16,15 +16,17 @@ class SubscribeChartGameUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(gameId: Long?): Flow<Result<ChartGame>> {
         if (gameId == null) {
-            val totalTurn = userRepository.fetchTotalTurnConfig()
+            val totalTurn = userRepository.fetchTotalTurn()
 
             val newGameId = chartGameRepository.createNewChartGame(
                 chartGame = ChartGame.new(
                     chart = chartRepository.fetchNewChartRandomly(totalTurn = totalTurn),
                     totalTurn = totalTurn,
-                    startBalance = userRepository.fetchCurrentBalance()
+                    startBalance = userRepository.fetchUser().balance
                 )
             )
+
+            chartGameRepository.updateLastChartGameId(gameId = newGameId)
 
             return chartGameRepository
                 .fetchChartFlow(gameId = newGameId)

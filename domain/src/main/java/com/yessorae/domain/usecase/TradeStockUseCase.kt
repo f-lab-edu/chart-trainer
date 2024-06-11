@@ -25,7 +25,7 @@ class TradeStockUseCase @Inject constructor(
                     count = count,
                     turn = turn,
                     type = type,
-                    commissionRate = userRepository.fetchCommissionRateConfig()
+                    commissionRate = userRepository.fetchCommissionRate()
                 )
 
                 chartGameRepository.updateChartGame(

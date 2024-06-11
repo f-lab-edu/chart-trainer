@@ -87,20 +87,12 @@ fun CommissionRateSettingDialog(
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            TextFieldBelowDecimalPoint(
-                                text = value.firstOrNull() ?: '0',
-                                isFocused = value.isEmpty()
-                            )
-
-                            TextFieldBelowDecimalPoint(
-                                text = value.getOrNull(1) ?: '0',
-                                isFocused = value.length == 1
-                            )
-
-                            TextFieldBelowDecimalPoint(
-                                text = value.getOrNull(2) ?: '0',
-                                isFocused = value.length == 2
-                            )
+                            (0..2).forEach { index ->
+                                TextFieldBelowDecimalPoint(
+                                    text = value.getOrNull(index = index) ?: '0',
+                                    isFocused = value.length == index
+                                )
+                            }
                         }
                     },
                     textStyle = MaterialTheme.typography.bodyLarge

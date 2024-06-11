@@ -8,6 +8,7 @@ import com.yessorae.domain.common.Result
 import com.yessorae.domain.entity.ChartGame
 import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
+import com.yessorae.domain.exception.ChartGameException
 import com.yessorae.domain.usecase.ChangeChartUseCase
 import com.yessorae.domain.usecase.QuitChartGameUseCase
 import com.yessorae.domain.usecase.SubscribeChartGameUseCase
@@ -69,34 +70,53 @@ class ChartGameViewModel @Inject constructor(
                 when (result) {
                     is Result.Loading -> _screenState.update { old -> old.copy(showLoading = true) }
                     is Result.Success -> updateGameData(result.data)
-                    is Result.Failure -> handleError(result.throwable)
+                    is Result.Failure -> {
+                        when (result.throwable) {
+                            is ChartGameException.HardToFetchTradeException -> {
+                                emitScreenEvent(event = ChartGameEvent.HardToFetchTrade)
+                            }
+
+                            else -> {
+                                handleCommonFailure(result.throwable)
+                            }
+                        }
+                    }
                 }
             }
         }
 
-    private fun updateGameData(data: ChartGame) {
-        _screenState.update { old ->
-            old.copy(
-                currentTurn = data.currentTurn,
-                totalTurn = data.totalTurn,
-                gameProgress = data.currentGameProgress,
-                showLoading = false,
-                transactionVolume = data.chart.ticks.asTransactionVolume(),
-                candleStickChart = data.chart.ticks.asCandleStickChartUiState(),
-                onUserAction = { userAction ->
-                    handleChartGameScreenUserAction(
-                        userAction = userAction,
-                        gameId = data.id,
-                        ownedAverageStockPrice = data.ownedAverageStockPrice,
-                        currentBalance = data.currentBalance,
-                        currentStockPrice = data.currentStockPrice,
-                        currentTurn = data.currentTurn,
-                        ownedStockCount = data.ownedStockCount
-                    )
-                }
-            )
+    private fun updateGameData(data: ChartGame) =
+        with(data) {
+            _screenState.update { old ->
+                old.copy(
+                    currentTurn = currentTurn,
+                    totalTurn = totalTurn,
+                    totalProfit = accumulatedTotalProfit.value,
+                    rateOfProfit = accumulatedRateOfProfit,
+                    gameProgress = currentGameProgress,
+                    showLoading = false,
+                    transactionVolume = visibleTicks.asTransactionVolume(),
+                    candleStickChart = visibleTicks.asCandleStickChartUiState(),
+                    isGameComplete = isGameComplete,
+                    isGameEnd = isGameEnd,
+                    onUserAction = { userAction ->
+                        handleChartGameScreenUserAction(
+                            userAction = userAction,
+                            gameId = id,
+                            ownedAverageStockPrice = ownedAverageStockPrice,
+                            currentBalance = currentBalance,
+                            currentStockPrice = currentClosePrice,
+                            currentTurn = currentTurn,
+                            ownedStockCount = ownedStockCount
+                        )
+                    }
+                )
+            }
+
+            if (isGameComplete) {
+                emitScreenEvent(event = ChartGameEvent.GameHasEnded)
+            }
         }
-    }
 
     private fun handleChartGameScreenUserAction(
         userAction: ChartGameScreenUserAction,
@@ -146,9 +166,15 @@ class ChartGameViewModel @Inject constructor(
         }
     }
 
-    private fun changeChart(gameId: Long) {
-        changeChartUseCase(gameId = gameId).launchIn(viewModelScope)
-    }
+    private fun changeChart(gameId: Long) =
+        viewModelScope.launch {
+            changeChartUseCase(gameId = gameId).collect { result ->
+                when (result) {
+                    is Result.Loading -> _screenState.update { old -> old.copy(showLoading = true) }
+                    else -> _screenState.update { old -> old.copy(showLoading = false) }
+                }
+            }
+        }
 
     private fun showBuyOrderUi(
         gameId: Long,
@@ -232,7 +258,7 @@ class ChartGameViewModel @Inject constructor(
                     val newStockCount = maxAvailableStockCount * percentage
                     old.copy(
                         tradeOrderUi = old.tradeOrderUi.copy(
-                            stockCountInput = newStockCount.toString()
+                            stockCountInput = newStockCount.toInt().toString()
                         )
                     )
                 }
@@ -244,21 +270,26 @@ class ChartGameViewModel @Inject constructor(
                         tradeOrderUi = old.tradeOrderUi.copy(
                             stockCountInput = when (val keyPad = userAction.keyPad) {
                                 is TradeOrderKeyPad.Number -> {
-                                    val oldValue = userAction.stockCountInput ?: ""
-                                    val newValue = oldValue + keyPad.value
-                                    newValue.toInt().coerceAtMost(maxAvailableStockCount).toString()
+                                    val oldValue = userAction.stockCountInput
+                                    if (oldValue.isEmpty() && keyPad.value == "0") {
+                                        ""
+                                    } else {
+                                        val newValue = oldValue + keyPad.value
+                                        newValue.toInt().coerceAtMost(maxAvailableStockCount)
+                                            .toString()
+                                    }
                                 }
 
                                 is TradeOrderKeyPad.Delete -> {
                                     val oldInput = userAction.stockCountInput
-                                    if (oldInput.isNullOrEmpty()) {
-                                        null
-                                    } else {
+                                    if (oldInput.isNotEmpty()) {
                                         oldInput.take(oldInput.length - 1)
+                                    } else {
+                                        oldInput
                                     }
                                 }
 
-                                is TradeOrderKeyPad.DeleteAll -> null
+                                is TradeOrderKeyPad.DeleteAll -> ""
                             }
                         )
                     )
@@ -343,10 +374,11 @@ class ChartGameViewModel @Inject constructor(
 
             is TradeOrderUiUserAction.ClickRatioShortCut -> {
                 _screenState.update { old ->
+                    val percentage = (userAction.percentage.value / 100.0)
+                    val newStockCount = ownedStockCount * percentage
                     old.copy(
                         tradeOrderUi = old.tradeOrderUi.copy(
-                            stockCountInput =
-                            (ownedStockCount * (userAction.percentage.value / 100.0)).toString()
+                            stockCountInput = newStockCount.toInt().toString()
                         )
                     )
                 }
@@ -358,17 +390,17 @@ class ChartGameViewModel @Inject constructor(
                         tradeOrderUi = old.tradeOrderUi.copy(
                             stockCountInput = when (val keyPad = userAction.keyPad) {
                                 is TradeOrderKeyPad.Number -> {
-                                    val oldValue = userAction.stockCountInput ?: ""
+                                    val oldValue = userAction.stockCountInput
                                     val newValue = oldValue + keyPad.value
                                     newValue.toInt().coerceAtMost(ownedStockCount).toString()
                                 }
 
                                 is TradeOrderKeyPad.Delete -> {
                                     val oldInput = userAction.stockCountInput
-                                    if (oldInput.isNullOrEmpty()) {
-                                        null
-                                    } else {
+                                    if (oldInput.isNotEmpty()) {
                                         oldInput.take(oldInput.length - 1)
+                                    } else {
+                                        oldInput
                                     }
                                 }
 
@@ -432,7 +464,8 @@ class ChartGameViewModel @Inject constructor(
             _screenEvent.emit(event)
         }
 
-    private fun handleError(throwable: Throwable) {
+    private fun handleCommonFailure(throwable: Throwable) {
+        _screenState.update { old -> old.copy(showLoading = false) }
         logger.cehLog(
             throwable = throwable
         )

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -59,6 +60,41 @@ fun ChartGameBottomBarUi(
     onClickSellButton: () -> Unit,
     onClickNextTurnButton: () -> Unit
 ) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            thickness = (0.5).dp,
+            color = MaterialTheme.colorScheme.surfaceVariant
+        )
+
+        ChartGameBottomBar(
+            currentTurn = currentTurn,
+            totalTurn = totalTurn,
+            gameProgress = gameProgress,
+            tickUnit = tickUnit,
+            enabledBuyButton = enabledBuyButton,
+            enabledSellButton = enabledSellButton,
+            enabledNextTurnButton = enabledNextTurnButton,
+            onClickBuyButton = onClickBuyButton,
+            onClickSellButton = onClickSellButton,
+            onClickNextTurnButton = onClickNextTurnButton
+        )
+    }
+}
+
+@Composable
+private fun ChartGameBottomBar(
+    currentTurn: Int,
+    totalTurn: Int,
+    gameProgress: Float,
+    tickUnit: TickUnit,
+    enabledBuyButton: Boolean,
+    enabledSellButton: Boolean,
+    enabledNextTurnButton: Boolean,
+    onClickBuyButton: () -> Unit,
+    onClickSellButton: () -> Unit,
+    onClickNextTurnButton: () -> Unit
+) {
     val density = LocalDensity.current
     var layoutHeight by remember {
         mutableStateOf(0.dp)
@@ -84,7 +120,9 @@ fun ChartGameBottomBarUi(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
             ) {
                 Text(
                     text = buildAnnotatedString {
@@ -181,7 +219,9 @@ private fun ChartGameNextButton(
             .padding(8.dp),
         contentAlignment = Alignment.Center
     ) {
-        Column {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Icon(
                 imageVector = ChartTrainerIcons.NextTick,
                 contentDescription = null,
@@ -200,7 +240,7 @@ private fun ChartGameNextButton(
 @DevicePreviews
 @Composable
 fun ChartGameBottomBarUiPreview() {
-    ChartGameBottomBarUi(
+    ChartGameBottomBar(
         currentTurn = 20,
         totalTurn = 50,
         gameProgress = 20 / 50f,

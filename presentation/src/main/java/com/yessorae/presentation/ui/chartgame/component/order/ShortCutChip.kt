@@ -35,10 +35,7 @@ fun ShortCutChip(
             style = MaterialTheme.typography.bodySmall,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(
-                vertical = 4.dp,
-                horizontal = 8.dp
-            )
+            modifier = Modifier.padding(vertical = 12.dp)
         )
     }
 }

@@ -3,6 +3,7 @@ package com.yessorae.presentation.ui.chartgame.model
 import com.yessorae.domain.common.DefaultValues.defaultTickUnit
 import com.yessorae.domain.entity.tick.Tick
 import com.yessorae.domain.entity.tick.TickUnit
+import java.lang.NumberFormatException
 
 data class ChartGameScreenState(
     val currentTurn: Int = 0,
@@ -10,18 +11,21 @@ data class ChartGameScreenState(
     val totalProfit: Double = 0.0,
     val rateOfProfit: Double = 0.0,
     val gameProgress: Float = 0f,
-    val showLoading: Boolean = false,
+    val showLoading: Boolean = true,
     val tickUnit: TickUnit = defaultTickUnit,
     // 아래와 같이 라이브러리에 맞춘 형태로 지양하는 UI 모델 형태이다. 변경 고민중.
     val transactionVolume: List<Double> = listOf(),
     val candleStickChart: CandleStickChartUi = CandleStickChartUi(),
+    val isGameComplete: Boolean = false,
+    val isGameEnd: Boolean = false,
     val tradeOrderUi: TradeOrderUi = TradeOrderUi.Hide,
     val onUserAction: (ChartGameScreenUserAction) -> Unit = {}
 ) {
-    val isStart = totalTurn > 0
-    val enabledBuyButton: Boolean = currentTurn != totalTurn
-    val enabledSellButton: Boolean = currentTurn == 0
-    val enabledNextTurnButton: Boolean = currentTurn != totalTurn
+    val isBeforeStart = currentTurn <= 1
+    val enableChangeChartButton: Boolean = isGameEnd.not()
+    val enabledBuyButton: Boolean = (currentTurn > 0 || totalProfit != 0.0) && isGameEnd.not()
+    val enabledSellButton: Boolean = (currentTurn > 0 && totalProfit != 0.0) && isGameEnd.not()
+    val enabledNextTurnButton: Boolean = currentTurn != totalTurn && isGameEnd.not()
 }
 
 data class CandleStickChartUi(
@@ -32,10 +36,6 @@ data class CandleStickChartUi(
 ) {
     private val isEmpty: Boolean =
         opening.isEmpty() || closing.isEmpty() || low.isEmpty() || high.isEmpty()
-    val displayable: Boolean = isEmpty.not() &&
-        opening.size == closing.size &&
-        closing.size == low.size &&
-        low.size == high.size
 }
 
 sealed class TradeOrderUi {
@@ -43,7 +43,7 @@ sealed class TradeOrderUi {
         val showKeyPad: Boolean = false,
         val maxAvailableStockCount: Int = 0,
         val currentStockPrice: Double = 0.0,
-        val stockCountInput: String? = null,
+        val stockCountInput: String = "",
         val onUserAction: (TradeOrderUiUserAction) -> Unit = {}
     ) : TradeOrderUi() {
         val totalBuyingStockPrice: Double by lazy {
@@ -58,7 +58,7 @@ sealed class TradeOrderUi {
         val showKeyPad: Boolean = false,
         val maxAvailableStockCount: Int = 0,
         val currentStockPrice: Double = 0.0,
-        val stockCountInput: String? = null,
+        val stockCountInput: String = "",
         val onUserAction: (TradeOrderUiUserAction) -> Unit = {}
     ) : TradeOrderUi() {
         val totalBuyingStockPrice: Double by lazy {
@@ -77,7 +77,14 @@ sealed class TradeOrderUi {
         private fun getTotalBuyingStockPrice(
             currentStockPrice: Double,
             stockCountInput: String?
-        ): Double = currentStockPrice * (stockCountInput?.toInt() ?: 0)
+        ): Double {
+            val input = try {
+                stockCountInput?.toInt() ?: 0
+            } catch (e: NumberFormatException) {
+                0
+            }
+            return currentStockPrice * input
+        }
 
         fun TradeOrderUi.copy(
             showKeyPad: Boolean? = null,

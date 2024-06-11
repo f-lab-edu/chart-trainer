@@ -1,11 +1,23 @@
 package com.yessorae.domain.repository
 
-import com.yessorae.domain.entity.value.Money
+import com.yessorae.domain.entity.User
+import com.yessorae.domain.entity.tick.TickUnit
+import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    suspend fun fetchCommissionRateConfig(): Double
+    fun fetchUserAsFlow(): Flow<User>
+    suspend fun fetchUser(): User
+    suspend fun updateUser(user: User)
 
-    suspend fun fetchTotalTurnConfig(): Int
+    fun fetchCommissionRateAsFlow(): Flow<Double>
+    suspend fun fetchCommissionRate(): Double
+    suspend fun updateCommissionRate(rate: Double)
 
-    suspend fun fetchCurrentBalance(): Money
+    fun fetchTotalTurnAsFlow(): Flow<Int>
+    suspend fun fetchTotalTurn(): Int
+    suspend fun updateTotalTurn(turn: Int)
+
+    fun fetchTickUnitAsFlow(): Flow<TickUnit>
+    suspend fun fetchTickUnit(): TickUnit
+    suspend fun updateTickUnit(tickUnit: TickUnit)
 }

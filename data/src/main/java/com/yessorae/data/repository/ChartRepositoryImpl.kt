@@ -10,6 +10,7 @@ import com.yessorae.data.source.network.polygon.model.chart.asDomainModel
 import com.yessorae.domain.common.ChartRequestArgumentHelper
 import com.yessorae.domain.entity.Chart
 import com.yessorae.domain.entity.tick.TickUnit
+import com.yessorae.domain.exception.ChartGameException
 import com.yessorae.domain.repository.ChartRepository
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -23,19 +24,48 @@ class ChartRepositoryImpl @Inject constructor(
     @Dispatcher(ChartTrainerDispatcher.IO)
     private val dispatcher: CoroutineDispatcher
 ) : ChartRepository {
-    override suspend fun fetchNewChartRandomly(): Chart =
+    override suspend fun fetchNewChartRandomly(totalTurn: Int): Chart =
         withContext(dispatcher) {
-            val chart = networkDataSource
-                .getChart(
-                    ticker = chartRequestArgumentHelper.getRandomTicker(),
-                    tickUnit = appPreferences.getTickUnit(),
-                    from = chartRequestArgumentHelper.getFromDate(),
-                    to = chartRequestArgumentHelper.getToDate()
-                )
-                .asDomainModel(TickUnit.DAY)
-
-            val chartId = localDBDataSource.insertChart(chart.asEntity())
-            localDBDataSource.insertTicks(chart.ticks.map { it.asEntity(chartId = chartId) })
-            chart.copy(id = chartId)
+            fetchNewChartRandomlyWithRetry(
+                currentRetryCount = 0,
+                totalTurn = totalTurn
+            )
         }
+
+    private suspend fun fetchNewChartRandomlyWithRetry(
+        currentRetryCount: Int,
+        totalTurn: Int
+    ): Chart {
+        // RETRY_COUNT 만큼 시도했는데도 실패하면 IllegalStateException 발생.
+        // 거의 발생하지 않아도 안전망 역할
+        if (currentRetryCount > RETRY_COUNT) {
+            throw ChartGameException.HardToFetchTradeException
+        }
+
+        val dto = networkDataSource
+            .getChart(
+                ticker = chartRequestArgumentHelper.getRandomTicker(),
+                tickUnit = appPreferences.getTickUnit(),
+                from = chartRequestArgumentHelper.getFromDate(),
+                to = chartRequestArgumentHelper.getToDate()
+            )
+
+        // 서버에서 가져온 차트가 totalTurn 보다 작으면 다시 요청
+        if (dto.ticks.size < totalTurn) {
+            return fetchNewChartRandomlyWithRetry(
+                currentRetryCount = currentRetryCount + 1,
+                totalTurn = totalTurn
+            )
+        }
+
+        val chart = dto.asDomainModel(TickUnit.DAY)
+
+        val chartId = localDBDataSource.insertChart(chart.asEntity())
+        localDBDataSource.insertTicks(chart.ticks.map { it.asEntity(chartId = chartId) })
+        return chart.copy(id = chartId)
+    }
+
+    companion object {
+        private const val RETRY_COUNT = 3
+    }
 }

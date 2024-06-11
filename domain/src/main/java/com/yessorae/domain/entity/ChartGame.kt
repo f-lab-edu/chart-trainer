@@ -21,29 +21,60 @@ data class ChartGame(
     // 유저의 게임 강제 종료 여부
     val isQuit: Boolean
 ) {
-    val totalProfit: Money = currentBalance - startBalance
 
-    val rateOfProfit: Double = (totalProfit / startBalance).value * 100
+    private val sortedTicks = chart.ticks.sortedBy { it.startTimestamp }
 
-    val tradeCount: Int
-        get() = trades.size
+    private val lastVisibleIndex = (chart.ticks.size - 1) - (totalTurn - currentTurn)
 
-    val totalCommission: Money = Money(trades.sumOf { trade -> trade.commission.value })
+    // 현재 턴의까지의 차트 데이터
+    val visibleTicks: List<Tick> = if (chart.ticks.size <= lastVisibleIndex) {
+        sortedTicks
+    } else {
+        sortedTicks.subList(0, lastVisibleIndex)
+    }
 
-    val visibleTicks: List<Tick> =
-        chart.ticks
-            .sortedBy { it.startTimestamp }
-            .subList(0, chart.ticks.size - totalTurn + currentTurn - 1)
+    // 보유 주식 수량
+    val ownedStockCount = trades.sumOf { trade ->
+        if (trade.type.isBuy()) {
+            trade.count
+        } else {
+            -trade.count
+        }
+    }
 
-    val ownedStockCount = trades.sumOf { trade -> trade.count }
+    // 보유 주식 총 가치
+    private val ownedTotalStockPrice = trades.sumOf { trade ->
+        if (trade.type.isBuy()) {
+            trade.totalTradeMoney.value
+        } else {
+            -trade.totalTradeMoney.value
+        }
+    }
 
-    private val ownedTotalStockPrice = trades.sumOf { trade -> trade.totalTradeMoney.value }
+    // 현재 보유 주식 평단가
+    val ownedAverageStockPrice = if (ownedStockCount != 0) {
+        Money(ownedTotalStockPrice / ownedStockCount)
+    } else {
+        Money(0.0)
+    }
 
-    val ownedAverageStockPrice = Money(ownedTotalStockPrice / ownedStockCount)
+    // 현재 종가
+    val currentClosePrice: Money = (visibleTicks.lastOrNull()?.closePrice ?: Money(0.0))
 
-    val currentStockPrice: Money = visibleTicks.lastOrNull()?.closePrice ?: Money(0.0)
+    // 누적 수익
+    val accumulatedTotalProfit: Money = trades.fold(Money(0.0)) { acc, trade ->
+        acc + trade.profit
+    } + if (ownedStockCount != 0) {
+        currentClosePrice - ownedAverageStockPrice
+    } else {
+        Money(0.0)
+    }
 
-    val currentGameProgress: Float = currentTurn / totalTurn.toFloat() * 100f
+    // 누적 수익률
+    val accumulatedRateOfProfit: Double = (accumulatedTotalProfit / startBalance).value
+
+    // 현재 게임 진행률
+    val currentGameProgress: Float = currentTurn / totalTurn.toFloat()
 
     // 게임 모든 턴을 끝까지 완료한 경우 true
     val isGameComplete: Boolean = currentTurn == totalTurn
@@ -70,7 +101,7 @@ data class ChartGame(
     internal fun copyFrom(newTrade: Trade): ChartGame {
         return copy(
             trades = trades + newTrade,
-            currentBalance = currentBalance + newTrade.profit
+            currentBalance = currentBalance - newTrade.totalTradeMoney
         )
     }
 

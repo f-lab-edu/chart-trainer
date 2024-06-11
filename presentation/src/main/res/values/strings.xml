@@ -7,6 +7,8 @@
     <string name="chart_game_toast_trade_buy">%d 주를 매수했습니다.</string>
     <string name="chart_game_toast_trade_sell">%d 주를 매도했습니다.</string>
     <string name="chart_game_toast_trade_fail">알 수 없는 에러로 인해 주문을 실패했습니다.</string>
+    <string name="chart_game_toast_hard_to_fetch_trade">턴수를 줄여주세요. 조건에 맞는 차트를 찾기 어렵습니다.</string>
+    <string name="chart_game_toast_game_has_ended">게임이 종료되었습니다!</string>
 
     <!-- trade_order -->
     <string name="trade_order_input_request">주문 수량을 입력해주세요.</string>

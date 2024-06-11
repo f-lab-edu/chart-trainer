@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flow
 class UpdateNextTickUseCase @Inject constructor(
     private val chartGameRepository: ChartGameRepository
 ) {
-    suspend operator fun invoke(gameId: Long): Flow<Result<Unit>> =
+    operator fun invoke(gameId: Long): Flow<Result<Unit>> =
         flow<Nothing> {
             val newChartGame = chartGameRepository.fetchChartGame(gameId = gameId).getNextTurn()
 

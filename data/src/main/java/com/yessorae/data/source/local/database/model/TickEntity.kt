@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.yessorae.domain.entity.tick.Tick
+import com.yessorae.domain.entity.value.Money
 import java.time.LocalDateTime
 
 @Entity(tableName = TickEntity.NAME)
@@ -13,13 +14,13 @@ data class TickEntity(
     @ColumnInfo(name = COL_CHART_ID)
     val chartId: Long,
     @ColumnInfo(name = COL_OPEN_PRICE)
-    val openPrice: Double,
+    val openPrice: Money,
     @ColumnInfo(name = COL_MAX_PRICE)
-    val maxPrice: Double,
+    val maxPrice: Money,
     @ColumnInfo(name = COL_MIN_PRICE)
-    val minPrice: Double,
+    val minPrice: Money,
     @ColumnInfo(name = COL_CLOSE_PRICE)
-    val closePrice: Double,
+    val closePrice: Money,
     @ColumnInfo(name = COL_TRANSACTION_COUNT)
     val transactionCount: Int,
     @ColumnInfo(name = COL_START_TIMESTAMP)
@@ -27,7 +28,7 @@ data class TickEntity(
     @ColumnInfo(name = COL_TRADING_VOLUME)
     val tradingVolume: Int,
     @ColumnInfo(name = COL_VOLUME_WEIGHTED_AVERAGE_PRICE)
-    val volumeWeightedAveragePrice: Double
+    val volumeWeightedAveragePrice: Money
 ) {
     companion object {
         const val NAME = "table_tick"

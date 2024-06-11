@@ -13,7 +13,7 @@ class ChangeChartUseCase @Inject constructor(
     private val chartRepository: ChartRepository,
     private val chartGameRepository: ChartGameRepository
 ) {
-    suspend operator fun invoke(gameId: Long): Flow<Result<Unit>> =
+    operator fun invoke(gameId: Long): Flow<Result<Unit>> =
         flow<Nothing> {
             val oldChartGame = chartGameRepository.fetchChartGame(gameId = gameId)
 

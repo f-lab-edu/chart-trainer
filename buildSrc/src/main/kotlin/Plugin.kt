@@ -6,6 +6,7 @@ object Plugin {
     const val KTLINT = "org.jlleitschuh.gradle.ktlint"
     const val HILT = "com.google.dagger.hilt.android"
     const val KAPT = "kapt"
+    const val KOTLIN_SERIALIZATION = "plugin.serialization"
 
     object Version {
         const val ANDROID_APPLICATION = "8.1.2"

@@ -2,22 +2,14 @@ package com.yessorae.presentation.ui.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yessorae.domain.common.DefaultValues.DEFAULT_COMMISSION_RATE
-import com.yessorae.domain.common.DefaultValues.DEFAULT_TOTAL_TURN
 import com.yessorae.domain.common.DefaultValues.MAX_TOTAL_TURN
 import com.yessorae.domain.common.DefaultValues.MIN_TOTAL_TURN
-import com.yessorae.domain.common.DefaultValues.defaultTickUnit
 import com.yessorae.domain.common.Result
-import com.yessorae.domain.entity.User
 import com.yessorae.domain.usecase.ChangeCommissionRateSettingUseCase
 import com.yessorae.domain.usecase.ChangeTickUnitSettingUseCase
 import com.yessorae.domain.usecase.ChangeTotalTurnSettingUseCase
 import com.yessorae.domain.usecase.QuitChartGameUseCase
-import com.yessorae.domain.usecase.SubscribeCommissionRateSettingUseCase
-import com.yessorae.domain.usecase.SubscribeLastChartGameIdUseCase
-import com.yessorae.domain.usecase.SubscribeTickUnitSettingUseCase
-import com.yessorae.domain.usecase.SubscribeTotalTurnSettingUseCase
-import com.yessorae.domain.usecase.SubscribeUserUseCase
+import com.yessorae.domain.usecase.SubscribeHomeDataUseCase
 import com.yessorae.presentation.ui.screen.home.model.HomeBottomButtonUi
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenEvent
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenUserAction
@@ -31,8 +23,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -40,11 +32,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val subscribeUserUseCase: SubscribeUserUseCase,
-    private val subscribeCommissionRateSettingUseCase: SubscribeCommissionRateSettingUseCase,
-    private val subscribeTickUnitSettingUseCase: SubscribeTickUnitSettingUseCase,
-    private val subscribeTotalTurnSettingUseCase: SubscribeTotalTurnSettingUseCase,
-    private val lastChartGameIdUseCase: SubscribeLastChartGameIdUseCase,
+    private val subscribeUserDataUseCase: SubscribeHomeDataUseCase,
     private val changeCommissionRateSettingUseCase: ChangeCommissionRateSettingUseCase,
     private val changeTickUnitSettingUseCase: ChangeTickUnitSettingUseCase,
     private val changeTotalTurnSettingUseCase: ChangeTotalTurnSettingUseCase,
@@ -53,7 +41,7 @@ class HomeViewModel @Inject constructor(
     private val _screenState = MutableStateFlow(HomeState())
     val screenState: StateFlow<HomeState> = _screenState
         .onSubscription {
-            subscribeData()
+            subscribeUserData()
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
@@ -63,63 +51,63 @@ class HomeViewModel @Inject constructor(
     private val _screenEvent = MutableSharedFlow<HomeScreenEvent>()
     val screenEvent: SharedFlow<HomeScreenEvent> = _screenEvent.asSharedFlow()
 
-    private fun subscribeData() {
-        combine(
-            subscribeUserUseCase(),
-            subscribeCommissionRateSettingUseCase(),
-            subscribeTickUnitSettingUseCase(),
-            subscribeTotalTurnSettingUseCase(),
-            lastChartGameIdUseCase()
-        ) { userResult,
-            commissionRateResult,
-            tickUnitResult,
-            totalTurnResult,
-            lastChartGameIdResult ->
-
-            val loading = userResult.isLoading ||
-                commissionRateResult.isLoading ||
-                tickUnitResult.isLoading ||
-                totalTurnResult.isLoading
-
-            val error = userResult.isFailure ||
-                commissionRateResult.isFailure ||
-                tickUnitResult.isFailure ||
-                totalTurnResult.isFailure
-
-            val user = userResult.getOrNull() ?: User.createInitialUser()
-            val commissionRate = commissionRateResult.getOrNull() ?: DEFAULT_COMMISSION_RATE
-            val tickUnit = tickUnitResult.getOrNull() ?: defaultTickUnit
-            val totalTurn = totalTurnResult.getOrNull() ?: DEFAULT_TOTAL_TURN
-            val lastChartGameId = lastChartGameIdResult.getOrNull()
-
-            _screenState.update { old ->
-                old.copy(
-                    userInfoUi = old.userInfoUi.copy(
-                        currentBalance = user.balance,
-                        winCount = user.winCount,
-                        loseCount = user.loseCount,
-                        averageRateOfProfit = user.averageRateOfProfit.toFloat()
-                    ),
-                    settingInfoUi = old.settingInfoUi.copy(
-                        commissionRate = commissionRate.toFloat(),
-                        tickUnit = tickUnit,
-                        totalTurn = totalTurn
-                    ),
-                    screenLoading = loading,
-                    bottomButtonState = when (lastChartGameIdResult) {
-                        is Result.Loading -> HomeBottomButtonUi.Loading
-                        else -> HomeBottomButtonUi.Success(
-                            hasOnGoingCharGame = lastChartGameId != null
-                        )
-                    },
-                    error = loading.not() && error,
-                    onUserAction = { userAction ->
-                        handleUserAction(
-                            userAction = userAction,
-                            lastChartGameId = lastChartGameId
+    private fun subscribeUserData() {
+        subscribeUserDataUseCase().onEach { result ->
+            when (result) {
+                is Result.Loading -> {
+                    _screenState.update { old ->
+                        old.copy(
+                            screenLoading = true,
+                            error = false
                         )
                     }
-                )
+                }
+
+                is Result.Success -> {
+                    with(result.data) {
+                        _screenState.update { old ->
+                            old.copy(
+                                userInfoUi = old.userInfoUi.copy(
+                                    currentBalance = user.balance,
+                                    winCount = user.winCount,
+                                    loseCount = user.loseCount,
+                                    averageRateOfProfit = user.averageRateOfProfit.toFloat(),
+                                    rateOfWinning = user.rateOfWinning.toFloat(),
+                                    rateOfLosing = user.rateOfLosing.toFloat()
+                                ),
+                                settingInfoUi = old.settingInfoUi.copy(
+                                    commissionRate = commissionRate.toFloat(),
+                                    tickUnit = tickUnit,
+                                    totalTurn = totalTurn
+                                ),
+                                bottomButtonState = when (lastChartGameIdResult) {
+                                    is Result.Loading -> HomeBottomButtonUi.Loading
+                                    else -> HomeBottomButtonUi.Success(
+                                        hasOnGoingCharGame =
+                                        lastChartGameIdResult.getOrNull() != null
+                                    )
+                                },
+                                screenLoading = false,
+                                error = false,
+                                onUserAction = { userAction ->
+                                    handleUserAction(
+                                        userAction = userAction,
+                                        lastChartGameId = lastChartGameIdResult.getOrNull()
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
+
+                is Result.Failure -> {
+                    _screenState.update { old ->
+                        old.copy(
+                            screenLoading = false,
+                            error = true
+                        )
+                    }
+                }
             }
         }.launchIn(viewModelScope)
     }

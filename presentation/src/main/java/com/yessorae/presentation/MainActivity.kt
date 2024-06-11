@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.yessorae.presentation.ui.designsystem.theme.ChartTrainerTheme
-import com.yessorae.presentation.ui.screen.chartgame.ChartGameScreen
+import com.yessorae.presentation.ui.screen.home.HomeScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ChartGameScreen()
+                    HomeScreen()
                 }
             }
         }

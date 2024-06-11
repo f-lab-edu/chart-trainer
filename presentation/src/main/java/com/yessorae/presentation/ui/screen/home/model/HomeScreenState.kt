@@ -37,8 +37,6 @@ sealed interface HomeBottomButtonUi {
     data class Success(
         val hasOnGoingCharGame: Boolean
     ) : HomeBottomButtonUi
-
-    object Error : HomeBottomButtonUi
 }
 
 sealed interface SettingDialogState {

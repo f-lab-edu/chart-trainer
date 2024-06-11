@@ -24,20 +24,10 @@ data class UserInfoUi(
     val currentBalance: Money = Money(0.0),
     val winCount: Int = 0,
     val loseCount: Int = 0,
-    val averageRateOfProfit: Float = 0f
+    val averageRateOfProfit: Float = 0f,
+    val rateOfWinning: Float = 0f,
+    val rateOfLosing: Float = 0f
 ) {
-    val rateOfWinning: Float = if (winCount + loseCount == 0) {
-        0f
-    } else {
-        winCount / (winCount + loseCount).toFloat()
-    }
-
-    val rateOfLosing: Float = if (rateOfWinning == 0f) {
-        0f
-    } else {
-        1 - rateOfWinning
-    }
-
     val showWinningRateBar: Boolean =
         (rateOfWinning != 0f && rateOfLosing != 0f) && rateOfWinning + rateOfLosing == 1f
 }
@@ -47,6 +37,8 @@ sealed interface HomeBottomButtonUi {
     data class Success(
         val hasOnGoingCharGame: Boolean
     ) : HomeBottomButtonUi
+
+    object Error : HomeBottomButtonUi
 }
 
 sealed interface SettingDialogState {

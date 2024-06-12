@@ -1,4 +1,4 @@
-package com.yessorae.presentation.ui.chartgame
+package com.yessorae.presentation.ui.screen.chartgame
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder

@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.yessorae.presentation.ui.chartgame.chartGameScreen
 import com.yessorae.presentation.ui.designsystem.theme.ChartTrainerTheme
+import com.yessorae.presentation.ui.screen.chartgame.chartGameScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

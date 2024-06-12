@@ -154,5 +154,3 @@ private fun ChartGameEventHandler(
         }
     }
 }
-
-// TODO::NOW #23-navigation 셋업과 함께 Screen level의 Preview 추가

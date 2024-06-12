@@ -6,4 +6,5 @@ plugins {
     id(Plugin.ANDROID_LIBRARY) version Plugin.Version.ANDROID_LIBRARY apply false
     id(Plugin.KTLINT) version Plugin.Version.KTLINT
     id(Plugin.HILT) version Plugin.Version.HILT apply false
+    kotlin(Plugin.KOTLIN_SERIALIZATION) version Plugin.Version.KOTLIN_JVM apply false
 }

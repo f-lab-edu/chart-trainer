@@ -7,4 +7,6 @@ object DefaultValues {
     const val DEFAULT_TOTAL_TURN = 50
     const val FIRST_CURRENT_BALANCE = 1000.0
     val defaultTickUnit = TickUnit.DAY
+    const val MAX_TOTAL_TURN = 100
+    const val MIN_TOTAL_TURN = 50
 }

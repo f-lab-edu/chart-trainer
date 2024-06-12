@@ -1,27 +1,29 @@
 package com.yessorae.data.source.network.polygon.model.chart
 
-import com.google.gson.annotations.SerializedName
 import com.yessorae.data.util.toLocalDateTime
 import com.yessorae.domain.entity.tick.Tick
 import com.yessorae.domain.entity.value.Money
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class TickDto(
-    @SerializedName("c")
+    @SerialName("c")
     val closePrice: Double,
-    @SerializedName("h")
+    @SerialName("h")
     val maxPrice: Double,
-    @SerializedName("l")
+    @SerialName("l")
     val minPrice: Double,
-    @SerializedName("n")
-    val transactionCount: Int,
-    @SerializedName("o")
+    @SerialName("n")
+    val transactionCount: Int = 0,
+    @SerialName("o")
     val openPrice: Double,
-    @SerializedName("t")
+    @SerialName("t")
     val startTimestamp: Long,
-    @SerializedName("v")
-    val tradingVolume: Int,
-    @SerializedName("vw")
-    val volumeWeightedAveragePrice: Double
+    @SerialName("v")
+    val tradingVolume: Double,
+    @SerialName("vw")
+    val volumeWeightedAveragePrice: Double = 0.0
 )
 
 internal fun TickDto.asDomainModel() =
@@ -32,6 +34,6 @@ internal fun TickDto.asDomainModel() =
         minPrice = Money(minPrice),
         transactionCount = transactionCount,
         startTimestamp = startTimestamp.toLocalDateTime(),
-        tradingVolume = tradingVolume,
+        tradingVolume = tradingVolume.toInt(),
         volumeWeightedAveragePrice = Money(volumeWeightedAveragePrice)
     )

@@ -2,6 +2,29 @@
     <string name="app_name">chartrainer</string>
     <string name="chart_game_title">차트 게임</string>
     <string name="chart_game_next">다음</string>
+    
+    <!-- home -->
+    <string name="home_title">차트게임 현황</string>
+    <string name="home_my_info">내 정보</string>
+    <string name="home_balance">총 자산</string>
+    <string name="home_average_rate_of_profit">평균 수익률</string>
+    <string name="home_record_and_rate_of_winning">전적/승률</string>
+    <string name="home_win">승</string>
+    <string name="home_lose">패</string>
+    <string name="home_setting">설정</string>
+    <string name="home_commission_rate">수수료</string>
+    <string name="home_commission_rate_setting">수수료 설정</string>
+    <string name="home_error_toast_commission_rate_setting">세자리 숫자로 입력해주세요</string>
+    <string name="home_done">완료</string>
+    <string name="home_total_turn">전체 턴</string>
+    <string name="home_total_turn_setting">전체 턴 설정</string>
+    <string name="home_error_toast_turn_setting">50~100 으로 설정해주세요</string>
+    <string name="home_tick_unit">봉 단위</string>
+    <string name="home_tick_unit_setting">봉 단위 설정</string>
+    <string name="home_there_is_on_going_game">진행 중인 게임이 있습니다.</string>
+    <string name="home_continue_game">이어 하기</string>
+    <string name="home_quit_game">게임 종료</string>
+    <string name="home_start_game">게임 시작</string>
 
     <!-- chart_game -->
     <string name="chart_game_toast_trade_buy">%d 주를 매수했습니다.</string>
@@ -21,7 +44,7 @@
     <string name="common_order_count">주문수량</string>
     <string name="common_orderable_count">주문가능</string>
     <string name="common_order_price">주문단가</string>
-    <string name="common_money_unit">원</string>
+    <string name="common_money_unit">달러</string>
     <string name="common_cancel">취소</string>
     <string name="common_total_order_price">총 주문금액</string>
     <string name="common_stock_unit">주</string>

@@ -10,6 +10,11 @@ sealed class Result<out T> {
     object Loading : Result<Nothing>()
     data class Success<T>(val data: T) : Result<T>()
     data class Failure(val throwable: Throwable) : Result<Nothing>()
+
+    fun getOrNull(): T? = (this as? Success)?.data
+
+    val isLoading: Boolean get() = this is Loading
+    val isFailure: Boolean get() = this is Failure
 }
 
 fun Flow<Result<Unit>>.delegateEmptyResultFlow(): Flow<Result<Unit>> {

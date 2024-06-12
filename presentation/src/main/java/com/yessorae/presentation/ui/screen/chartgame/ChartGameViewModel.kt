@@ -1,4 +1,4 @@
-package com.yessorae.presentation.ui.chartgame
+package com.yessorae.presentation.ui.screen.chartgame
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -14,15 +14,15 @@ import com.yessorae.domain.usecase.QuitChartGameUseCase
 import com.yessorae.domain.usecase.SubscribeChartGameUseCase
 import com.yessorae.domain.usecase.TradeStockUseCase
 import com.yessorae.domain.usecase.UpdateNextTickUseCase
-import com.yessorae.presentation.ui.chartgame.model.ChartGameEvent
-import com.yessorae.presentation.ui.chartgame.model.ChartGameScreenState
-import com.yessorae.presentation.ui.chartgame.model.ChartGameScreenUserAction
-import com.yessorae.presentation.ui.chartgame.model.TradeOrderKeyPad
-import com.yessorae.presentation.ui.chartgame.model.TradeOrderUi
-import com.yessorae.presentation.ui.chartgame.model.TradeOrderUi.Companion.copy
-import com.yessorae.presentation.ui.chartgame.model.TradeOrderUiUserAction
-import com.yessorae.presentation.ui.chartgame.model.asCandleStickChartUiState
-import com.yessorae.presentation.ui.chartgame.model.asTransactionVolume
+import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameEvent
+import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenState
+import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenUserAction
+import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderKeyPad
+import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi
+import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi.Companion.copy
+import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUiUserAction
+import com.yessorae.presentation.ui.screen.chartgame.model.asCandleStickChartUiState
+import com.yessorae.presentation.ui.screen.chartgame.model.asTransactionVolume
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow

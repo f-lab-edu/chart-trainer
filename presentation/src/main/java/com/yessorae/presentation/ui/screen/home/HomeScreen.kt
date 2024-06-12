@@ -24,11 +24,15 @@ import com.yessorae.presentation.R
 import com.yessorae.presentation.ui.designsystem.component.ChartTrainerLoadingProgressBar
 import com.yessorae.presentation.ui.designsystem.theme.Dimen
 import com.yessorae.presentation.ui.designsystem.util.showToast
+import com.yessorae.presentation.ui.screen.home.component.CommissionRateSettingDialog
 import com.yessorae.presentation.ui.screen.home.component.HomeBottomButton
 import com.yessorae.presentation.ui.screen.home.component.SettingInfoUi
+import com.yessorae.presentation.ui.screen.home.component.TickUnitSettingModelBottomSheet
+import com.yessorae.presentation.ui.screen.home.component.TotalTurnSettingDialog
 import com.yessorae.presentation.ui.screen.home.component.UserInfoUi
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenEvent
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenUserAction
+import com.yessorae.presentation.ui.screen.home.model.SettingDialogState
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -97,6 +101,36 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                         screenState.onUserAction(HomeScreenUserAction.ClickQuitInProgressChartGame)
                     }
                 )
+            }
+
+            when (val data = screenState.settingDialogState) {
+                is SettingDialogState.CommissionRate -> {
+                    CommissionRateSettingDialog(
+                        initialValue = data.initialValue,
+                        onDismissRequest = data.onDismissRequest,
+                        onDone = data.onDone
+                    )
+                }
+
+                is SettingDialogState.TotalTurn -> {
+                    TotalTurnSettingDialog(
+                        initialValue = data.initialValue,
+                        onDismissRequest = data.onDismissRequest,
+                        onDone = data.onDone
+                    )
+                }
+
+                is SettingDialogState.TickUnit -> {
+                    TickUnitSettingModelBottomSheet(
+                        tickUnit = data.initialTickUnit,
+                        onDone = data.onDone,
+                        onDismissRequest = data.onDismissRequest
+                    )
+                }
+
+                else -> {
+                    // do nothing
+                }
             }
 
             ChartTrainerLoadingProgressBar(

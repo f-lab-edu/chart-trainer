@@ -1,4 +1,4 @@
-package com.yessorae.presentation.ui.chartgame.component
+package com.yessorae.presentation.ui.screen.chartgame.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

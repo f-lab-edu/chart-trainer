@@ -1,4 +1,4 @@
-package com.yessorae.presentation.ui.chartgame.model
+package com.yessorae.presentation.ui.screen.chartgame.model
 
 sealed interface ChartGameEvent {
     object InputBuyingStockCount : ChartGameEvent

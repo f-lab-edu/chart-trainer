@@ -1,4 +1,4 @@
-package com.yessorae.presentation.ui.chartgame.component.order
+package com.yessorae.presentation.ui.screen.chartgame.component.order
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

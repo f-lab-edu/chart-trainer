@@ -4,6 +4,7 @@ plugins {
     id("java-library")
     id(Plugin.KOTLIN_JVM)
     id(Plugin.KTLINT)
+    kotlin(Plugin.KOTLIN_SERIALIZATION)
 }
 
 java {
@@ -14,4 +15,5 @@ java {
 dependencies {
     implementation(Dependency.PlatformIndependent.JAVAX_INJECT)
     implementation(Dependency.PlatformIndependent.KOTLINX_COROUTINSE)
+    implementation(Dependency.Common.KOTOIN_SERIALIZATION_JSON)
 }

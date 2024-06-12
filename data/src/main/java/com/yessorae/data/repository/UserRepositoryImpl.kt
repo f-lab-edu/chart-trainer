@@ -1,71 +1,35 @@
 package com.yessorae.data.repository
 
-import com.yessorae.data.di.ChartTrainerDispatcher
-import com.yessorae.data.di.Dispatcher
 import com.yessorae.data.source.local.preference.ChartTrainerPreferencesDataSource
 import com.yessorae.domain.entity.User
 import com.yessorae.domain.entity.tick.TickUnit
 import com.yessorae.domain.repository.UserRepository
 import javax.inject.Inject
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 
 class UserRepositoryImpl @Inject constructor(
-    private val appPreference: ChartTrainerPreferencesDataSource,
-    @Dispatcher(ChartTrainerDispatcher.IO)
-    private val dispatcher: CoroutineDispatcher
+    private val appPreference: ChartTrainerPreferencesDataSource
 ) : UserRepository {
-    override fun fetchUserAsFlow(): Flow<User> {
-        // TODO::LATER CT-5-2 에서 구현 필요, 기존 기능 실행은 되어야해서 임시조치
-        return flow { }
-    }
+    override fun fetchUserAsFlow(): Flow<User> = appPreference.userFlow
 
-    override suspend fun fetchUser(): User {
-        // TODO::LATER CT-5-2 에서 구현 필요, 기존 기능 실행은 되어야 해서 임시조치
-        return User.createInitialUser()
-    }
+    override suspend fun fetchUser(): User = appPreference.getUser()
 
-    override suspend fun updateUser(user: User) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun updateUser(user: User) = appPreference.updateUser(user = user)
 
-    override fun fetchCommissionRateAsFlow(): Flow<Double> {
-        TODO("Not yet implemented")
-    }
+    override fun fetchCommissionRateAsFlow(): Flow<Double> = appPreference.commissionRateFlow
 
-    override suspend fun fetchCommissionRate(): Double =
-        withContext(dispatcher) {
-            appPreference.getCommissionRate()
-        }
+    override suspend fun fetchCommissionRate(): Double = appPreference.getCommissionRate()
 
-    override suspend fun updateCommissionRate(rate: Double) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun updateCommissionRate(rate: Double) =
+        appPreference.updateCommissionRate(rate)
 
-    override fun fetchTotalTurnAsFlow(): Flow<Int> {
-        TODO("Not yet implemented")
-    }
+    override fun fetchTotalTurnAsFlow(): Flow<Int> = appPreference.totalTurnFlow
 
-    override suspend fun fetchTotalTurn(): Int =
-        withContext(dispatcher) {
-            appPreference.getTotalTurn()
-        }
+    override suspend fun fetchTotalTurn(): Int = appPreference.getTotalTurn()
 
-    override suspend fun updateTotalTurn(turn: Int) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun updateTotalTurn(turn: Int) = appPreference.updateTotalTurn(turn)
 
-    override fun fetchTickUnitAsFlow(): Flow<TickUnit> {
-        TODO("Not yet implemented")
-    }
+    override fun fetchTickUnitAsFlow(): Flow<TickUnit> = appPreference.tickUnitFlow
 
-    override suspend fun fetchTickUnit(): TickUnit {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun updateTickUnit(tickUnit: TickUnit) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun updateTickUnit(tickUnit: TickUnit) = appPreference.updateTickUnit(tickUnit)
 }

@@ -2,7 +2,9 @@ package com.yessorae.domain.entity
 
 import com.yessorae.domain.common.DefaultValues
 import com.yessorae.domain.entity.value.Money
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class User(
     val balance: Money,
     val winCount: Int,
@@ -13,6 +15,18 @@ data class User(
 //    val profileImg: String?,
 //    val nickname: String,
 ) {
+    val rateOfWinning: Double = if (winCount + loseCount == 0) {
+        0.0
+    } else {
+        winCount / (winCount + loseCount).toDouble()
+    }
+
+    val rateOfLosing: Double = if (rateOfWinning == 0.0) {
+        0.0
+    } else {
+        1 - rateOfWinning
+    }
+
     fun copyFrom(
         profit: Double,
         rateOfProfit: Double

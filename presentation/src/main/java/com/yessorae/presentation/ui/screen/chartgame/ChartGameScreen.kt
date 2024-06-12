@@ -1,4 +1,4 @@
-package com.yessorae.presentation.ui.chartgame
+package com.yessorae.presentation.ui.screen.chartgame
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +23,12 @@ import com.yessorae.presentation.ui.chartgame.model.ChartGameScreenState
 import com.yessorae.presentation.ui.chartgame.model.ChartGameScreenUserAction
 import com.yessorae.presentation.ui.designsystem.component.ChartTrainerLoadingProgressBar
 import com.yessorae.presentation.ui.designsystem.util.showToast
+import com.yessorae.presentation.ui.screen.chartgame.component.CandleChartUi
+import com.yessorae.presentation.ui.screen.chartgame.component.ChartGameBottomBarUi
+import com.yessorae.presentation.ui.screen.chartgame.component.ChartGameTopAppBarUi
+import com.yessorae.presentation.ui.screen.chartgame.component.order.TradeOrderUi
+import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameEvent
+import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenUserAction
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 

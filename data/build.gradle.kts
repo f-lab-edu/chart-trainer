@@ -6,6 +6,7 @@ plugins {
     id(Plugin.KTLINT)
     id(Plugin.HILT)
     kotlin(Plugin.KAPT)
+    kotlin(Plugin.KOTLIN_SERIALIZATION)
 }
 
 val properties = Properties()
@@ -73,6 +74,8 @@ dependencies {
 
     implementation(Dependency.Common.HILT)
     kapt(Dependency.Common.HILT_COMPILER)
+
+    implementation(Dependency.Common.KOTOIN_SERIALIZATION_JSON)
 
     testImplementation(Dependency.Common.JUNIT)
     androidTestImplementation(Dependency.Common.JUNIT_EXT)

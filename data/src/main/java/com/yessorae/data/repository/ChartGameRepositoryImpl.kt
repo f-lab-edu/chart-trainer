@@ -7,6 +7,7 @@ import com.yessorae.data.source.local.database.model.TickEntity
 import com.yessorae.data.source.local.database.model.TradeEntity
 import com.yessorae.data.source.local.database.model.asDomainModel
 import com.yessorae.data.source.local.database.model.asEntity
+import com.yessorae.data.source.local.preference.ChartTrainerPreferencesDataSource
 import com.yessorae.data.source.network.polygon.util.DatabaseTransactionHelper
 import com.yessorae.domain.entity.ChartGame
 import com.yessorae.domain.entity.trade.Trade
@@ -17,7 +18,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -25,6 +25,7 @@ import kotlinx.coroutines.withContext
 
 class ChartGameRepositoryImpl @Inject constructor(
     private val localDataSource: ChartTrainerLocalDBDataSource,
+    private val chartGamePreferencesDataSource: ChartTrainerPreferencesDataSource,
     @Dispatcher(ChartTrainerDispatcher.IO)
     private val dispatcher: CoroutineDispatcher,
     private val transactionHelper: DatabaseTransactionHelper
@@ -85,15 +86,14 @@ class ChartGameRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun fetchLastChartGameId(): Flow<Long?> {
-        return emptyFlow() // TODO::LATER [CT-5-2] 에서 구현됨
-    }
+    override fun fetchLastChartGameId(): Flow<Long?> =
+        chartGamePreferencesDataSource.lastChartGameIdFlow
 
     override suspend fun clearLastChartGameId() {
-        // TODO::LATER [CT-5-2] 에서 구현됨
+        chartGamePreferencesDataSource.clearLastChartGameId()
     }
 
     override suspend fun updateLastChartGameId(gameId: Long) {
-        // TODO::LATER [CT-5-2] 에서 구현됨
+        chartGamePreferencesDataSource.updateLastChartGameId(gameId = gameId)
     }
 }

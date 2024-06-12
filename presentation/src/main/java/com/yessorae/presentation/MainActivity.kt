@@ -14,6 +14,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.yessorae.presentation.ui.designsystem.theme.ChartTrainerTheme
 import com.yessorae.presentation.ui.screen.chartgame.chartGameScreen
+import com.yessorae.presentation.ui.screen.chartgame.navigateToChartGameScreen
+import com.yessorae.presentation.ui.screen.home.HOME_ROUTE
+import com.yessorae.presentation.ui.screen.home.homeScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,7 +44,7 @@ fun ChartTrainerApp() {
 @Composable
 fun ChartTrainerNavHost(
     modifier: Modifier = Modifier,
-    startDestination: String = "chart_game"
+    startDestination: String = HOME_ROUTE
 ) {
     val navController = rememberNavController()
 
@@ -50,6 +53,12 @@ fun ChartTrainerNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
+        homeScreen(
+            navigateToChartGame = { chartGameId: Long? ->
+                navController.navigateToChartGameScreen(chartGameId = chartGameId)
+            }
+        )
+
         chartGameScreen(
             navigateToBack = navController::popBackStack,
             navigateToChartGameHistory = {

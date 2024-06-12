@@ -49,7 +49,7 @@ class ChartGameViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val gameIdFromPrevScreen: Long? =
-        savedStateHandle.get<String>(ARG_KEY_GAME_ID)?.toLongOrNull()
+        savedStateHandle.get<String>(CHART_GAME_ID_ARG_KEY)?.toLongOrNull()
 
     private val _screenState = MutableStateFlow(ChartGameScreenState())
     val screenState: StateFlow<ChartGameScreenState> =
@@ -470,10 +470,5 @@ class ChartGameViewModel @Inject constructor(
         logger.cehLog(
             throwable = throwable
         )
-    }
-
-    companion object {
-        // navigation 셋업하면서 위치 다른 파일로 이동할 수 있음
-        const val ARG_KEY_GAME_ID = "chart_game_id"
     }
 }

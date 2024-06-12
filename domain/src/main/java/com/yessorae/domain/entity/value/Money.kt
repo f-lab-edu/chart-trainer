@@ -1,5 +1,8 @@
 package com.yessorae.domain.entity.value
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Money(
     val value: Double
 ) {

@@ -12,14 +12,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.yessorae.presentation.R
 import com.yessorae.presentation.ui.chartgame.component.CandleChartUi
 import com.yessorae.presentation.ui.chartgame.component.ChartGameBottomBarUi
 import com.yessorae.presentation.ui.chartgame.component.ChartGameTopAppBarUi
 import com.yessorae.presentation.ui.chartgame.component.order.TradeOrderUi
 import com.yessorae.presentation.ui.chartgame.model.ChartGameEvent
+import com.yessorae.presentation.ui.chartgame.model.ChartGameScreenState
 import com.yessorae.presentation.ui.chartgame.model.ChartGameScreenUserAction
 import com.yessorae.presentation.ui.designsystem.component.ChartTrainerLoadingProgressBar
 import com.yessorae.presentation.ui.designsystem.util.showToast
@@ -27,11 +27,25 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun ChartGameScreen(viewModel: ChartGameViewModel = viewModel()) {
-    ChartGameEventHandler(screenEvent = viewModel.screenEvent)
-
+fun ChartGameRoute(
+    viewModel: ChartGameViewModel = hiltViewModel(),
+    navigateToBack: () -> Unit,
+    navigateToChartGameHistory: (Long) -> Unit
+) {
     val state by viewModel.screenState.collectAsState()
+    ChartGameScreen(
+        state = state
+    )
 
+    ChartGameEventHandler(
+        screenEvent = viewModel.screenEvent,
+        navigateToBack = navigateToBack,
+        navigateToChartGameHistory = navigateToChartGameHistory
+    )
+}
+
+@Composable
+fun ChartGameScreen(state: ChartGameScreenState) {
     Scaffold(
         topBar = {
             ChartGameTopAppBarUi(
@@ -98,7 +112,11 @@ fun ChartGameScreen(viewModel: ChartGameViewModel = viewModel()) {
 }
 
 @Composable
-private fun ChartGameEventHandler(screenEvent: SharedFlow<ChartGameEvent>) {
+private fun ChartGameEventHandler(
+    screenEvent: SharedFlow<ChartGameEvent>,
+    navigateToBack: () -> Unit,
+    navigateToChartGameHistory: (Long) -> Unit
+) {
     val context = LocalContext.current
     LaunchedEffect(key1 = Unit) {
         screenEvent.collectLatest { event ->
@@ -116,29 +134,25 @@ private fun ChartGameEventHandler(screenEvent: SharedFlow<ChartGameEvent>) {
                 }
 
                 is ChartGameEvent.HardToFetchTrade -> {
-                    // TODO::LATER #5-유저(익명) 정보 확인/수정 기능이 추가되면 Screen 뒤로가기 추가
                     context.showToast(R.string.chart_game_toast_hard_to_fetch_trade)
+                    navigateToBack()
                 }
 
                 is ChartGameEvent.GameHasEnded -> {
-                    // TODO::LATER #5-유저(익명) 정보 확인/수정 기능이 추가되면 Screen 뒤로가기로 변경
                     context.showToast(R.string.chart_game_toast_game_has_ended)
+                    navigateToChartGameHistory(event.gameId)
                 }
 
                 is ChartGameEvent.MoveToBack -> {
-                    // TODO::LATER #23-navigation 셋업과 함께 추가될 내용
+                    navigateToBack()
                 }
 
                 is ChartGameEvent.MoveToTradeHistory -> {
-                    // TODO::LATER #6-트레이드 내역 확인 기능과 #23-navigation 셋업과 함께 추가될 내용
+                    navigateToChartGameHistory(event.gameId)
                 }
             }
         }
     }
 }
 
-@Preview
-@Composable
-fun ChartGameScreenPreview() {
-    ChartGameScreen()
-}
+// TODO::NOW #23-navigation 셋업과 함께 Screen level의 Preview 추가

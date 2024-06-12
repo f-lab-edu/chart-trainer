@@ -48,7 +48,8 @@ class ChartGameViewModel @Inject constructor(
     private val logger: ChartTrainerLogger,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val gameIdFromPrevScreen: Long? = savedStateHandle[ARG_KEY_GAME_ID]
+    private val gameIdFromPrevScreen: Long? =
+        savedStateHandle.get<String>(ARG_KEY_GAME_ID)?.toLongOrNull()
 
     private val _screenState = MutableStateFlow(ChartGameScreenState())
     val screenState: StateFlow<ChartGameScreenState> =
@@ -114,7 +115,7 @@ class ChartGameViewModel @Inject constructor(
             }
 
             if (isGameComplete) {
-                emitScreenEvent(event = ChartGameEvent.GameHasEnded)
+                emitScreenEvent(event = ChartGameEvent.GameHasEnded(gameId = id))
             }
         }
 

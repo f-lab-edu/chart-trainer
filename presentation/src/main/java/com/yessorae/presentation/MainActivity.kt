@@ -10,7 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.yessorae.presentation.ui.chartgame.ChartGameScreen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
+import com.yessorae.presentation.ui.chartgame.chartGameScreen
 import com.yessorae.presentation.ui.designsystem.theme.ChartTrainerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,16 +21,41 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ChartTrainerTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    ChartGameScreen()
-                }
-            }
+            ChartTrainerApp()
         }
+    }
+}
+
+@Composable
+fun ChartTrainerApp() {
+    ChartTrainerTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            ChartTrainerNavHost()
+        }
+    }
+}
+
+@Composable
+fun ChartTrainerNavHost(
+    modifier: Modifier = Modifier,
+    startDestination: String = "chart_game"
+) {
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = startDestination,
+        modifier = modifier
+    ) {
+        chartGameScreen(
+            navigateToBack = navController::popBackStack,
+            navigateToChartGameHistory = {
+                // TODO::LATER #7 에서 작성
+            }
+        )
     }
 }
 

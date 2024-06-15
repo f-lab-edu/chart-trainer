@@ -85,13 +85,14 @@ class TradeHistoryViewModel @Inject constructor(
             }
         }
 
-    fun handleUserAction(userAction: TradeHistoryScreenUserAction) = viewModelScope.launch {
-        when (userAction) {
-            TradeHistoryScreenUserAction.ClickCloseButton -> {
-                _screenEvent.emit(TradeHistoryScreenEvent.NavigateToBack)
+    fun handleUserAction(userAction: TradeHistoryScreenUserAction) =
+        viewModelScope.launch {
+            when (userAction) {
+                TradeHistoryScreenUserAction.ClickCloseButton -> {
+                    _screenEvent.emit(TradeHistoryScreenEvent.NavigateToBack)
+                }
             }
         }
-    }
 
     private fun handleFailure(throwable: Throwable) =
         viewModelScope.launch {

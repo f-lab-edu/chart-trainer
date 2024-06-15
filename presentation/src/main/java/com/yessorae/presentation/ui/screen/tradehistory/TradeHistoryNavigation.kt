@@ -25,11 +25,7 @@ fun NavController.navigateToTradeHistoryScreen(
 fun NavGraphBuilder.tradeHistoryScreen(navigateToBack: () -> Unit) {
     composable(
         route = TRADE_HISTORY_ROUTE_WITH_ARGS,
-        arguments = listOf(
-            navArgument(CHART_GAME_ID_ARG_KEY) {
-                type = NavType.LongType
-            }
-        )
+        arguments = listOf(navArgument(CHART_GAME_ID_ARG_KEY) { type = NavType.LongType })
     ) {
         TradeHistoryScreenRoute(
             navigateToBack = navigateToBack

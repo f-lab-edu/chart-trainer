@@ -7,6 +7,7 @@ import com.yessorae.domain.common.ChartTrainerLogger
 import com.yessorae.domain.common.Result
 import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.usecase.SubscribePagedTradeHistoryUseCase
+import com.yessorae.presentation.ui.screen.chartgame.CHART_GAME_ID_ARG_KEY
 import com.yessorae.presentation.ui.screen.tradehistory.model.TradeHistoryScreenEvent
 import com.yessorae.presentation.ui.screen.tradehistory.model.TradeHistoryScreenModel
 import com.yessorae.presentation.ui.screen.tradehistory.model.TradeHistoryScreenUserAction
@@ -32,9 +33,9 @@ class TradeHistoryViewModel @Inject constructor(
     private val logger: ChartTrainerLogger,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    // TODO::Refactoring
     private val chartGameId: Long =
-        savedStateHandle["chartGameId"] ?: throw IllegalArgumentException("chartGameId is required")
+        savedStateHandle[CHART_GAME_ID_ARG_KEY]
+            ?: throw IllegalArgumentException("chartGameId is required")
 
     private val _tradeHistoryScreen = MutableStateFlow(TradeHistoryScreenModel())
     val tradeHistoryScreen: StateFlow<TradeHistoryScreenModel> =

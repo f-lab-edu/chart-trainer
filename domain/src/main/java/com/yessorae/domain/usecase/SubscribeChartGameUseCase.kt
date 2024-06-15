@@ -29,12 +29,12 @@ class SubscribeChartGameUseCase @Inject constructor(
             chartGameRepository.updateLastChartGameId(gameId = newGameId)
 
             return chartGameRepository
-                .fetchChartFlow(gameId = newGameId)
+                .fetchChartGameFlow(gameId = newGameId)
                 .delegateValueResultFlow()
         }
 
         return chartGameRepository
-            .fetchChartFlow(gameId = gameId)
+            .fetchChartGameFlow(gameId = gameId)
             .delegateValueResultFlow()
     }
 }

@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface ChartGameRepository {
     suspend fun createNewChartGame(chartGame: ChartGame): Long
 
-    fun fetchChartFlow(gameId: Long): Flow<ChartGame>
+    fun fetchChartGameFlow(gameId: Long): Flow<ChartGame>
 
     suspend fun fetchChartGame(gameId: Long): ChartGame
 

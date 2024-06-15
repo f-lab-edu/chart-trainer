@@ -1,5 +1,6 @@
 package com.yessorae.data.repository
 
+import androidx.paging.map
 import com.yessorae.data.di.ChartTrainerDispatcher
 import com.yessorae.data.di.Dispatcher
 import com.yessorae.data.source.ChartTrainerLocalDBDataSource
@@ -35,7 +36,7 @@ class ChartGameRepositoryImpl @Inject constructor(
             localDataSource.insertCharGame(entity = chartGame.asEntity())
         }
 
-    override fun fetchChartFlow(gameId: Long): Flow<ChartGame> {
+    override fun fetchChartGameFlow(gameId: Long): Flow<ChartGame> {
         return combine(
             localDataSource.getChartGameAsFlow(id = gameId),
             localDataSource.getTradesAsFlow(gameId = gameId),

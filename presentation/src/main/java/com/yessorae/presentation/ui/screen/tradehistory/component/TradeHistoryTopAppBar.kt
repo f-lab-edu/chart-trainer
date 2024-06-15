@@ -20,7 +20,7 @@ fun TradeHistoryTopAppBar(onClickClose: () -> Unit) {
         actions = {
             IconButton(onClick = onClickClose) {
                 Icon(
-                    imageVector = ChartTrainerIcons.TradeList,
+                    imageVector = ChartTrainerIcons.Close,
                     contentDescription = null
                 )
             }

@@ -7,7 +7,7 @@ import com.yessorae.domain.common.ChartTrainerLogger
 import com.yessorae.domain.common.Result
 import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.usecase.SubscribeTradeHistoryUseCase
-import com.yessorae.presentation.ui.screen.chartgame.CHART_GAME_ID_ARG_KEY
+import com.yessorae.presentation.ui.NavigationConstants.CHART_GAME_ID_ARG_KEY
 import com.yessorae.presentation.ui.screen.tradehistory.model.TradeHistoryScreenEvent
 import com.yessorae.presentation.ui.screen.tradehistory.model.TradeHistoryScreenModel
 import com.yessorae.presentation.ui.screen.tradehistory.model.TradeHistoryScreenUserAction

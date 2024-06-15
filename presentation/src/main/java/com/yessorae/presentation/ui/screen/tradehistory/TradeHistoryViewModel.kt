@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.yessorae.domain.common.ChartTrainerLogger
 import com.yessorae.domain.common.Result
 import com.yessorae.domain.entity.trade.Trade
-import com.yessorae.domain.usecase.SubscribePagedTradeHistoryUseCase
+import com.yessorae.domain.usecase.SubscribeTradeHistoryUseCase
 import com.yessorae.presentation.ui.screen.chartgame.CHART_GAME_ID_ARG_KEY
 import com.yessorae.presentation.ui.screen.tradehistory.model.TradeHistoryScreenEvent
 import com.yessorae.presentation.ui.screen.tradehistory.model.TradeHistoryScreenModel
@@ -29,7 +29,7 @@ import kotlinx.coroutines.plus
 
 @HiltViewModel
 class TradeHistoryViewModel @Inject constructor(
-    private val subscribePagedTradeHistoryUseCase: SubscribePagedTradeHistoryUseCase,
+    private val subscribeTradeHistoryUseCase: SubscribeTradeHistoryUseCase,
     private val logger: ChartTrainerLogger,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -60,7 +60,7 @@ class TradeHistoryViewModel @Inject constructor(
 
     private fun subscribePagedTradeHistory() =
         scope.launch {
-            subscribePagedTradeHistoryUseCase(gameId = chartGameId).collect { result ->
+            subscribeTradeHistoryUseCase(gameId = chartGameId).collect { result ->
                 when (result) {
                     is Result.Loading -> {
                         _tradeHistoryScreen.update { old ->

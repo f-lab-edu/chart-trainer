@@ -7,7 +7,7 @@ import com.yessorae.domain.repository.ChartGameRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
-class SubscribePagedTradeHistoryUseCase @Inject constructor(
+class SubscribeTradeHistoryUseCase @Inject constructor(
     private val chartGameRepository: ChartGameRepository
 ) {
     operator fun invoke(gameId: Long): Flow<Result<ChartGame>> {

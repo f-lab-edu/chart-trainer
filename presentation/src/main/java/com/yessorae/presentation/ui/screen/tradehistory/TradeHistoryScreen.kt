@@ -113,21 +113,21 @@ fun TradeHistoryScreenPreview() {
                     id = 1,
                     turn = 1,
                     tradeType = TradeType.Buy,
-                    stockPrice = Money(1000.0),
+                    stockPrice = Money(123.0),
                     count = 10,
-                    totalPrice = Money(10000.0),
-                    commission = Money(100.0),
-                    profit = Money(100.0)
+                    totalPrice = Money(1230.0),
+                    commission = Money(12.3),
+                    profit = Money(-123.0)
                 ),
                 TradeHistoryListItem(
                     id = 2,
                     turn = 2,
                     tradeType = TradeType.Sell,
-                    stockPrice = Money(2000.0),
-                    count = 5,
-                    totalPrice = Money(-10000.0),
-                    commission = Money(100.0),
-                    profit = Money(100.0)
+                    stockPrice = Money(125.0),
+                    count = 10,
+                    totalPrice = Money(1250.0),
+                    commission = Money(12.4),
+                    profit = Money(7.6)
                 )
             )
         ),

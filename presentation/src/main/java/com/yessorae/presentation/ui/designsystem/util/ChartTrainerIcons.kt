@@ -5,6 +5,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.ExitToApp
 import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.rounded.Refresh
@@ -17,4 +18,5 @@ object ChartTrainerIcons {
     val Delete = Icons.AutoMirrored.Filled.ArrowBack
     val OptionArrow = Icons.Default.KeyboardArrowDown
     val Selected = Icons.Default.Check
+    val Close = Icons.Default.Close
 }

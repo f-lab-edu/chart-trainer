@@ -30,13 +30,13 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun TradeHistoryScreenRoute(
     viewModel: TradeHistoryViewModel = hiltViewModel(),
-    navigateBack: () -> Unit
+    navigateToBack: () -> Unit
 ) {
     val screenModel = viewModel.tradeHistoryScreen.collectAsState()
 
     TradeHistoryScreenEventHandler(
         screenEvent = viewModel.screenEvent,
-        navigateBack = navigateBack
+        navigateToBack = navigateToBack
     )
     TradeHistoryScreen(
         screenModel = screenModel.value,
@@ -83,15 +83,15 @@ fun TradeHistoryScreen(
 @Composable
 fun TradeHistoryScreenEventHandler(
     screenEvent: Flow<TradeHistoryScreenEvent>,
-    navigateBack: () -> Unit
+    navigateToBack: () -> Unit
 ) {
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         screenEvent.collect { event ->
             when (event) {
-                is TradeHistoryScreenEvent.NavigateBack -> {
-                    navigateBack()
+                is TradeHistoryScreenEvent.NavigateToBack -> {
+                    navigateToBack()
                 }
 
                 is TradeHistoryScreenEvent.UnknownError -> {

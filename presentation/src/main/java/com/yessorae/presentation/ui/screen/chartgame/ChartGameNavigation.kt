@@ -24,7 +24,7 @@ fun NavController.navigateToChartGameScreen(
 
 fun NavGraphBuilder.chartGameScreen(
     navigateToBack: () -> Unit,
-    navigateToChartGameHistory: (Long) -> Unit
+    navigateToTradeHistory: (Long) -> Unit
 ) {
     composable(
         route = CHART_GAME_ROUTE_WITH_ARGS,
@@ -37,7 +37,7 @@ fun NavGraphBuilder.chartGameScreen(
     ) {
         ChartGameRoute(
             navigateToBack = navigateToBack,
-            navigateToChartGameHistory = navigateToChartGameHistory
+            navigateToChartGameHistory = navigateToTradeHistory
         )
     }
 }

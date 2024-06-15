@@ -8,6 +8,8 @@ import com.yessorae.presentation.ui.screen.chartgame.chartGameScreen
 import com.yessorae.presentation.ui.screen.chartgame.navigateToChartGameScreen
 import com.yessorae.presentation.ui.screen.home.HOME_ROUTE
 import com.yessorae.presentation.ui.screen.home.homeScreen
+import com.yessorae.presentation.ui.screen.tradehistory.navigateToTradeHistoryScreen
+import com.yessorae.presentation.ui.screen.tradehistory.tradeHistoryScreen
 
 @Composable
 fun ChartTrainerNavHost(
@@ -29,9 +31,13 @@ fun ChartTrainerNavHost(
 
         chartGameScreen(
             navigateToBack = navController::popBackStack,
-            navigateToChartGameHistory = {
-                // TODO::LATER #7 에서 작성
+            navigateToTradeHistory = { chartGameId: Long ->
+                navController.navigateToTradeHistoryScreen(chartGameId = chartGameId)
             }
+        )
+
+        tradeHistoryScreen(
+            navigateToBack = navController::popBackStack
         )
     }
 }

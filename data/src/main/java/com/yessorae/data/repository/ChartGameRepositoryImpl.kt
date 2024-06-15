@@ -1,6 +1,5 @@
 package com.yessorae.data.repository
 
-import androidx.paging.map
 import com.yessorae.data.di.ChartTrainerDispatcher
 import com.yessorae.data.di.Dispatcher
 import com.yessorae.data.source.ChartTrainerLocalDBDataSource

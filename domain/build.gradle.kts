@@ -16,4 +16,5 @@ dependencies {
     implementation(Dependency.PlatformIndependent.JAVAX_INJECT)
     implementation(Dependency.PlatformIndependent.KOTLINX_COROUTINSE)
     implementation(Dependency.Common.KOTOIN_SERIALIZATION_JSON)
+    implementation(Dependency.Common.PAGING_COMMON)
 }

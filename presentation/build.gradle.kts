@@ -74,6 +74,10 @@ dependencies {
     implementation(Dependency.Common.ANDROIDX_CORE)
     testImplementation(Dependency.Common.JUNIT)
     androidTestImplementation(Dependency.Common.JUNIT_EXT)
+
+    implementation(Dependency.Common.PAGING_RUNTIME)
+    implementation(Dependency.Presentation.PAGING_COMPOSE)
+
 }
 
 configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {

@@ -78,7 +78,6 @@ dependencies {
 
     implementation(Dependency.Common.PAGING_RUNTIME)
     implementation(Dependency.Presentation.PAGING_COMPOSE)
-
 }
 
 configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {

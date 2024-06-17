@@ -5,6 +5,8 @@ sealed interface HomeScreenEvent {
         val chartGameId: Long?
     ) : HomeScreenEvent
 
+    object NavigateToChartGameHistoryScreen : HomeScreenEvent
+
     object CommissionRateSettingError : HomeScreenEvent
 
     object TotalTurnSettingError : HomeScreenEvent

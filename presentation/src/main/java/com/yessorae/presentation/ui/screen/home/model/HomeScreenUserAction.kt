@@ -7,4 +7,5 @@ sealed interface HomeScreenUserAction {
     object ClickCommissionRate : HomeScreenUserAction
     object ClickTotalTurn : HomeScreenUserAction
     object ClickTickUnit : HomeScreenUserAction
+    object ClickChartGameHistory : HomeScreenUserAction
 }

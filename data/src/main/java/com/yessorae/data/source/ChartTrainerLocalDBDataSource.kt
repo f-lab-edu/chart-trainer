@@ -1,5 +1,6 @@
 package com.yessorae.data.source
 
+import androidx.paging.PagingSource
 import com.yessorae.data.source.local.database.model.ChartEntity
 import com.yessorae.data.source.local.database.model.ChartGameEntity
 import com.yessorae.data.source.local.database.model.TickEntity
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 // Repository 가 Dao 에 직접적으로 의존하지 않는 것에 중점을 둠
 interface ChartTrainerLocalDBDataSource {
     fun getChartGameAsFlow(id: Long): Flow<ChartGameEntity>
+    fun getChartGamePagingSource(): PagingSource<Int, ChartGameEntity>
     fun getTradesAsFlow(gameId: Long): Flow<List<TradeEntity>>
     suspend fun getChartGame(id: Long): ChartGameEntity
     suspend fun getTrades(gameId: Long): List<TradeEntity>

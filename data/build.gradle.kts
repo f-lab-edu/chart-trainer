@@ -78,8 +78,6 @@ dependencies {
 
     implementation(Dependency.Common.KOTOIN_SERIALIZATION_JSON)
 
-//    implementation(Dependency.Common.PAGING_RUNTIME)
-
     testImplementation(Dependency.Common.JUNIT)
     androidTestImplementation(Dependency.Common.JUNIT_EXT)
 }

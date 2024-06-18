@@ -1,41 +1,15 @@
 package com.yessorae.presentation.domain.model
 
-import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class TradeTest {
-
-    private fun createTestTrade(
-        gameId: Long = 1,
-        // 가지고 있던 평단가가 50000인데
-        ownedAverageStockPrice: Money = Money(50000.0),
-        // 55000에
-        stockPrice: Money = Money(55000.0),
-        // 100주를
-        count: Int = 100,
-        turn: Int = 5,
-        // 매수
-        type: TradeType = TradeType.BUY,
-        commissionRate: Double = 0.002
-    ): Trade {
-        return Trade.new(
-            gameId = gameId,
-            ownedAverageStockPrice = ownedAverageStockPrice,
-            stockPrice = stockPrice,
-            count = count,
-            turn = turn,
-            type = type,
-            commissionRate = commissionRate
-        )
-    }
-
     @Test
     fun `총 거래금액 계산`() {
         // Arrange
-        val trade = createTestTrade()
+        val trade = createMockTrade()
 
         // Act
         val totalTradeMoney = trade.totalTradeMoney
@@ -47,7 +21,7 @@ class TradeTest {
     @Test
     fun `수수료 계산`() {
         // Arrange
-        val trade = createTestTrade()
+        val trade = createMockTrade()
 
         // Act
         val commission = trade.commission
@@ -59,7 +33,7 @@ class TradeTest {
     @Test
     fun `매수일 때 이익 계산`() {
         // Arrange
-        val trade = createTestTrade(type = TradeType.BUY)
+        val trade = createMockTrade(type = TradeType.BUY)
 
         // Act
         val profit = trade.profit
@@ -71,7 +45,7 @@ class TradeTest {
     @Test
     fun `매도일 때 이익 계산`() {
         // Arrange
-        val trade = createTestTrade(type = TradeType.SELL)
+        val trade = createMockTrade(type = TradeType.SELL)
 
         // Act
         val profit = trade.profit
@@ -83,7 +57,7 @@ class TradeTest {
     @Test
     fun `수량이 0일 때`() {
         // Arrange
-        val trade = createTestTrade(count = 0, type = TradeType.SELL)
+        val trade = createMockTrade(count = 0, type = TradeType.SELL)
 
         // Act
         val profit = trade.profit
@@ -95,7 +69,7 @@ class TradeTest {
     @Test
     fun `매수와 매도 가격이 동일할 때`() {
         // Arrange
-        val trade = createTestTrade(
+        val trade = createMockTrade(
             ownedAverageStockPrice = Money(50000.0),
             stockPrice = Money(50000.0),
             type = TradeType.SELL
@@ -111,7 +85,7 @@ class TradeTest {
     @Test
     fun `수수료율이 0일 때`() {
         // Arrange
-        val trade = createTestTrade(commissionRate = 0.0, type = TradeType.SELL)
+        val trade = createMockTrade(commissionRate = 0.0, type = TradeType.SELL)
 
         // Act & Assert
         assertEquals(Money(500_000.0), trade.profit)

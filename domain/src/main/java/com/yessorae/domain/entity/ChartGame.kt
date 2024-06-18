@@ -82,7 +82,7 @@ data class ChartGame(
     // 정상종료이든 강제종료이든 종료된 경우 true
     val isGameEnd: Boolean = isQuit || isGameComplete
 
-    internal fun getNextTurn(): ChartGame {
+    fun getNextTurn(): ChartGame {
         val nextTurn = currentTurn + 1
         return this.copy(
             currentTurn = nextTurn

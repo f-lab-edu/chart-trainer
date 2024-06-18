@@ -198,7 +198,7 @@ fun TradeHistoryListItemPreview() {
         tradeHistory = TradeHistoryListItem(
             id = 1,
             turn = 1,
-            tradeType = TradeType.Buy,
+            tradeType = TradeType.BUY,
             stockPrice = Money(1000.0),
             count = 10,
             totalPrice = Money(10000.0),

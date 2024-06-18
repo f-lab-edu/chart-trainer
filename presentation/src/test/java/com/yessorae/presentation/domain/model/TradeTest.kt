@@ -18,7 +18,7 @@ class TradeTest {
         count: Int = 100,
         turn: Int = 5,
         // 매수
-        type: TradeType = TradeType.Buy,
+        type: TradeType = TradeType.BUY,
         commissionRate: Double = 0.002
     ): Trade {
         return Trade.new(
@@ -59,7 +59,7 @@ class TradeTest {
     @Test
     fun `매수일 때 이익 계산`() {
         // Arrange
-        val trade = createTestTrade(type = TradeType.Buy)
+        val trade = createTestTrade(type = TradeType.BUY)
 
         // Act
         val profit = trade.profit
@@ -71,7 +71,7 @@ class TradeTest {
     @Test
     fun `매도일 때 이익 계산`() {
         // Arrange
-        val trade = createTestTrade(type = TradeType.Sell)
+        val trade = createTestTrade(type = TradeType.SELL)
 
         // Act
         val profit = trade.profit
@@ -83,7 +83,7 @@ class TradeTest {
     @Test
     fun `수량이 0일 때`() {
         // Arrange
-        val trade = createTestTrade(count = 0, type = TradeType.Sell)
+        val trade = createTestTrade(count = 0, type = TradeType.SELL)
 
         // Act
         val profit = trade.profit
@@ -98,7 +98,7 @@ class TradeTest {
         val trade = createTestTrade(
             ownedAverageStockPrice = Money(50000.0),
             stockPrice = Money(50000.0),
-            type = TradeType.Sell
+            type = TradeType.SELL
         )
 
         // Act
@@ -111,7 +111,7 @@ class TradeTest {
     @Test
     fun `수수료율이 0일 때`() {
         // Arrange
-        val trade = createTestTrade(commissionRate = 0.0, type = TradeType.Sell)
+        val trade = createTestTrade(commissionRate = 0.0, type = TradeType.SELL)
 
         // Act & Assert
         assertEquals(Money(500_000.0), trade.profit)

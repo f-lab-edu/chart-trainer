@@ -241,7 +241,7 @@ class ChartGameViewModel @Inject constructor(
                         stockPrice = currentStockPrice,
                         count = count.toInt(),
                         turn = currentTurn,
-                        type = TradeType.Buy
+                        type = TradeType.BUY
                     )
                 )
             }
@@ -361,7 +361,7 @@ class ChartGameViewModel @Inject constructor(
                         stockPrice = currentStockPrice,
                         count = count.toInt(),
                         turn = currentTurn,
-                        type = TradeType.Sell
+                        type = TradeType.SELL
                     )
                 )
             }

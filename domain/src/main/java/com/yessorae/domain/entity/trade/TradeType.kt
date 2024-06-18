@@ -1,9 +1,9 @@
 package com.yessorae.domain.entity.trade
 
 enum class TradeType {
-    Buy,
-    Sell;
+    BUY,
+    SELL;
 
-    fun isBuy(): Boolean = this == Buy
-    fun isSell(): Boolean = this == Sell
+    fun isBuy(): Boolean = this == BUY
+    fun isSell(): Boolean = this == SELL
 }

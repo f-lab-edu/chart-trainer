@@ -63,6 +63,8 @@ fun TradeHistoryScreen(
             LazyColumn(
                 modifier = Modifier.padding(horizontal = Dimen.defaultLayoutSidePadding)
             ) {
+                // 여기에 item 이 추가될 예정이라서 TradeHistoryListItemGuide 에 대해 stickyHeader 를 사용함
+
                 stickyHeader {
                     TradeHistoryListItemGuide()
                 }

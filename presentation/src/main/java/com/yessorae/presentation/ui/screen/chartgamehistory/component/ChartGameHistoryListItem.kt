@@ -15,12 +15,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.yessorae.domain.entity.tick.TickUnit
+import com.yessorae.domain.entity.value.Money
 import com.yessorae.presentation.ui.designsystem.theme.Dimen
 import com.yessorae.presentation.ui.designsystem.theme.StockDownColor
 import com.yessorae.presentation.ui.designsystem.theme.StockUpColor
 import com.yessorae.presentation.ui.designsystem.util.ChartTrainerIcons
 import com.yessorae.presentation.ui.designsystem.util.DevicePreviews
+import com.yessorae.presentation.ui.designsystem.util.asDisplayTotalProfit
+import com.yessorae.presentation.ui.designsystem.util.getDisplayDateRangeText
 import com.yessorae.presentation.ui.screen.chartgamehistory.model.GameHistoryItem
+import java.time.LocalDateTime
 
 class ChartGameHistoryListItem
 
@@ -50,7 +54,7 @@ fun ChartGameHistoryListItem(
             )
 
             Text(
-                text = item.time,
+                text = getDisplayDateRangeText(item.startDate, item.endDate),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.surfaceContainerHigh
             )
@@ -61,7 +65,7 @@ fun ChartGameHistoryListItem(
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                text = item.totalProfit,
+                text = item.totalProfit.asDisplayTotalProfit(),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = if (item.isTotalProfitPositive) {
@@ -88,9 +92,10 @@ fun PreviewChartGameHistoryListItem() {
         ticker = "AAPL",
         totalTurn = 10,
         tickUnit = TickUnit.DAY,
-        totalProfit = "+10%",
+        totalProfit = Money(10.0),
         isTotalProfitPositive = true,
-        time = "01/01/2022 - 01/02/2022"
+        startDate = LocalDateTime.of(2024, 1, 1, 0, 0),
+        endDate = LocalDateTime.of(2026, 1, 1, 0, 0)
     )
     ChartGameHistoryListItem(item = item, onClick = {})
 }

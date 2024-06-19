@@ -9,11 +9,7 @@ import com.yessorae.presentation.ui.screen.chartgamehistory.model.ChartGameHisto
 import com.yessorae.presentation.ui.screen.chartgamehistory.model.ChartGameHistoryUserAction
 import com.yessorae.presentation.ui.screen.chartgamehistory.model.GameHistoryItem
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.Locale
 import javax.inject.Inject
-import kotlin.math.absoluteValue
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -28,25 +24,16 @@ class ChartGameHistoryViewModel @Inject constructor(
         subscribeChartGameHistoryUseCase()
             .map { pagingData ->
                 pagingData.map { chartGame ->
-                    val formatter =
-                        DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).localizedBy(
-                            Locale.getDefault()
-                        )
 
                     GameHistoryItem(
                         id = chartGame.id,
                         ticker = chartGame.chart.tickerSymbol,
                         totalTurn = chartGame.totalTurn,
                         tickUnit = chartGame.chart.tickUnit,
-                        totalProfit = if (chartGame.accumulatedTotalProfit.value > 0.0) {
-                            "+"
-                        } else {
-                            "-"
-                        } + "%.2f".format(chartGame.accumulatedTotalProfit.value.absoluteValue),
+                        totalProfit = chartGame.accumulatedTotalProfit,
                         isTotalProfitPositive = chartGame.accumulatedTotalProfit.value > 0.0,
-                        time = "${chartGame.chart.startDateTime?.format(formatter) ?: ""} " +
-                            "-" +
-                            " ${chartGame.chart.endDateTime?.format(formatter) ?: ""}"
+                        startDate = chartGame.chart.startDateTime,
+                        endDate = chartGame.chart.endDateTime
                     )
                 }
             }

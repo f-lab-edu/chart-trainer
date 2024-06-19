@@ -9,6 +9,10 @@ import com.yessorae.domain.entity.value.Money
 import com.yessorae.presentation.R
 import com.yessorae.presentation.ui.designsystem.theme.StockDownColor
 import com.yessorae.presentation.ui.designsystem.theme.StockUpColor
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.Locale
 import kotlin.math.absoluteValue
 
 // TODO::LATER TickUnit 확장함수로 가독성 향상, 파일이름 적절하게 변경
@@ -34,5 +38,19 @@ fun TradeType.asColor(): Color =
 
 fun Money.asDefaultDisplayText(): String = "%.2f".format(value)
 
+fun Money.asDisplayTotalProfit(): String =
+    (if (value > 0.0) "+" else "-") + "%.2f".format(value.absoluteValue)
+
 fun Double.asSignedDisplayText(): String =
     (if (this > 0f) "+" else "-") + "%.2f".format(this.absoluteValue)
+
+fun getDisplayDateRangeText(
+    startDate: LocalDateTime?,
+    endDate: LocalDateTime?
+): String {
+    val formatter = DateTimeFormatter
+        .ofLocalizedDate(FormatStyle.SHORT)
+        .localizedBy(Locale.getDefault())
+
+    return "${startDate?.format(formatter) ?: ""} - ${endDate?.format(formatter) ?: ""}"
+}

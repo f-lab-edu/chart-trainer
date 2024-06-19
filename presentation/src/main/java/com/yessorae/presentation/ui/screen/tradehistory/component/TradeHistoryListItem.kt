@@ -31,9 +31,10 @@ import com.yessorae.presentation.ui.designsystem.theme.StockDownColor
 import com.yessorae.presentation.ui.designsystem.theme.StockUpColor
 import com.yessorae.presentation.ui.designsystem.util.DevicePreviews
 import com.yessorae.presentation.ui.designsystem.util.asColor
+import com.yessorae.presentation.ui.designsystem.util.asDefaultDisplayText
+import com.yessorae.presentation.ui.designsystem.util.asSignedDisplayText
 import com.yessorae.presentation.ui.designsystem.util.asText
 import com.yessorae.presentation.ui.screen.tradehistory.model.TradeHistoryListItem
-import kotlin.math.absoluteValue
 import kotlin.math.min
 
 @Composable
@@ -68,7 +69,7 @@ fun TradeHistoryListItem(
                 GuideTextLine(
                     title = {
                         Text(
-                            text = tradeHistory.stockPrice.asDefaultDisplayString() +
+                            text = tradeHistory.stockPrice.asDefaultDisplayText() +
                                 " (${tradeHistory.count}" +
                                 "${stringResource(id = R.string.common_stock_unit)})",
                             style = MaterialTheme.typography.bodyLarge.copy(
@@ -78,7 +79,7 @@ fun TradeHistoryListItem(
                     },
                     subtitle = {
                         Text(
-                            text = tradeHistory.totalPrice.asDefaultDisplayString(),
+                            text = tradeHistory.totalPrice.asDefaultDisplayText(),
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -87,18 +88,14 @@ fun TradeHistoryListItem(
                 GuideTextLine(
                     title = {
                         Text(
-                            text = tradeHistory.commission.asDefaultDisplayString(),
+                            text = tradeHistory.commission.asDefaultDisplayText(),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.surfaceContainerHigh
                         )
                     },
                     subtitle = {
                         Text(
-                            text = if (tradeHistory.isProfitPositive) {
-                                "+"
-                            } else {
-                                "-"
-                            } + "%.2f".format(tradeHistory.commission.value.absoluteValue),
+                            text = tradeHistory.profit.value.asSignedDisplayText(),
                             style = MaterialTheme.typography.bodyMedium,
                             color = if (tradeHistory.isProfitPositive) {
                                 StockUpColor

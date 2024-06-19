@@ -39,9 +39,9 @@ import kotlin.math.min
 
 @Composable
 fun TradeHistoryListItem(
-    modifier: Modifier = Modifier,
     totalTurn: Int,
-    tradeHistory: TradeHistoryListItem
+    tradeHistory: TradeHistoryListItem,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier.padding(vertical = 16.dp)

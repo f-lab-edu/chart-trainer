@@ -5,9 +5,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.yessorae.domain.entity.tick.TickUnit
 import com.yessorae.domain.entity.trade.TradeType
+import com.yessorae.domain.entity.value.Money
 import com.yessorae.presentation.R
 import com.yessorae.presentation.ui.designsystem.theme.StockDownColor
 import com.yessorae.presentation.ui.designsystem.theme.StockUpColor
+import kotlin.math.absoluteValue
 
 // TODO::LATER TickUnit 확장함수로 가독성 향상, 파일이름 적절하게 변경
 @Composable
@@ -29,3 +31,8 @@ fun TradeType.asColor(): Color =
         TradeType.Buy -> StockUpColor
         TradeType.Sell -> StockDownColor
     }
+
+fun Money.asDefaultDisplayText(): String = "%.2f".format(value)
+
+fun Double.asSignedDisplayText(): String =
+    (if (this > 0f) "+" else "-") + "%.2f".format(this.absoluteValue)

@@ -31,8 +31,4 @@ data class Money(
     operator fun div(other: Money): Money {
         return Money(value / other.value)
     }
-
-    fun asDefaultDisplayString(): String {
-        return "%.2f".format(value)
-    }
 }

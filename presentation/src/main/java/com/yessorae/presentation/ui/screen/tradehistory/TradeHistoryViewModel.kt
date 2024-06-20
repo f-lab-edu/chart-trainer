@@ -70,7 +70,7 @@ class TradeHistoryViewModel @Inject constructor(
 
                     is Result.Success -> {
                         _tradeHistoryScreen.value = TradeHistoryScreenModel(
-                            totalTurn = result.data.totalTurn,
+                            totalTurn = result.data.chartGame.totalTurn,
                             tradeHistories = result.data.trades.map(
                                 transform = Trade::asTradeHistoryListItemModel
                             ),

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.yessorae.domain.common.ChartTrainerLogger
 import com.yessorae.domain.common.Result
 import com.yessorae.domain.entity.ChartGame
+import com.yessorae.domain.entity.tick.Tick
 import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
 import com.yessorae.domain.exception.ChartGameException
@@ -23,7 +24,6 @@ import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi
 import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi.Companion.copy
 import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUiUserAction
 import com.yessorae.presentation.ui.screen.chartgame.model.asCandleStickChartUiState
-import com.yessorae.presentation.ui.screen.chartgame.model.asTransactionVolume
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -69,8 +69,17 @@ class ChartGameViewModel @Inject constructor(
                 gameId = savedStateHandle.get<String>(CHART_GAME_ID_ARG_KEY)?.toLongOrNull()
             ).collectLatest { result ->
                 when (result) {
-                    is Result.Loading -> _screenState.update { old -> old.copy(showLoading = true) }
-                    is Result.Success -> updateGameData(result.data)
+                    is Result.Loading -> {
+                        _screenState.update { old -> old.copy(showLoading = true) }
+                    }
+
+                    is Result.Success -> {
+                        updateGameData(
+                            chartGame = result.data.chartGame,
+                            visibleTicks = result.data.visibleTicks
+                        )
+                    }
+
                     is Result.Failure -> {
                         when (result.throwable) {
                             is ChartGameException.HardToFetchTradeException -> {
@@ -86,8 +95,11 @@ class ChartGameViewModel @Inject constructor(
             }
         }
 
-    private fun updateGameData(data: ChartGame) =
-        with(data) {
+    private fun updateGameData(
+        chartGame: ChartGame,
+        visibleTicks: List<Tick>
+    ) =
+        with(chartGame) {
             _screenState.update { old ->
                 old.copy(
                     currentTurn = currentTurn,
@@ -96,7 +108,6 @@ class ChartGameViewModel @Inject constructor(
                     rateOfProfit = accumulatedRateOfProfit,
                     gameProgress = currentGameProgress,
                     showLoading = false,
-                    transactionVolume = visibleTicks.asTransactionVolume(),
                     candleStickChart = visibleTicks.asCandleStickChartUiState(),
                     isGameComplete = isGameComplete,
                     isGameEnd = isGameEnd,
@@ -104,11 +115,11 @@ class ChartGameViewModel @Inject constructor(
                         handleChartGameScreenUserAction(
                             userAction = userAction,
                             gameId = id,
-                            ownedAverageStockPrice = ownedAverageStockPrice,
+                            ownedAverageStockPrice = averageStockPrice,
                             currentBalance = currentBalance,
-                            currentStockPrice = currentClosePrice,
+                            currentStockPrice = closeStockPrice,
                             currentTurn = currentTurn,
-                            ownedStockCount = ownedStockCount
+                            ownedStockCount = totalStockCount
                         )
                     }
                 )

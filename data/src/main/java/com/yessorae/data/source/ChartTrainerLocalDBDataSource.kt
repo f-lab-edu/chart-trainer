@@ -13,11 +13,13 @@ interface ChartTrainerLocalDBDataSource {
     fun getChartGamePagingSource(): PagingSource<Int, ChartGameEntity>
     fun getTradesAsFlow(gameId: Long): Flow<List<TradeEntity>>
     suspend fun getChartGame(id: Long): ChartGameEntity
+    suspend fun getChartId(gameId: Long): Long
     suspend fun getTrades(gameId: Long): List<TradeEntity>
     suspend fun getChart(id: Long): ChartEntity
     suspend fun getTicks(chartId: Long): List<TickEntity>
     suspend fun insertCharGame(entity: ChartGameEntity): Long
     suspend fun insertChart(entity: ChartEntity): Long
+    suspend fun insertTrade(entity: TradeEntity): Long
     suspend fun insertTicks(entities: List<TickEntity>)
     suspend fun updateChartGame(entity: ChartGameEntity)
     suspend fun insertOrReplaceAllTrades(entities: List<TradeEntity>)

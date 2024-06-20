@@ -2,6 +2,7 @@ package com.yessorae.domain.usecase
 
 import com.yessorae.domain.common.Result
 import com.yessorae.domain.common.delegateEmptyResultFlow
+import com.yessorae.domain.entity.ChartGame
 import com.yessorae.domain.exception.ChartGameException
 import com.yessorae.domain.repository.ChartGameRepository
 import com.yessorae.domain.repository.ChartRepository
@@ -25,11 +26,23 @@ class ChangeChartUseCase @Inject constructor(
                 )
             }
 
+            val totalTurn = userRepository.fetchTotalTurn()
+
+            val newChart = chartRepository.fetchNewChartRandomly(totalTurn = totalTurn)
+
+            if (newChart.ticks.size < totalTurn) {
+                throw ChartGameException.CanNotChangeChartException(
+                    message = "can't change chart because new chart has not enough ticks"
+                )
+            }
+            val closeStockPrice = newChart.ticks[totalTurn - 1].closePrice
+
             chartGameRepository.updateChartGame(
-                chartGame = oldChartGame.copyFrom(
-                    newChart = chartRepository.fetchNewChartRandomly(
-                        totalTurn = userRepository.fetchTotalTurn()
-                    )
+                chartGame = ChartGame.new(
+                    chartId = newChart.id,
+                    totalTurn = totalTurn,
+                    startBalance = userRepository.fetchUser().balance,
+                    closeStockPrice = closeStockPrice
                 )
             )
         }.delegateEmptyResultFlow()

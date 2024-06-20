@@ -2,9 +2,11 @@ package com.yessorae.data.di
 
 import com.yessorae.data.repository.ChartGameRepositoryImpl
 import com.yessorae.data.repository.ChartRepositoryImpl
+import com.yessorae.data.repository.TradeRepositoryImpl
 import com.yessorae.data.repository.UserRepositoryImpl
 import com.yessorae.domain.repository.ChartGameRepository
 import com.yessorae.domain.repository.ChartRepository
+import com.yessorae.domain.repository.TradeRepository
 import com.yessorae.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -24,6 +26,10 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindsChartRepository(chartRepository: ChartRepositoryImpl): ChartRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsTradeRepository(tradeRepository: TradeRepositoryImpl): TradeRepository
 
     @Binds
     @Singleton

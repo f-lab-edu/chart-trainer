@@ -4,6 +4,7 @@ import com.yessorae.data.di.ChartTrainerDispatcher
 import com.yessorae.data.di.Dispatcher
 import com.yessorae.data.source.ChartNetworkDataSource
 import com.yessorae.data.source.ChartTrainerLocalDBDataSource
+import com.yessorae.data.source.local.database.model.asDomainModel
 import com.yessorae.data.source.local.database.model.asEntity
 import com.yessorae.data.source.local.preference.ChartTrainerPreferencesDataSource
 import com.yessorae.data.source.network.polygon.model.chart.asDomainModel
@@ -63,6 +64,14 @@ class ChartRepositoryImpl @Inject constructor(
         val chartId = localDBDataSource.insertChart(chart.asEntity())
         localDBDataSource.insertTicks(chart.ticks.map { it.asEntity(chartId = chartId) })
         return chart.copy(id = chartId)
+    }
+
+    override suspend fun fetchChart(gameId: Long): Chart {
+        val chartId = localDBDataSource.getChartId(gameId = gameId)
+        val chartEntity = localDBDataSource.getChart(id = chartId)
+        val ticks = localDBDataSource.getTicks(chartId = chartId)
+
+        return chartEntity.asDomainModel(ticks.map { it.asDomainModel() })
     }
 
     companion object {

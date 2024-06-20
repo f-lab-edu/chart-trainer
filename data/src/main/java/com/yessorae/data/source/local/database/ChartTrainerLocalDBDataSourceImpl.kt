@@ -31,6 +31,8 @@ class ChartTrainerLocalDBDataSourceImpl @Inject constructor(
     override suspend fun getChartGame(id: Long): ChartGameEntity =
         chartGameDao.getChartGame(id = id)
 
+    override suspend fun getChartId(gameId: Long): Long = chartGameDao.getChartId(gameId = gameId)
+
     override suspend fun getTrades(gameId: Long): List<TradeEntity> =
         tradeDao.getTrades(gameId = gameId)
 
@@ -45,6 +47,8 @@ class ChartTrainerLocalDBDataSourceImpl @Inject constructor(
         )
 
     override suspend fun insertChart(entity: ChartEntity): Long = chartDao.insert(entity = entity)
+
+    override suspend fun insertTrade(entity: TradeEntity): Long = tradeDao.insert(entity = entity)
 
     override suspend fun insertTicks(entities: List<TickEntity>) =
         tickDao.insertAll(entities = entities)

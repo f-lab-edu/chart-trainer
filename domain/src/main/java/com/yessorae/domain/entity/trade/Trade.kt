@@ -28,7 +28,7 @@ data class Trade(
 
     // 실현 손익, 매도할 때만 유효
     val profit: Money = if (type.isBuy()) {
-        Money(0.0)
+        Money(0.0) // TODO::CT-52 버그 수정 필요. 도메인 모델 Unit Testing 브랜치에서 수정 예정.
     } else {
         ((stockPrice - ownedAverageStockPrice) * count) - commission
     }

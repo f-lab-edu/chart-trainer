@@ -21,4 +21,3 @@ interface ChartGameRepository {
     suspend fun clearLastChartGameId()
     suspend fun updateLastChartGameId(gameId: Long)
 }
-

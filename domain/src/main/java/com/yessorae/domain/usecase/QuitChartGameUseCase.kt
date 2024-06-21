@@ -2,9 +2,7 @@ package com.yessorae.domain.usecase
 
 import com.yessorae.domain.common.Result
 import com.yessorae.domain.common.delegateEmptyResultFlow
-import com.yessorae.domain.entity.User
 import com.yessorae.domain.repository.ChartGameRepository
-import com.yessorae.domain.repository.TradeRepository
 import com.yessorae.domain.repository.UserRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow

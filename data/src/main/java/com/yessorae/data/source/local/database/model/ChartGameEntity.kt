@@ -3,9 +3,7 @@ package com.yessorae.data.source.local.database.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.yessorae.domain.entity.Chart
 import com.yessorae.domain.entity.ChartGame
-import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.entity.value.Money
 
 @Entity(ChartGameEntity.NAME)
@@ -33,7 +31,7 @@ data class ChartGameEntity(
     @ColumnInfo(name = COL_AVERAGE_STOCK_PRICE)
     val averageStockPrice: Money,
     @ColumnInfo(name = COL_ACCUMULATED_TOTAL_PROFIT)
-    val accumulatedTotalProfit: Money,
+    val accumulatedTotalProfit: Money
 ) {
     companion object {
         const val NAME = "chart_game_table"
@@ -67,17 +65,18 @@ fun ChartGame.asEntity() =
         accumulatedTotalProfit = accumulatedTotalProfit
     )
 
-fun ChartGameEntity.asDomainModel() = ChartGame(
-    id = id,
-    chartId = chartId,
-    currentTurn = currentTurn,
-    totalTurn = totalTurn,
-    startBalance = startBalance,
-    currentBalance = currentBalance,
-    isQuit = isQuit,
-    closeStockPrice = closeStockPrice,
-    totalStockCount = totalStockCount,
-    totalStockPrice = totalStockPrice,
-    averageStockPrice = averageStockPrice,
-    accumulatedTotalProfit = accumulatedTotalProfit
-)
+fun ChartGameEntity.asDomainModel() =
+    ChartGame(
+        id = id,
+        chartId = chartId,
+        currentTurn = currentTurn,
+        totalTurn = totalTurn,
+        startBalance = startBalance,
+        currentBalance = currentBalance,
+        isQuit = isQuit,
+        closeStockPrice = closeStockPrice,
+        totalStockCount = totalStockCount,
+        totalStockPrice = totalStockPrice,
+        averageStockPrice = averageStockPrice,
+        accumulatedTotalProfit = accumulatedTotalProfit
+    )

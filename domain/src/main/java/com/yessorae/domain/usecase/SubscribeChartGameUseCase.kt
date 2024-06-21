@@ -8,9 +8,9 @@ import com.yessorae.domain.exception.ChartGameException.CanNotCreateChartGame
 import com.yessorae.domain.repository.ChartGameRepository
 import com.yessorae.domain.repository.ChartRepository
 import com.yessorae.domain.repository.UserRepository
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 class SubscribeChartGameUseCase @Inject constructor(
     private val userRepository: UserRepository,
@@ -20,7 +20,6 @@ class SubscribeChartGameUseCase @Inject constructor(
     suspend operator fun invoke(gameId: Long?): Flow<Result<SuccessData>> {
         if (gameId != null) {
             val chart = chartRepository.fetchChart(gameId = gameId)
-
 
             return chartGameRepository
                 .fetchChartGameFlow(gameId = gameId)
@@ -40,7 +39,6 @@ class SubscribeChartGameUseCase @Inject constructor(
                 }
                 .delegateValueResultFlow()
         }
-
 
         val totalTurn = userRepository.fetchTotalTurn()
 

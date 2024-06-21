@@ -2,7 +2,6 @@ package com.yessorae.domain.usecase
 
 import com.yessorae.domain.common.Result
 import com.yessorae.domain.common.delegateEmptyResultFlow
-import com.yessorae.domain.entity.ChartGame
 import com.yessorae.domain.exception.ChartGameException
 import com.yessorae.domain.repository.ChartGameRepository
 import com.yessorae.domain.repository.ChartRepository

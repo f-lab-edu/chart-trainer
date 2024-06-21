@@ -54,10 +54,6 @@ class ChartGameRepositoryImpl @Inject constructor(
     override suspend fun fetchChartGame(gameId: Long): ChartGame =
         localDataSource.getChartGame(id = gameId).asDomainModel()
 
-    override suspend fun fetchChartId(gameId: Long): Long {
-        return localDataSource.getChartGame(id = gameId).chartId
-    }
-
     override suspend fun updateChartGame(chartGame: ChartGame): Unit =
         withContext(dispatcher) {
             launch {

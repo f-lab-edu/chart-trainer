@@ -27,7 +27,13 @@ data class User(
         1 - rateOfWinning
     }
 
-    fun copyFrom(
+    fun quiteGame(): User {
+        return this.copy(
+            loseCount = loseCount + 1,
+        )
+    }
+
+    fun finishGame(
         profit: Double,
         rateOfProfit: Double
     ): User {

@@ -13,7 +13,6 @@ interface ChartGameRepository {
     fun fetchPagedChartGameFlow(pagingConfig: PagingConfig): Flow<PagingData<ChartGame>>
 
     suspend fun fetchChartGame(gameId: Long): ChartGame
-    suspend fun fetchChartId(gameId: Long): Long
 
     // TODO::NOW 호출하는 곳들 확인. 이제 Chart, List<Trade> 를 독립적으로 업데이트해야함
     suspend fun updateChartGame(chartGame: ChartGame)

@@ -18,7 +18,7 @@ data class ChartGame(
     // 현재 종가
     val closeStockPrice: Money,
     // 유저의 게임 강제 종료 여부
-    val isQuit: Boolean,
+    val isQuit: Boolean, // TODO::NOW 쿼리할 때 isQuit 가 true인 것을 제외하고 가져오도록 수정 필요
     // 현재 보유 주식 수량
     val totalStockCount: Int,
     // 현재 보유 주식 가격의 총합
@@ -41,14 +41,14 @@ data class ChartGame(
     // 정상종료이든 강제종료이든 종료된 경우 true
     val isGameEnd: Boolean = isQuit || isGameComplete
 
-    internal fun getNextTurn(): ChartGame {
+    internal fun getNextTurnResult(): ChartGame {
         val nextTurn = currentTurn + 1
         return this.copy(
             currentTurn = nextTurn
         )
     }
 
-    internal fun copyFrom(newTrade: Trade): ChartGame {
+    internal fun getTradeResult(newTrade: Trade): ChartGame {
         val newTotalStockCount: Int = totalStockCount + if (newTrade.type.isBuy()) {
             newTrade.count
         } else {
@@ -80,7 +80,21 @@ data class ChartGame(
         )
     }
 
-    internal fun createFromQuit(): ChartGame {
+    internal fun getChartChangeResult(
+        closeStockPrice: Money
+    ): ChartGame {
+        return copy(
+            currentTurn = START_TURN,
+            currentBalance = startBalance,
+            closeStockPrice = closeStockPrice,
+            totalStockCount = 0,
+            totalStockPrice = Money.ZERO,
+            averageStockPrice = Money.ZERO,
+            accumulatedTotalProfit = Money.ZERO
+        )
+    }
+
+    internal fun getQuitResult(): ChartGame {
         return copy(
             isQuit = true
         )

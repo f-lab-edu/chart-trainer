@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.Flow
 interface ChartTrainerLocalDBDataSource {
     fun getChartGameAsFlow(id: Long): Flow<ChartGameEntity>
     fun getChartGamePagingSource(): PagingSource<Int, ChartGameEntity>
-    fun getTradesAsFlow(gameId: Long): Flow<List<TradeEntity>>
     suspend fun getChartGame(id: Long): ChartGameEntity
     suspend fun getChartId(gameId: Long): Long
     suspend fun getTrades(gameId: Long): List<TradeEntity>
@@ -22,6 +21,4 @@ interface ChartTrainerLocalDBDataSource {
     suspend fun insertTrade(entity: TradeEntity): Long
     suspend fun insertTicks(entities: List<TickEntity>)
     suspend fun updateChartGame(entity: ChartGameEntity)
-    suspend fun insertOrReplaceAllTrades(entities: List<TradeEntity>)
-    suspend fun updateChart(entity: ChartEntity)
 }

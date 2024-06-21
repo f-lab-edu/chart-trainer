@@ -19,7 +19,4 @@ class TradeRepositoryImpl @Inject constructor(
 
     override suspend fun createTrade(trade: Trade): Long =
         localDBDataSource.insertTrade(entity = trade.asEntity())
-
-    override suspend fun updateTrades(trades: List<Trade>) =
-        localDBDataSource.insertOrReplaceAllTrades(entities = trades.map(Trade::asEntity))
 }

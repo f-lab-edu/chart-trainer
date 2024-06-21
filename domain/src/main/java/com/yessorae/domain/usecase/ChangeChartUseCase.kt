@@ -37,13 +37,10 @@ class ChangeChartUseCase @Inject constructor(
             }
             val closeStockPrice = newChart.ticks[totalTurn - 1].closePrice
 
+            val newChartGame = oldChartGame.getChartChangeResult(closeStockPrice = closeStockPrice)
+
             chartGameRepository.updateChartGame(
-                chartGame = ChartGame.new(
-                    chartId = newChart.id,
-                    totalTurn = totalTurn,
-                    startBalance = userRepository.fetchUser().balance,
-                    closeStockPrice = closeStockPrice
-                )
+                chartGame = newChartGame
             )
         }.delegateEmptyResultFlow()
 }

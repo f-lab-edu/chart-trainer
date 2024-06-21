@@ -25,9 +25,6 @@ class ChartTrainerLocalDBDataSourceImpl @Inject constructor(
     override fun getChartGamePagingSource(): PagingSource<Int, ChartGameEntity> =
         chartGameDao.getChartGamePagingSource()
 
-    override fun getTradesAsFlow(gameId: Long): Flow<List<TradeEntity>> =
-        tradeDao.getTradesAsFlow(gameId = gameId)
-
     override suspend fun getChartGame(id: Long): ChartGameEntity =
         chartGameDao.getChartGame(id = id)
 
@@ -57,11 +54,4 @@ class ChartTrainerLocalDBDataSourceImpl @Inject constructor(
         chartGameDao.update(
             entity = entity
         )
-
-    override suspend fun insertOrReplaceAllTrades(entities: List<TradeEntity>) =
-        tradeDao.insertOrReplaceAll(
-            entities = entities
-        )
-
-    override suspend fun updateChart(entity: ChartEntity) = chartDao.update(entity = entity)
 }

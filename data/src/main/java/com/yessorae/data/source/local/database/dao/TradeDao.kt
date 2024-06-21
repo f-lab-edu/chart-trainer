@@ -12,12 +12,5 @@ interface TradeDao : BaseDao<TradeEntity> {
             SELECT * FROM ${TradeEntity.NAME} WHERE ${TradeEntity.COL_GAME_ID} = :gameId
         """
     )
-    fun getTradesAsFlow(gameId: Long): Flow<List<TradeEntity>>
-
-    @Query(
-        """
-            SELECT * FROM ${TradeEntity.NAME} WHERE ${TradeEntity.COL_GAME_ID} = :gameId
-        """
-    )
     suspend fun getTrades(gameId: Long): List<TradeEntity>
 }

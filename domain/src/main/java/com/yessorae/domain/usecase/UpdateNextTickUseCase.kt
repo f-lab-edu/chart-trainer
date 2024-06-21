@@ -24,12 +24,12 @@ class UpdateNextTickUseCase @Inject constructor(
                 )
             }
 
-            val newChartGame = oldChartGame.getNextTurn()
+            val newChartGame = oldChartGame.getNextTurnResult()
 
             if (newChartGame.isGameEnd) {
                 val oldUser: User = userRepository.fetchUser()
                 userRepository.updateUser(
-                    oldUser.copyFrom(
+                    oldUser.finishGame(
                         profit = newChartGame.accumulatedTotalProfit.value,
                         rateOfProfit = newChartGame.accumulatedRateOfProfit
                     )

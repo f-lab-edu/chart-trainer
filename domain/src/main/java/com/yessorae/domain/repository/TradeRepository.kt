@@ -6,5 +6,4 @@ import kotlinx.coroutines.flow.Flow
 interface TradeRepository {
     suspend fun fetchTrades(gameId: Long): List<Trade>
     suspend fun createTrade(trade: Trade): Long
-    suspend fun updateTrades(trades: List<Trade>)
 }

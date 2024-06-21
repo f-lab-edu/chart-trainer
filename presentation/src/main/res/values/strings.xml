@@ -35,6 +35,8 @@
     <string name="trade_history_guide_commission">수수료</string>
     <string name="trade_history_guide_profit">실현손익</string>
 
+    <!-- chart_game_history_item -->
+    <string name="chart_game_history_title">차트게임 내역</string>
 
     <!-- chart_game -->
     <string name="chart_game_toast_trade_buy">%d 주를 매수했습니다.</string>

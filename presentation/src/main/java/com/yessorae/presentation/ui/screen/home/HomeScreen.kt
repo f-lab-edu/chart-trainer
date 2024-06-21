@@ -22,7 +22,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yessorae.presentation.R
 import com.yessorae.presentation.ui.designsystem.component.ChartTrainerLoadingProgressBar
+import com.yessorae.presentation.ui.designsystem.component.DefaultIconButton
 import com.yessorae.presentation.ui.designsystem.theme.Dimen
+import com.yessorae.presentation.ui.designsystem.util.ChartTrainerIcons
 import com.yessorae.presentation.ui.designsystem.util.showToast
 import com.yessorae.presentation.ui.screen.home.component.CommissionRateSettingDialog
 import com.yessorae.presentation.ui.screen.home.component.HomeBottomButton
@@ -40,14 +42,16 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun HomeScreenRoute(
     viewModel: HomeViewModel = hiltViewModel(),
-    navigateToChartGame: (Long?) -> Unit
+    navigateToChartGame: (Long?) -> Unit,
+    navigateToChartGameHistory: () -> Unit
 ) {
     val screenState by viewModel.screenState.collectAsState()
     HomeScreen(screenState = screenState)
 
     HomeScreenEventHandler(
         screenEvent = viewModel.screenEvent,
-        navigateToChartGame = navigateToChartGame
+        navigateToChartGame = navigateToChartGame,
+        navigateToChartGameHistory = navigateToChartGameHistory
     )
 }
 
@@ -59,6 +63,14 @@ fun HomeScreen(screenState: HomeState) {
             TopAppBar(
                 title = {
                     Text(text = stringResource(id = R.string.home_title))
+                },
+                actions = {
+                    DefaultIconButton(
+                        imageVector = ChartTrainerIcons.ChartGameList,
+                        onClick = {
+                            screenState.onUserAction(HomeScreenUserAction.ClickChartGameHistory)
+                        }
+                    )
                 }
             )
         },
@@ -155,7 +167,8 @@ fun HomeScreen(screenState: HomeState) {
 @Composable
 fun HomeScreenEventHandler(
     screenEvent: SharedFlow<HomeScreenEvent>,
-    navigateToChartGame: (Long?) -> Unit
+    navigateToChartGame: (Long?) -> Unit,
+    navigateToChartGameHistory: () -> Unit
 ) {
     val context = LocalContext.current
     LaunchedEffect(key1 = Unit) {
@@ -171,6 +184,10 @@ fun HomeScreenEventHandler(
 
                 is HomeScreenEvent.TotalTurnSettingError -> {
                     context.showToast(id = R.string.home_error_toast_turn_setting)
+                }
+
+                is HomeScreenEvent.NavigateToChartGameHistoryScreen -> {
+                    navigateToChartGameHistory()
                 }
             }
         }

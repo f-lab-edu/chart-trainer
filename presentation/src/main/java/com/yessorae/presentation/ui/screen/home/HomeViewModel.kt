@@ -214,6 +214,10 @@ class HomeViewModel @Inject constructor(
                     )
                 }
             }
+
+            is HomeScreenUserAction.ClickChartGameHistory -> {
+                _screenEvent.emit(HomeScreenEvent.NavigateToChartGameHistoryScreen)
+            }
         }
     }
 

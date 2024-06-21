@@ -67,6 +67,7 @@ dependencies {
     annotationProcessor(Dependency.Data.ROOM_COMPILER)
     kapt(Dependency.Data.ROOM_KAPT)
     implementation(Dependency.Data.ROOM_COROUTINE)
+    implementation(Dependency.Data.ROOM_PAGING)
 
     implementation(Dependency.Data.RETROFIT)
     implementation(Dependency.Data.RETROFIT_GSON_CONVERTER)

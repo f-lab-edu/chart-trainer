@@ -46,10 +46,8 @@ class ChartGameViewModel @Inject constructor(
     private val updateNextTickUseCase: UpdateNextTickUseCase,
     private val quitChartGameUseCase: QuitChartGameUseCase,
     private val logger: ChartTrainerLogger,
-    savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val gameIdFromPrevScreen: Long? = savedStateHandle[ARG_KEY_GAME_ID]
-
     private val _screenState = MutableStateFlow(ChartGameScreenState())
     val screenState: StateFlow<ChartGameScreenState> =
         _screenState
@@ -66,7 +64,9 @@ class ChartGameViewModel @Inject constructor(
 
     private fun subscribeChartGame() =
         viewModelScope.launch {
-            subscribeChartGameUseCase(gameId = gameIdFromPrevScreen).collectLatest { result ->
+            subscribeChartGameUseCase(
+                gameId = savedStateHandle.get<String>(CHART_GAME_ID_ARG_KEY)?.toLongOrNull()
+            ).collectLatest { result ->
                 when (result) {
                     is Result.Loading -> _screenState.update { old -> old.copy(showLoading = true) }
                     is Result.Success -> updateGameData(result.data)
@@ -114,7 +114,7 @@ class ChartGameViewModel @Inject constructor(
             }
 
             if (isGameComplete) {
-                emitScreenEvent(event = ChartGameEvent.GameHasEnded)
+                emitScreenEvent(event = ChartGameEvent.GameHasEnded(gameId = id))
             }
         }
 
@@ -469,10 +469,5 @@ class ChartGameViewModel @Inject constructor(
         logger.cehLog(
             throwable = throwable
         )
-    }
-
-    companion object {
-        // navigation 셋업하면서 위치 다른 파일로 이동할 수 있음
-        const val ARG_KEY_GAME_ID = "chart_game_id"
     }
 }

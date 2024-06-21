@@ -63,6 +63,10 @@ object Dependency {
             "androidx.activity:activity-compose:${Version.ACTIVITY_COMPOSE}"
         const val VIEWMODEL_COMPOSE =
             "androidx.lifecycle:lifecycle-viewmodel-compose:${Version.VIEWMODEL_COMPOSE}"
+        const val NAVIGATION_COMPOSE =
+            "androidx.navigation:navigation-compose:${Version.NAVIGATION_COMPOSE}"
+        const val HILT_NAVIGATION_COMPOSE =
+            "androidx.hilt:hilt-navigation-compose:${Version.HILT_NAVIGATION_COMPOSE}"
 
         const val VICO_COMPOSE = "com.patrykandpatrick.vico:compose:${Version.VICO}"
         const val VICO_COMPOSE_M3 = "com.patrykandpatrick.vico:compose-m3:${Version.VICO}"
@@ -77,6 +81,8 @@ object Dependency {
             const val LIFECYCLE_RUNTIME = "2.7.0"
             const val ACTIVITY_COMPOSE = "1.8.2"
             const val VIEWMODEL_COMPOSE = "2.6.1"
+            const val NAVIGATION_COMPOSE = "2.7.7"
+            const val HILT_NAVIGATION_COMPOSE = "1.0.0"
             const val VICO = "2.0.0-alpha.20"
         }
     }

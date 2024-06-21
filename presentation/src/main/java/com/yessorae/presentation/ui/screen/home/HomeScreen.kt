@@ -19,7 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.yessorae.presentation.R
 import com.yessorae.presentation.ui.designsystem.component.ChartTrainerLoadingProgressBar
 import com.yessorae.presentation.ui.designsystem.theme.Dimen
@@ -32,17 +32,28 @@ import com.yessorae.presentation.ui.screen.home.component.TotalTurnSettingDialog
 import com.yessorae.presentation.ui.screen.home.component.UserInfoUi
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenEvent
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenUserAction
+import com.yessorae.presentation.ui.screen.home.model.HomeState
 import com.yessorae.presentation.ui.screen.home.model.SettingDialogState
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
+@Composable
+fun HomeScreenRoute(
+    viewModel: HomeViewModel = hiltViewModel(),
+    navigateToChartGame: (Long?) -> Unit
+) {
+    val screenState by viewModel.screenState.collectAsState()
+    HomeScreen(screenState = screenState)
+
+    HomeScreenEventHandler(
+        screenEvent = viewModel.screenEvent,
+        navigateToChartGame = navigateToChartGame
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
-    HomeScreenEventHandler(screenEvent = viewModel.screenEvent)
-
-    val screenState by viewModel.screenState.collectAsState()
-
+fun HomeScreen(screenState: HomeState) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -142,13 +153,16 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
 }
 
 @Composable
-fun HomeScreenEventHandler(screenEvent: SharedFlow<HomeScreenEvent>) {
+fun HomeScreenEventHandler(
+    screenEvent: SharedFlow<HomeScreenEvent>,
+    navigateToChartGame: (Long?) -> Unit
+) {
     val context = LocalContext.current
     LaunchedEffect(key1 = Unit) {
         screenEvent.collectLatest { event ->
             when (event) {
                 is HomeScreenEvent.NavigateToChartGameScreen -> {
-                    // TODO::LATER CT-23 navigation 셋업 이후에 구현
+                    navigateToChartGame(event.chartGameId)
                 }
 
                 is HomeScreenEvent.CommissionRateSettingError -> {

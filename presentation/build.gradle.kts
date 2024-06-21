@@ -60,6 +60,8 @@ dependencies {
     implementation(Dependency.Presentation.UI_GRAPHICS)
     implementation(Dependency.Presentation.UI_TOOLING_PREVIEW)
     implementation(Dependency.Presentation.MATERIAL_3)
+    implementation(Dependency.Presentation.NAVIGATION_COMPOSE)
+    implementation(Dependency.Presentation.HILT_NAVIGATION_COMPOSE)
     androidTestImplementation(platform(Dependency.Presentation.BOM))
     androidTestImplementation(Dependency.Presentation.JUNIT)
     debugImplementation(Dependency.Presentation.UI_TOOLING)

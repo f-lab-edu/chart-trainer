@@ -7,9 +7,9 @@ import com.yessorae.domain.entity.tick.TickUnit
 import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
+import java.time.LocalDateTime
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.time.LocalDateTime
 
 const val TEST_CHART_GAME_ID = 1L
 const val TEST_CHART_ID = 2L
@@ -20,16 +20,17 @@ val testEndDate: LocalDateTime = LocalDateTime.of(2022, 5, 29, 0, 0)
 val testClosePrice: Money = Money.of(100.0)
 val tickListSize = 10
 
-fun createTestTick(index: Int) = Tick(
-    openPrice = Money.of(100.0) * index,
-    maxPrice = Money.of(200.0) * index,
-    minPrice = Money.of(50.0) * index,
-    closePrice = Money.of(150.0) * index,
-    transactionCount = 1000 * index,
-    startTimestamp = testStartDate.plusDays(index.toLong()),
-    tradingVolume = 1000 * index,
-    volumeWeightedAveragePrice = Money.of(150.0) * index
-)
+fun createTestTick(index: Int) =
+    Tick(
+        openPrice = Money.of(100.0) * index,
+        maxPrice = Money.of(200.0) * index,
+        minPrice = Money.of(50.0) * index,
+        closePrice = Money.of(150.0) * index,
+        transactionCount = 1000 * index,
+        startTimestamp = testStartDate.plusDays(index.toLong()),
+        tradingVolume = 1000 * index,
+        volumeWeightedAveragePrice = Money.of(150.0) * index
+    )
 
 val testTicks = (1..tickListSize).map { index -> createTestTick(index) }
 
@@ -102,7 +103,6 @@ class TradeTest {
         assertEquals(Money.of(200.0), trade.commission)
         assertEquals(Money.of(-50_200.0), trade.profit)
     }
-
 
     @Test
     fun buy_profit_calculation() {

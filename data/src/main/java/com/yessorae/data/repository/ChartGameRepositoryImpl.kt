@@ -12,13 +12,13 @@ import com.yessorae.data.source.local.database.model.asEntity
 import com.yessorae.data.source.local.preference.ChartTrainerPreferencesDataSource
 import com.yessorae.domain.entity.ChartGame
 import com.yessorae.domain.repository.ChartGameRepository
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 class ChartGameRepositoryImpl @Inject constructor(
     private val localDataSource: ChartTrainerLocalDBDataSource,

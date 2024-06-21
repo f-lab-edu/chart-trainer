@@ -29,7 +29,7 @@ data class User(
 
     fun quiteGame(): User {
         return this.copy(
-            loseCount = loseCount + 1,
+            loseCount = loseCount + 1
         )
     }
 

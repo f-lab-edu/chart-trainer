@@ -6,10 +6,8 @@ import com.yessorae.data.source.local.database.model.asDomainModel
 import com.yessorae.data.source.local.database.model.asEntity
 import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.repository.TradeRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-
+import kotlinx.coroutines.flow.map
 
 class TradeRepositoryImpl @Inject constructor(
     private val localDBDataSource: ChartTrainerLocalDBDataSource

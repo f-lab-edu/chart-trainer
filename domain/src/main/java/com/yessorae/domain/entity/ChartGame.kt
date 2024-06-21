@@ -18,7 +18,7 @@ data class ChartGame(
     // 현재 종가
     val closeStockPrice: Money,
     // 유저의 게임 강제 종료 여부
-    val isQuit: Boolean, // TODO::NOW 쿼리할 때 isQuit 가 true인 것을 제외하고 가져오도록 수정 필요
+    val isQuit: Boolean,
     // 현재 보유 주식 수량
     val totalStockCount: Int,
     // 현재 보유 주식 가격의 총합
@@ -26,7 +26,7 @@ data class ChartGame(
     // 현재 보유 주식 평단가
     val averageStockPrice: Money,
     // 누적 수익
-    val accumulatedTotalProfit: Money,
+    val accumulatedTotalProfit: Money
 ) {
 
     // 누적 수익률
@@ -80,9 +80,7 @@ data class ChartGame(
         )
     }
 
-    internal fun getChartChangeResult(
-        closeStockPrice: Money
-    ): ChartGame {
+    internal fun getChartChangeResult(closeStockPrice: Money): ChartGame {
         return copy(
             currentTurn = START_TURN,
             currentBalance = startBalance,
@@ -107,7 +105,7 @@ data class ChartGame(
             chartId: Long,
             totalTurn: Int,
             startBalance: Money,
-            closeStockPrice: Money,
+            closeStockPrice: Money
         ): ChartGame {
             return ChartGame(
                 chartId = chartId,

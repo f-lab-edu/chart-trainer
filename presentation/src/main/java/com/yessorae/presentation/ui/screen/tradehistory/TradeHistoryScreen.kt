@@ -114,7 +114,7 @@ fun TradeHistoryScreenPreview() {
                 TradeHistoryListItem(
                     id = 1,
                     turn = 1,
-                    tradeType = TradeType.Buy,
+                    tradeType = TradeType.BUY,
                     stockPrice = Money(123.0),
                     count = 10,
                     totalPrice = Money(1230.0),
@@ -124,7 +124,7 @@ fun TradeHistoryScreenPreview() {
                 TradeHistoryListItem(
                     id = 2,
                     turn = 2,
-                    tradeType = TradeType.Sell,
+                    tradeType = TradeType.SELL,
                     stockPrice = Money(125.0),
                     count = 10,
                     totalPrice = Money(1250.0),

@@ -13,6 +13,8 @@ data class TradeEntity(
     val id: Long = 0,
     @ColumnInfo(name = COL_GAME_ID)
     val gameId: Long,
+    @ColumnInfo(name = COL_OWNED_STOCK_COUNT)
+    val ownedStockCount: Int,
     @ColumnInfo(name = COL_OWNED_AVERAGE_STOCK_PRICE)
     val ownedAverageStockPrice: Money,
     @ColumnInfo(name = COL_STOCK_PRICE)
@@ -29,6 +31,7 @@ data class TradeEntity(
     companion object {
         const val NAME = "trade_table"
         const val COL_GAME_ID = "game_id"
+        const val COL_OWNED_STOCK_COUNT = "owned_stock_count"
         const val COL_OWNED_AVERAGE_STOCK_PRICE = "owned_average_price"
         const val COL_STOCK_PRICE = "stock_price"
         const val COL_COUNT = "count"
@@ -42,6 +45,7 @@ fun Trade.asEntity() =
     TradeEntity(
         id = id,
         gameId = gameId,
+        ownedStockCount = ownedStockCount,
         ownedAverageStockPrice = ownedAverageStockPrice,
         stockPrice = stockPrice,
         count = count,
@@ -54,6 +58,7 @@ fun TradeEntity.asDomainModel() =
     Trade(
         id = id,
         gameId = gameId,
+        ownedStockCount = ownedStockCount,
         ownedAverageStockPrice = ownedAverageStockPrice,
         stockPrice = stockPrice,
         count = count,

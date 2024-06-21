@@ -1,5 +1,6 @@
 package com.yessorae.data.source.local.database.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import com.yessorae.data.source.local.database.model.ChartGameEntity
@@ -20,4 +21,11 @@ interface ChartGameDao : BaseDao<ChartGameEntity> {
         """
     )
     suspend fun getChartGame(id: Long): ChartGameEntity
+
+    @Query(
+        """
+            SELECT * from ${ChartGameEntity.NAME}
+        """
+    )
+    fun getChartGamePagingSource(): PagingSource<Int, ChartGameEntity>
 }

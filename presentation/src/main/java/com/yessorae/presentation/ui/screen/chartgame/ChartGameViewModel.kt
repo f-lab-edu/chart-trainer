@@ -14,6 +14,7 @@ import com.yessorae.domain.usecase.QuitChartGameUseCase
 import com.yessorae.domain.usecase.SubscribeChartGameUseCase
 import com.yessorae.domain.usecase.TradeStockUseCase
 import com.yessorae.domain.usecase.UpdateNextTickUseCase
+import com.yessorae.presentation.ui.NavigationConstants.CHART_GAME_ID_ARG_KEY
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameEvent
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenState
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenUserAction

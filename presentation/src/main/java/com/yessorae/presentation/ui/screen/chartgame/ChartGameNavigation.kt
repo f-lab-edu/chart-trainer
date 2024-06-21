@@ -6,8 +6,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.yessorae.presentation.ui.NavigationConstants.CHART_GAME_ID_ARG_KEY
 
-const val CHART_GAME_ID_ARG_KEY = "chartGameId"
 const val CHART_GAME_BASE_ROUTE = "chart_game"
 const val CHART_GAME_ROUTE_WITH_ARGS =
     "$CHART_GAME_BASE_ROUTE?$CHART_GAME_ID_ARG_KEY={$CHART_GAME_ID_ARG_KEY}"
@@ -24,7 +24,7 @@ fun NavController.navigateToChartGameScreen(
 
 fun NavGraphBuilder.chartGameScreen(
     navigateToBack: () -> Unit,
-    navigateToChartGameHistory: (Long) -> Unit
+    navigateToTradeHistory: (Long) -> Unit
 ) {
     composable(
         route = CHART_GAME_ROUTE_WITH_ARGS,
@@ -37,7 +37,7 @@ fun NavGraphBuilder.chartGameScreen(
     ) {
         ChartGameRoute(
             navigateToBack = navigateToBack,
-            navigateToChartGameHistory = navigateToChartGameHistory
+            navigateToChartGameHistory = navigateToTradeHistory
         )
     }
 }

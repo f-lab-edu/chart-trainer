@@ -1,5 +1,6 @@
 package com.yessorae.data.source.local.database
 
+import androidx.paging.PagingSource
 import com.yessorae.data.source.ChartTrainerLocalDBDataSource
 import com.yessorae.data.source.local.database.dao.ChartDao
 import com.yessorae.data.source.local.database.dao.ChartGameDao
@@ -20,6 +21,9 @@ class ChartTrainerLocalDBDataSourceImpl @Inject constructor(
 ) : ChartTrainerLocalDBDataSource {
     override fun getChartGameAsFlow(id: Long): Flow<ChartGameEntity> =
         chartGameDao.getChartGameAsFlow(id = id)
+
+    override fun getChartGamePagingSource(): PagingSource<Int, ChartGameEntity> =
+        chartGameDao.getChartGamePagingSource()
 
     override fun getTradesAsFlow(gameId: Long): Flow<List<TradeEntity>> =
         tradeDao.getTradesAsFlow(gameId = gameId)

@@ -1,5 +1,9 @@
 package com.yessorae.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.yessorae.data.di.ChartTrainerDispatcher
 import com.yessorae.data.di.Dispatcher
 import com.yessorae.data.source.ChartTrainerLocalDBDataSource
@@ -35,7 +39,7 @@ class ChartGameRepositoryImpl @Inject constructor(
             localDataSource.insertCharGame(entity = chartGame.asEntity())
         }
 
-    override fun fetchChartFlow(gameId: Long): Flow<ChartGame> {
+    override fun fetchChartGameFlow(gameId: Long): Flow<ChartGame> {
         return combine(
             localDataSource.getChartGameAsFlow(id = gameId),
             localDataSource.getTradesAsFlow(gameId = gameId),
@@ -54,7 +58,21 @@ class ChartGameRepositoryImpl @Inject constructor(
             .flowOn(dispatcher)
     }
 
-    override suspend fun fetchChartGame(gameId: Long): ChartGame =
+    override fun fetchPagedChartGameFlow(pagingConfig: PagingConfig): Flow<PagingData<ChartGame>> {
+        return Pager(
+            config = pagingConfig
+        ) {
+            localDataSource.getChartGamePagingSource()
+        }
+            .flow
+            .map { pagingData ->
+                pagingData.map { chartGameEntity -> makeChartGame(gameId = chartGameEntity.id) }
+            }
+    }
+
+    override suspend fun fetchChartGame(gameId: Long): ChartGame = makeChartGame(gameId = gameId)
+
+    private suspend fun makeChartGame(gameId: Long): ChartGame =
         withContext(dispatcher) {
             val chartGameJob = async { localDataSource.getChartGame(id = gameId) }
             val tradesJob = async { localDataSource.getTrades(gameId = gameId) }

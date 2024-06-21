@@ -11,6 +11,9 @@ object Dependency {
         const val KOTOIN_SERIALIZATION_JSON =
             "org.jetbrains.kotlinx:kotlinx-serialization-json:${Version.KOTOIN_SERIALIZATION_JSON}"
 
+        const val PAGING_RUNTIME = "androidx.paging:paging-runtime:${Version.PAGING}"
+        const val PAGING_COMMON = "androidx.paging:paging-common:${Version.PAGING}"
+
         object Version {
             const val HILT = "2.44"
             const val ANDROIDX_CORE = "1.9.0"
@@ -19,6 +22,8 @@ object Dependency {
 
             // 1.5.0 이 Kotlin 버전 1.8.10 을 디폴트로 사용
             const val KOTOIN_SERIALIZATION_JSON = "1.5.0"
+
+            const val PAGING = "3.3.0"
         }
     }
 
@@ -39,6 +44,7 @@ object Dependency {
         const val ROOM_COMPILER = "androidx.room:room-compiler:${Version.ROOM}"
         const val ROOM_KAPT = "androidx.room:room-compiler:${Version.ROOM}"
         const val ROOM_COROUTINE = "androidx.room:room-ktx:${Version.ROOM}"
+        const val ROOM_PAGING = "androidx.room:room-paging:${Version.ROOM}"
         const val RETROFIT = "com.squareup.retrofit2:retrofit:${Version.RETROFIT}"
         const val RETROFIT_GSON_CONVERTER =
             "com.squareup.retrofit2:converter-kotlinx-serialization:${Version.RETROFIT}"
@@ -75,6 +81,7 @@ object Dependency {
         const val UI_TOOLING_PREVIEW = "androidx.compose.ui:ui-tooling-preview"
         const val JUNIT = "androidx.compose.ui:ui-test-junit4"
         const val UI_TEST_MANIFEST = "androidx.compose.ui:ui-test-manifest"
+        const val PAGING_COMPOSE = "androidx.paging:paging-compose:${Common.Version.PAGING}"
 
         object Version {
             const val BOM = "2023.03.00"

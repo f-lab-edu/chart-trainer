@@ -11,7 +11,7 @@ import org.junit.Test
 
 class ChartGameTest {
     @Test
-    fun profit_sell_chart_game_result() {
+    fun chart_game_profit_sell_result() {
         // 익절. 평단가 40,000원에 10개를 가지고 있다가 50,000원에 5개를 팔았을 때
         val trade: Trade = baseTestTrade.copy(
             type = TradeType.SELL,
@@ -49,7 +49,7 @@ class ChartGameTest {
     }
 
     @Test
-    fun stop_loss_chart_game_result() {
+    fun chart_game_stop_loss_result() {
         // 손절. 평단가 50,000원에 10개를 가지고 있다가 40,000원에 5개를 팔았을 때
         val trade: Trade = baseTestTrade.copy(
             type = TradeType.SELL,
@@ -85,7 +85,7 @@ class ChartGameTest {
     }
 
     @Test
-    fun buy_chart_game_result() {
+    fun chart_game_buy_result() {
         // 5만원에 100주 매수.
         val trade: Trade = baseTestTrade.copy(
             type = TradeType.BUY,

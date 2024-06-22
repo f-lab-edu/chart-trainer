@@ -4,8 +4,6 @@ import com.yessorae.domain.entity.ChartGame
 import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
-import com.yessorae.domain.model.baseTestChartGame
-import com.yessorae.domain.model.baseTestTrade
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

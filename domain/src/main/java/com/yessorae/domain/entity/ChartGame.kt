@@ -23,7 +23,7 @@ data class ChartGame(
     val totalStockCount: Int,
     // 현재 보유 주식 평단가
     val averageStockPrice: Money,
-    // 누적 수익
+    // 누적 실현 손익
     val accumulatedTotalProfit: Money
 ) {
     // 현재 보유 주식 가격의 총합
@@ -41,10 +41,11 @@ data class ChartGame(
     // 정상종료이든 강제종료이든 종료된 경우 true
     val isGameEnd: Boolean = isQuit || isGameComplete
 
-    internal fun getNextTurnResult(): ChartGame {
+    internal fun getNextTurnResult(closeStockPrice: Money): ChartGame {
         val nextTurn = currentTurn + 1
         return this.copy(
-            currentTurn = nextTurn
+            currentTurn = nextTurn,
+            closeStockPrice = closeStockPrice
         )
     }
 

@@ -120,4 +120,23 @@ class ChartGameTest {
             result
         )
     }
+
+    @Test
+    fun chart_game_next_turn_result() {
+        val sut: ChartGame = baseTestChartGame.copy(
+            currentTurn = 1
+        )
+
+        val result: ChartGame = baseTestChartGame.getNextTurnResult(
+            closeStockPrice = Money.of(50_000.0)
+        )
+
+        assertEquals(
+            sut.copy(
+                currentTurn = 2,
+                closeStockPrice = Money.of(50_000.0)
+            ),
+            result
+        )
+    }
 }

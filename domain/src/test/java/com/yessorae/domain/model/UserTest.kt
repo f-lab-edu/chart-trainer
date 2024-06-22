@@ -41,4 +41,21 @@ class UserTest {
 
         assertEquals(0.75, sut.rateOfLosing)
     }
+
+    @Test
+    fun user_quite_game_result() {
+        val sut = baseTestUser.copy(
+            winCount = 1,
+            loseCount = 2
+        )
+
+        val result = sut.quiteGame()
+
+        assertEquals(
+            sut.copy(
+                loseCount = 3
+            ),
+            result
+        )
+    }
 }

@@ -109,7 +109,6 @@ class ChartGameTest {
 
         val result: ChartGame = sut.getTradeResult(newTrade = trade)
 
-
         assertEquals(
             sut.copy(
                 currentBalance = Money.of(4_099_500.0),

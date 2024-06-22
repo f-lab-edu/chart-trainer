@@ -7,9 +7,9 @@ import com.yessorae.domain.exception.ChartGameException
 import com.yessorae.domain.repository.ChartGameRepository
 import com.yessorae.domain.repository.ChartRepository
 import com.yessorae.domain.repository.UserRepository
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
 class UpdateNextTickUseCase @Inject constructor(
     private val chartGameRepository: ChartGameRepository,
@@ -28,7 +28,7 @@ class UpdateNextTickUseCase @Inject constructor(
 
             val chart = chartRepository.fetchChart(gameId = gameId)
             val lastVisibleTickIndex = (chart.ticks.size - 1) -
-                    (oldChartGame.totalTurn - (oldChartGame.currentTurn + 1))
+                (oldChartGame.totalTurn - (oldChartGame.currentTurn + 1))
 
             if (lastVisibleTickIndex < 0) {
                 throw ChartGameException.CanNotCreateChartGame(

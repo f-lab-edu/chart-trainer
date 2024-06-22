@@ -66,7 +66,8 @@ data class ChartGame(
             ),
             totalStockCount = newTotalStockCount,
             averageStockPrice = if (newTrade.type.isBuy()) {
-                (averageStockPrice * totalStockCount + newTrade.totalTradeMoney) / newTotalStockCount
+                (averageStockPrice * totalStockCount + newTrade.totalTradeMoney) /
+                    newTotalStockCount
             } else {
                 averageStockPrice
             },

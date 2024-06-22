@@ -8,6 +8,7 @@ import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
 import java.time.LocalDateTime
+import kotlin.random.Random
 
 const val TEST_CHART_GAME_ID = 1L
 const val TEST_CHART_ID = 2L
@@ -45,24 +46,24 @@ val baseChart = Chart(
 val baseTestChartGame = ChartGame(
     id = TEST_CHART_GAME_ID,
     chartId = TEST_CHART_ID,
-    currentTurn = 1,
-    totalTurn = 50,
-    startBalance = Money.of(1000.0),
-    currentBalance = Money.of(1000.0),
-    closeStockPrice = Money.of(100.0),
-    isQuit = false,
-    totalStockCount = 0,
-    averageStockPrice = Money.of(0.0),
-    accumulatedTotalProfit = Money.of(0.0)
+    currentTurn = Int.MAX_VALUE,
+    totalTurn = Int.MAX_VALUE,
+    startBalance = Money.of(Double.MAX_VALUE),
+    currentBalance = Money.of(Double.MAX_VALUE),
+    closeStockPrice = Money.of(Double.MAX_VALUE),
+    isQuit = Random.nextBoolean(),
+    totalStockCount = Int.MAX_VALUE,
+    averageStockPrice = Money.of(Double.MAX_VALUE),
+    accumulatedTotalProfit = Money.of(Double.MAX_VALUE)
 )
 
 val baseTestTrade = Trade.new(
     gameId = TEST_CHART_GAME_ID,
-    ownedStockCount = 0,
-    ownedAverageStockPrice = Money.of(0.0),
-    stockPrice = Money.of(0.0),
-    count = 0,
-    turn = 0,
+    ownedStockCount = Int.MAX_VALUE,
+    ownedAverageStockPrice = Money.of(Double.MAX_VALUE),
+    stockPrice = Money.of(Double.MAX_VALUE),
+    count = Int.MAX_VALUE,
+    turn = Int.MAX_VALUE,
     type = TradeType.BUY,
-    commissionRate = 0.1
+    commissionRate = Double.MAX_VALUE
 )

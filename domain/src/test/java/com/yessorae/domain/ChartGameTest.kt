@@ -49,7 +49,7 @@ class ChartGameTest {
     }
 
     @Test
-    fun chart_game_stop_loss_result() {
+    fun chart_game_stop_loss_sell_result() {
         // 손절. 평단가 50,000원에 10개를 가지고 있다가 40,000원에 5개를 팔았을 때
         val trade: Trade = baseTestTrade.copy(
             type = TradeType.SELL,
@@ -126,7 +126,7 @@ class ChartGameTest {
             currentTurn = 1
         )
 
-        val result: ChartGame = baseTestChartGame.getNextTurnResult(
+        val result: ChartGame = sut.getNextTurnResult(
             closeStockPrice = Money.of(50_000.0)
         )
 
@@ -134,6 +134,29 @@ class ChartGameTest {
             sut.copy(
                 currentTurn = 2,
                 closeStockPrice = Money.of(50_000.0)
+            ),
+            result
+        )
+    }
+
+    @Test
+    fun chart_game_chart_change_result() {
+        val sut: ChartGame = baseTestChartGame.copy(
+            startBalance = Money.of(100_000.0)
+        )
+
+        val result: ChartGame = sut.getChartChangeResult(
+            closeStockPrice = Money.of(50_000.0)
+        )
+
+        assertEquals(
+            sut.copy(
+                currentTurn = ChartGame.START_TURN,
+                currentBalance = Money.of(100_000.0),
+                closeStockPrice = Money.of(50_000.0),
+                totalStockCount = 0,
+                averageStockPrice = Money.ZERO,
+                accumulatedTotalProfit = Money.ZERO
             ),
             result
         )

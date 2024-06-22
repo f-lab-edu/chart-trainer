@@ -2,6 +2,7 @@ package com.yessorae.domain.model
 
 import com.yessorae.domain.entity.Chart
 import com.yessorae.domain.entity.ChartGame
+import com.yessorae.domain.entity.User
 import com.yessorae.domain.entity.tick.Tick
 import com.yessorae.domain.entity.tick.TickUnit
 import com.yessorae.domain.entity.trade.Trade
@@ -10,15 +11,18 @@ import com.yessorae.domain.entity.value.Money
 import java.time.LocalDateTime
 import kotlin.random.Random
 
-const val TEST_CHART_GAME_ID = 1L
-const val TEST_CHART_ID = 2L
-const val TEST_TICKER_SYMBOL = "AAPL"
-val testStartDate: LocalDateTime = LocalDateTime.of(2024, 5, 29, 0, 0)
-val testEndDate: LocalDateTime = LocalDateTime.of(2022, 5, 29, 0, 0)
+private const val TEST_CHART_GAME_ID = 1L
+private const val TEST_CHART_ID = 2L
+private const val TEST_TICKER_SYMBOL = "AAPL"
+private const val TICK_COUNT = 10
+private val testStartDate: LocalDateTime = LocalDateTime.of(2024, 5, 29, 0, 0)
+private val testEndDate: LocalDateTime = LocalDateTime.of(2022, 5, 29, 0, 0)
+private const val DEFAULT_INT = Int.MAX_VALUE
+private const val DEFAULT_DOUBLE = Double.MAX_VALUE
+private val defaultMoney = Money.of(DEFAULT_DOUBLE)
 
-val baseClosePrice: Money = Money.of(150.0)
-const val TICK_COUNT = 10
-val testClosePrice: Money = baseClosePrice * TICK_COUNT
+private val baseClosePrice: Money = Money.of(150.0)
+private val testClosePrice: Money = baseClosePrice * TICK_COUNT
 
 fun createTestTick(index: Int) =
     Tick(
@@ -46,24 +50,31 @@ val baseChart = Chart(
 val baseTestChartGame = ChartGame(
     id = TEST_CHART_GAME_ID,
     chartId = TEST_CHART_ID,
-    currentTurn = Int.MAX_VALUE,
-    totalTurn = Int.MAX_VALUE,
-    startBalance = Money.of(Double.MAX_VALUE),
-    currentBalance = Money.of(Double.MAX_VALUE),
-    closeStockPrice = Money.of(Double.MAX_VALUE),
+    currentTurn = DEFAULT_INT,
+    totalTurn = DEFAULT_INT,
+    startBalance = defaultMoney,
+    currentBalance = defaultMoney,
+    closeStockPrice = defaultMoney,
     isQuit = Random.nextBoolean(),
-    totalStockCount = Int.MAX_VALUE,
-    averageStockPrice = Money.of(Double.MAX_VALUE),
-    accumulatedTotalProfit = Money.of(Double.MAX_VALUE)
+    totalStockCount = DEFAULT_INT,
+    averageStockPrice = defaultMoney,
+    accumulatedTotalProfit = defaultMoney
 )
 
 val baseTestTrade = Trade.new(
     gameId = TEST_CHART_GAME_ID,
-    ownedStockCount = Int.MAX_VALUE,
-    ownedAverageStockPrice = Money.of(Double.MAX_VALUE),
-    stockPrice = Money.of(Double.MAX_VALUE),
-    count = Int.MAX_VALUE,
-    turn = Int.MAX_VALUE,
+    ownedStockCount = DEFAULT_INT,
+    ownedAverageStockPrice = defaultMoney,
+    stockPrice = defaultMoney,
+    count = DEFAULT_INT,
+    turn = DEFAULT_INT,
     type = TradeType.BUY,
-    commissionRate = Double.MAX_VALUE
+    commissionRate = DEFAULT_DOUBLE
+)
+
+val baseTestUser = User(
+    balance = defaultMoney,
+    winCount = DEFAULT_INT,
+    loseCount = DEFAULT_INT,
+    averageRateOfProfit = DEFAULT_DOUBLE
 )

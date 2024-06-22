@@ -161,4 +161,16 @@ class ChartGameTest {
             result
         )
     }
+
+    @Test
+    fun chart_game_quit_result() {
+        val sut: ChartGame = baseTestChartGame
+
+        val result: ChartGame = sut.getQuitResult()
+
+        assertEquals(
+            sut.copy(isQuit = true),
+            result
+        )
+    }
 }

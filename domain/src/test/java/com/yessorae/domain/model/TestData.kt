@@ -52,7 +52,6 @@ val baseTestChartGame = ChartGame(
     closeStockPrice = Money.of(100.0),
     isQuit = false,
     totalStockCount = 0,
-    totalStockPrice = Money.of(0.0),
     averageStockPrice = Money.of(0.0),
     accumulatedTotalProfit = Money.of(0.0)
 )

@@ -21,13 +21,13 @@ data class ChartGame(
     val isQuit: Boolean,
     // 현재 보유 주식 수량
     val totalStockCount: Int,
-    // 현재 보유 주식 가격의 총합
-    val totalStockPrice: Money,
     // 현재 보유 주식 평단가
     val averageStockPrice: Money,
     // 누적 수익
     val accumulatedTotalProfit: Money
 ) {
+    // 현재 보유 주식 가격의 총합
+    val totalStockPrice: Money = closeStockPrice * totalStockCount
 
     // 누적 수익률
     val accumulatedRateOfProfit: Double = (accumulatedTotalProfit / startBalance).value
@@ -58,19 +58,12 @@ data class ChartGame(
         return copy(
             currentBalance = currentBalance + Money.of(
                 if (newTrade.type.isBuy()) {
-                    -newTrade.totalTradeMoney.value
+                    -(newTrade.totalTradeMoney + newTrade.commission).value
                 } else {
-                    newTrade.totalTradeMoney.value
+                    (newTrade.totalTradeMoney - newTrade.commission).value
                 }
             ),
             totalStockCount = newTotalStockCount,
-            totalStockPrice = totalStockPrice + Money.of(
-                if (newTrade.type.isBuy()) {
-                    newTrade.totalTradeMoney.value
-                } else {
-                    -newTrade.totalTradeMoney.value
-                }
-            ),
             averageStockPrice = if (newTrade.type.isBuy()) {
                 (totalStockPrice + newTrade.totalTradeMoney) / newTotalStockCount
             } else {
@@ -86,7 +79,6 @@ data class ChartGame(
             currentBalance = startBalance,
             closeStockPrice = closeStockPrice,
             totalStockCount = 0,
-            totalStockPrice = Money.ZERO,
             averageStockPrice = Money.ZERO,
             accumulatedTotalProfit = Money.ZERO
         )
@@ -116,7 +108,6 @@ data class ChartGame(
                 closeStockPrice = closeStockPrice,
                 isQuit = false,
                 totalStockCount = 0,
-                totalStockPrice = Money.ZERO,
                 averageStockPrice = Money.ZERO,
                 accumulatedTotalProfit = Money.ZERO
             )

@@ -1,4 +1,4 @@
-package com.yessorae.domain
+package com.yessorae.domain.model
 
 import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money

@@ -57,6 +57,9 @@ dependencies {
     implementation(Dependency.Common.ANDROIDX_CORE)
     testImplementation(Dependency.Common.JUNIT)
     androidTestImplementation(Dependency.Common.JUNIT_EXT)
+    testImplementation(Dependency.Common.TURBINE)
+    testImplementation(Dependency.Common.MOCKK)
+    testImplementation(Dependency.Common.PAGING_COMMON)
 }
 
 configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {

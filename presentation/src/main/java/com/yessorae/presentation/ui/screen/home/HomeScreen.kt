@@ -46,7 +46,12 @@ fun HomeScreenRoute(
     navigateToChartGameHistory: () -> Unit
 ) {
     val screenState by viewModel.screenState.collectAsState()
-    HomeScreen(screenState = screenState)
+    HomeScreen(
+        screenState = screenState,
+        onUserAction = { userAction ->
+            viewModel.handleUserAction(userAction = userAction)
+        }
+    )
 
     HomeScreenEventHandler(
         screenEvent = viewModel.screenEvent,
@@ -57,7 +62,10 @@ fun HomeScreenRoute(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(screenState: HomeState) {
+fun HomeScreen(
+    screenState: HomeState,
+    onUserAction: (HomeScreenUserAction) -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -68,7 +76,7 @@ fun HomeScreen(screenState: HomeState) {
                     DefaultIconButton(
                         imageVector = ChartTrainerIcons.ChartGameList,
                         onClick = {
-                            screenState.onUserAction(HomeScreenUserAction.ClickChartGameHistory)
+                            onUserAction(HomeScreenUserAction.ClickChartGameHistory)
                         }
                     )
                 }
@@ -101,13 +109,13 @@ fun HomeScreen(screenState: HomeState) {
                         .padding(bottom = Dimen.defaultLayoutSidePadding),
                     settingInfoUi = screenState.settingInfoUi,
                     onClickCommissionRate = {
-                        screenState.onUserAction(HomeScreenUserAction.ClickCommissionRate)
+                        onUserAction(HomeScreenUserAction.ClickCommissionRate)
                     },
                     onClickTotalTurn = {
-                        screenState.onUserAction(HomeScreenUserAction.ClickTotalTurn)
+                        onUserAction(HomeScreenUserAction.ClickTotalTurn)
                     },
                     onClickTickUnit = {
-                        screenState.onUserAction(HomeScreenUserAction.ClickTickUnit)
+                        onUserAction(HomeScreenUserAction.ClickTickUnit)
                     }
                 )
 
@@ -115,13 +123,13 @@ fun HomeScreen(screenState: HomeState) {
                     modifier = Modifier.fillMaxWidth(),
                     homeBottomButtonUi = screenState.bottomButtonState,
                     onClickStartChartGame = {
-                        screenState.onUserAction(HomeScreenUserAction.ClickStartChartGame)
+                        onUserAction(HomeScreenUserAction.ClickStartChartGame)
                     },
                     onClickKeepGoingChartGame = {
-                        screenState.onUserAction(HomeScreenUserAction.ClickKeepGoingChartGame)
+                        onUserAction(HomeScreenUserAction.ClickKeepGoingChartGame)
                     },
                     onClickQuitInProgressChartGame = {
-                        screenState.onUserAction(HomeScreenUserAction.ClickQuitInProgressChartGame)
+                        onUserAction(HomeScreenUserAction.ClickQuitInProgressChartGame)
                     }
                 )
             }

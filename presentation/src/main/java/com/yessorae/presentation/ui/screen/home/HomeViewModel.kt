@@ -51,6 +51,8 @@ class HomeViewModel @Inject constructor(
     private val _screenEvent = MutableSharedFlow<HomeScreenEvent>()
     val screenEvent: SharedFlow<HomeScreenEvent> = _screenEvent.asSharedFlow()
 
+    private var lastChartGameId: Long? = null
+
     private fun subscribeUserData() {
         subscribeUserDataUseCase().onEach { result ->
             when (result) {
@@ -65,6 +67,7 @@ class HomeViewModel @Inject constructor(
 
                 is Result.Success -> {
                     with(result.data) {
+                        lastChartGameId = lastChartGameIdResult.getOrNull()
                         _screenState.update { old ->
                             old.copy(
                                 userInfoUi = old.userInfoUi.copy(
@@ -89,12 +92,6 @@ class HomeViewModel @Inject constructor(
                                 },
                                 screenLoading = false,
                                 error = false,
-                                onUserAction = { userAction ->
-                                    handleUserAction(
-                                        userAction = userAction,
-                                        lastChartGameId = lastChartGameIdResult.getOrNull()
-                                    )
-                                }
                             )
                         }
                     }
@@ -112,10 +109,10 @@ class HomeViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun handleUserAction(
+    fun handleUserAction(
         userAction: HomeScreenUserAction,
-        lastChartGameId: Long?
-    ) = viewModelScope.launch {
+
+        ) = viewModelScope.launch {
         when (userAction) {
             is HomeScreenUserAction.ClickStartChartGame -> {
                 _screenEvent.emit(

@@ -10,8 +10,7 @@ data class HomeState(
     val bottomButtonState: HomeBottomButtonUi = HomeBottomButtonUi.Loading,
     val screenLoading: Boolean = true,
     val error: Boolean = false,
-    val settingDialogState: SettingDialogState = SettingDialogState.None,
-    val onUserAction: (HomeScreenUserAction) -> Unit = {}
+    val settingDialogState: SettingDialogState = SettingDialogState.None
 )
 
 data class SettingInfoUi(

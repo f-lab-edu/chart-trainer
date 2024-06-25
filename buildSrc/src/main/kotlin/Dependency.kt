@@ -16,6 +16,9 @@ object Dependency {
 
         const val TURBINE = "app.cash.turbine:turbine:${Version.TURBINE}"
         const val MOCKK = "io.mockk:mockk:${Version.MOCKK}"
+        const val COROUTINE_TEST =
+            "org.jetbrains.kotlinx:kotlinx-coroutines-test:" +
+                    PlatformIndependent.Version.KOTLINX_COROUTINSE
 
         object Version {
             const val HILT = "2.44"
@@ -30,6 +33,7 @@ object Dependency {
 
             const val TURBINE = "1.1.0"
             const val MOCKK = "1.12.0"
+
         }
     }
 

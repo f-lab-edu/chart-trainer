@@ -60,6 +60,7 @@ dependencies {
     testImplementation(Dependency.Common.TURBINE)
     testImplementation(Dependency.Common.MOCKK)
     testImplementation(Dependency.Common.PAGING_COMMON)
+    testImplementation(Dependency.Common.COROUTINE_TEST)
 }
 
 configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {

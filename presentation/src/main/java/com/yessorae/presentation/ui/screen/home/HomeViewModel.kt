@@ -10,13 +10,13 @@ import com.yessorae.domain.usecase.ChangeTickUnitSettingUseCase
 import com.yessorae.domain.usecase.ChangeTotalTurnSettingUseCase
 import com.yessorae.domain.usecase.QuitChartGameUseCase
 import com.yessorae.domain.usecase.SubscribeHomeDataUseCase
+import com.yessorae.domain.usecase.SubscribeLastGameIdUseCase
 import com.yessorae.presentation.ui.screen.home.model.HomeBottomButtonUi
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenEvent
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenUserAction
 import com.yessorae.presentation.ui.screen.home.model.HomeState
 import com.yessorae.presentation.ui.screen.home.model.SettingDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -29,10 +29,12 @@ import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val subscribeUserDataUseCase: SubscribeHomeDataUseCase,
+    private val subscribeLastGameIdUseCase: SubscribeLastGameIdUseCase,
     private val changeCommissionRateSettingUseCase: ChangeCommissionRateSettingUseCase,
     private val changeTickUnitSettingUseCase: ChangeTickUnitSettingUseCase,
     private val changeTotalTurnSettingUseCase: ChangeTotalTurnSettingUseCase,
@@ -42,7 +44,9 @@ class HomeViewModel @Inject constructor(
     val screenState: StateFlow<HomeState> = _screenState
         .onSubscription {
             subscribeUserData()
-        }.stateIn(
+            subscribeLastChartGameId()
+        }
+        .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = HomeState()
@@ -67,7 +71,6 @@ class HomeViewModel @Inject constructor(
 
                 is Result.Success -> {
                     with(result.data) {
-                        lastChartGameId = lastChartGameIdResult.getOrNull()
                         _screenState.update { old ->
                             old.copy(
                                 userInfoUi = old.userInfoUi.copy(
@@ -83,13 +86,6 @@ class HomeViewModel @Inject constructor(
                                     tickUnit = tickUnit,
                                     totalTurn = totalTurn
                                 ),
-                                bottomButtonState = when (lastChartGameIdResult) {
-                                    is Result.Loading -> HomeBottomButtonUi.Loading
-                                    else -> HomeBottomButtonUi.Success(
-                                        hasOnGoingCharGame =
-                                        lastChartGameIdResult.getOrNull() != null
-                                    )
-                                },
                                 screenLoading = false,
                                 error = false,
                             )
@@ -109,10 +105,32 @@ class HomeViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun handleUserAction(
-        userAction: HomeScreenUserAction,
+    private fun subscribeLastChartGameId() {
+        subscribeLastGameIdUseCase().onEach { result ->
+            lastChartGameId = result.getOrNull()
 
-        ) = viewModelScope.launch {
+            _screenState.update { old ->
+                old.copy(
+                    bottomButtonState = when (result) {
+                        is Result.Loading -> {
+                            HomeBottomButtonUi.Loading
+                        }
+
+                        else -> {
+                            HomeBottomButtonUi.Success(
+                                hasOnGoingCharGame = lastChartGameId != null
+                            )
+                        }
+                    }
+                )
+            }
+        }.launchIn(viewModelScope)
+
+    }
+
+    fun handleUserAction(
+        userAction: HomeScreenUserAction
+    ) = viewModelScope.launch {
         when (userAction) {
             is HomeScreenUserAction.ClickStartChartGame -> {
                 _screenEvent.emit(
@@ -123,7 +141,7 @@ class HomeViewModel @Inject constructor(
             is HomeScreenUserAction.ClickKeepGoingChartGame -> {
                 lastChartGameId?.let { gameId ->
                     _screenEvent.emit(
-                        HomeScreenEvent.NavigateToChartGameScreen(chartGameId = lastChartGameId)
+                        HomeScreenEvent.NavigateToChartGameScreen(chartGameId = 1L)
                     )
                 }
             }

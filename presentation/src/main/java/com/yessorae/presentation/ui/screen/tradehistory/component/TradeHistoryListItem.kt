@@ -25,7 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.yessorae.domain.entity.trade.TradeType
-import com.yessorae.domain.entity.value.Money
+import com.yessorae.domain.entity.value.asMoney
 import com.yessorae.presentation.R
 import com.yessorae.presentation.ui.designsystem.theme.StockDownColor
 import com.yessorae.presentation.ui.designsystem.theme.StockUpColor
@@ -196,11 +196,11 @@ fun TradeHistoryListItemPreview() {
             id = 1,
             turn = 1,
             tradeType = TradeType.BUY,
-            stockPrice = Money(1000.0),
+            stockPrice = 1000.asMoney(),
             count = 10,
-            totalPrice = Money(10000.0),
-            commission = Money(100.0),
-            profit = Money(100.0)
+            totalPrice = 10000.asMoney(),
+            commission = 100.asMoney(),
+            profit = 100.asMoney()
         ),
         totalTurn = 10
     )

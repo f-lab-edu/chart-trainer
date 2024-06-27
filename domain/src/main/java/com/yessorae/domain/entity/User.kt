@@ -2,6 +2,7 @@ package com.yessorae.domain.entity
 
 import com.yessorae.domain.common.DefaultValues
 import com.yessorae.domain.entity.value.Money
+import com.yessorae.domain.entity.value.asMoney
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -39,7 +40,7 @@ data class User(
     ): User {
         val oldTotalGameCount = winCount + loseCount
         return User(
-            balance = balance + Money(profit),
+            balance = balance + profit.asMoney(),
             winCount = winCount + (if (profit > 0) 1 else 0),
             loseCount = loseCount + (if (profit < 0) 1 else 0),
             averageRateOfProfit =

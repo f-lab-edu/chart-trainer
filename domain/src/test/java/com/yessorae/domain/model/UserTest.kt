@@ -24,7 +24,7 @@ class UserTest {
 
     @Test
     fun user_winning_rate() {
-        val sut: User = baseTestUser.copy(
+        val sut: User = createTestUser(
             winCount = 3,
             loseCount = 1
         )
@@ -34,7 +34,7 @@ class UserTest {
 
     @Test
     fun user_losing_rate() {
-        val sut: User = baseTestUser.copy(
+        val sut: User = createTestUser(
             winCount = 1,
             loseCount = 3
         )
@@ -44,7 +44,7 @@ class UserTest {
 
     @Test
     fun user_quite_game_result() {
-        val sut: User = baseTestUser.copy(
+        val sut: User = createTestUser(
             winCount = 1,
             loseCount = 2
         )
@@ -61,7 +61,7 @@ class UserTest {
 
     @Test
     fun user_finish_game_with_wining_result() {
-        val sut: User = baseTestUser.copy(
+        val sut: User = createTestUser(
             balance = Money.of(100_000.0),
             winCount = 98,
             loseCount = 1,
@@ -85,7 +85,7 @@ class UserTest {
 
     @Test
     fun user_finish_game_with_losing_result() {
-        val sut: User = baseTestUser.copy(
+        val sut: User = createTestUser(
             balance = Money.of(100_000.0),
             winCount = 98,
             loseCount = 1,

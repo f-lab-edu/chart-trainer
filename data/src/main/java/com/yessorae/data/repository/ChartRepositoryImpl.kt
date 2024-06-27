@@ -66,16 +66,8 @@ class ChartRepositoryImpl @Inject constructor(
         return chart.copy(id = chartId)
     }
 
-    // TODO::LATER 인-메모리 캐싱. ChartTrainerInMemoryDataSource 같은 이름으로 만들어서 활용.
-    // Chart 데이터는 게임 시작하고나서 변하지 않는다. 또한, 다음 턴을 호출할 때마다 참조된다.
-    // 따라서 메모리 캐싱 해두면 매번 DB에 다녀올 필요 없이 성능을 개선할 수 있다.
-    override suspend fun fetchChart(gameId: Long): Chart {
-        val chartId = localDBDataSource.getChartId(gameId = gameId)
-        val chartEntity = localDBDataSource.getChart(id = chartId)
-        val ticks = localDBDataSource.getTicks(chartId = chartId)
-
-        return chartEntity.asDomainModel(ticks.map { it.asDomainModel() })
-    }
+    override suspend fun fetchChart(gameId: Long): Chart =
+        localDBDataSource.getChartWithTicks(gameId = gameId).asDomainModel()
 
     companion object {
         private const val RETRY_COUNT = 3

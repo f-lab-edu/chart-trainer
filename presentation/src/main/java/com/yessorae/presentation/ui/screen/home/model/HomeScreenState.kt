@@ -3,6 +3,7 @@ package com.yessorae.presentation.ui.screen.home.model
 import com.yessorae.domain.common.DefaultValues
 import com.yessorae.domain.entity.tick.TickUnit
 import com.yessorae.domain.entity.value.Money
+import com.yessorae.domain.entity.value.asMoney
 
 data class HomeState(
     val userInfoUi: UserInfoUi = UserInfoUi(),
@@ -20,7 +21,7 @@ data class SettingInfoUi(
 )
 
 data class UserInfoUi(
-    val currentBalance: Money = Money(0.0),
+    val currentBalance: Money = 0.asMoney(),
     val winCount: Int = 0,
     val loseCount: Int = 0,
     val averageRateOfProfit: Float = 0f,

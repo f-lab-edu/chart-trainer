@@ -66,13 +66,8 @@ class ChartRepositoryImpl @Inject constructor(
         return chart.copy(id = chartId)
     }
 
-    override suspend fun fetchChart(gameId: Long): Chart {
-        val chartId = localDBDataSource.getChartId(gameId = gameId)
-        val chartEntity = localDBDataSource.getChart(id = chartId)
-        val ticks = localDBDataSource.getTicks(chartId = chartId)
-
-        return chartEntity.asDomainModel(ticks.map { it.asDomainModel() })
-    }
+    override suspend fun fetchChart(gameId: Long): Chart =
+        localDBDataSource.getChartWithTicks(gameId = gameId).asDomainModel()
 
     companion object {
         private const val RETRY_COUNT = 3

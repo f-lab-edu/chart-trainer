@@ -8,6 +8,7 @@ import com.yessorae.data.source.local.database.dao.TickDao
 import com.yessorae.data.source.local.database.dao.TradeDao
 import com.yessorae.data.source.local.database.model.ChartEntity
 import com.yessorae.data.source.local.database.model.ChartGameEntity
+import com.yessorae.data.source.local.database.model.ChartWithTicksEntity
 import com.yessorae.data.source.local.database.model.TickEntity
 import com.yessorae.data.source.local.database.model.TradeEntity
 import javax.inject.Inject
@@ -28,15 +29,13 @@ class ChartTrainerLocalDBDataSourceImpl @Inject constructor(
     override suspend fun getChartGame(id: Long): ChartGameEntity =
         chartGameDao.getChartGame(id = id)
 
-    override suspend fun getChartId(gameId: Long): Long = chartGameDao.getChartId(gameId = gameId)
-
     override suspend fun getTrades(gameId: Long): List<TradeEntity> =
         tradeDao.getTrades(gameId = gameId)
 
-    override suspend fun getChart(id: Long): ChartEntity = chartDao.getChart(id = id)
-
-    override suspend fun getTicks(chartId: Long): List<TickEntity> =
-        tickDao.getTicks(chartId = chartId)
+    override suspend fun getChartWithTicks(gameId: Long): ChartWithTicksEntity {
+        val chartId = chartGameDao.getChartId(gameId = gameId)
+        return chartDao.getChartWithTicks(id = chartId)
+    }
 
     override suspend fun insertCharGame(entity: ChartGameEntity): Long =
         chartGameDao.insert(

@@ -10,6 +10,7 @@ import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
 import com.yessorae.domain.entity.value.asMoney
 import java.time.LocalDateTime
+import kotlin.random.Random
 
 private const val TEST_CHART_GAME_ID = 1L
 private const val TEST_CHART_ID = 2L
@@ -100,7 +101,7 @@ fun createTestTrade(
     commissionRate = commissionRate
 )
 
-fun createUser(
+fun createTestUser(
     balance: Money = defaultMoney,
     winCount: Int = DEFAULT_INT,
     loseCount: Int = DEFAULT_INT,

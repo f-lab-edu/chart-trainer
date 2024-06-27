@@ -4,8 +4,8 @@ import com.yessorae.domain.entity.ChartGame
 import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
-import com.yessorae.domain.model.baseTestChartGame
-import com.yessorae.domain.model.baseTestTrade
+import com.yessorae.domain.model.createTestChartGame
+import com.yessorae.domain.model.createTestTrade
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -13,7 +13,7 @@ class ChartGameTest {
     @Test
     fun chart_game_profit_sell_result() {
         // 익절. 평단가 40,000원에 10개를 가지고 있다가 50,000원에 5개를 팔았을 때
-        val trade: Trade = baseTestTrade.copy(
+        val trade: Trade = createTestTrade(
             type = TradeType.SELL,
             ownedAverageStockPrice = Money.of(40_000.0),
             ownedStockCount = 10,
@@ -21,7 +21,7 @@ class ChartGameTest {
             count = 5,
             commissionRate = 0.1
         )
-        val sut: ChartGame = baseTestChartGame.copy(
+        val sut: ChartGame = createTestChartGame(
             // 500만원 있는 사람이
             startBalance = Money.of(5_000_000.0),
             // 과거 4만원짜리 주식 10주 사서 현재 잔액은 460만원이고
@@ -51,7 +51,7 @@ class ChartGameTest {
     @Test
     fun chart_game_stop_loss_sell_result() {
         // 손절. 평단가 50,000원에 10개를 가지고 있다가 40,000원에 5개를 팔았을 때
-        val trade: Trade = baseTestTrade.copy(
+        val trade: Trade = createTestTrade(
             type = TradeType.SELL,
             ownedAverageStockPrice = Money.of(50_000.0),
             ownedStockCount = 10,
@@ -59,7 +59,7 @@ class ChartGameTest {
             count = 5,
             commissionRate = 0.1
         )
-        val sut: ChartGame = baseTestChartGame.copy(
+        val sut: ChartGame = createTestChartGame(
             // 500만원 있는 사람이
             startBalance = Money.of(5_000_000.0),
             // 5만원짜리 주식 10주 사서 현재 잔액은 450만원이고 평단가는 5만원 현재가격은 4만원
@@ -87,13 +87,13 @@ class ChartGameTest {
     @Test
     fun chart_game_buy_result() {
         // 5만원에 100주 매수.
-        val trade: Trade = baseTestTrade.copy(
+        val trade: Trade = createTestTrade(
             type = TradeType.BUY,
             stockPrice = Money.of(50_000.0),
             commissionRate = 0.1,
             count = 10
         )
-        val sut: ChartGame = baseTestChartGame.copy(
+        val sut: ChartGame = createTestChartGame(
             // 500만원 있는 사람이
             startBalance = Money.of(5_000_000.0),
             // 과거 4만원짜리 주식 10주 사서 현재 잔액은 460만원이고
@@ -122,7 +122,7 @@ class ChartGameTest {
 
     @Test
     fun chart_game_next_turn_result() {
-        val sut: ChartGame = baseTestChartGame.copy(
+        val sut: ChartGame = createTestChartGame(
             currentTurn = 1
         )
 
@@ -141,7 +141,7 @@ class ChartGameTest {
 
     @Test
     fun chart_game_chart_change_result() {
-        val sut: ChartGame = baseTestChartGame.copy(
+        val sut: ChartGame = createTestChartGame(
             startBalance = Money.of(100_000.0)
         )
 
@@ -164,7 +164,7 @@ class ChartGameTest {
 
     @Test
     fun chart_game_quit_result() {
-        val sut: ChartGame = baseTestChartGame
+        val sut: ChartGame = createTestChartGame()
 
         val result: ChartGame = sut.getQuitResult()
 

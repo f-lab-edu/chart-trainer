@@ -9,7 +9,6 @@ import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
 import com.yessorae.domain.entity.value.asMoney
 import java.time.LocalDateTime
-import kotlin.random.Random
 
 const val TEST_CHART_GAME_ID = 1L
 const val TEST_CHART_ID = 2L

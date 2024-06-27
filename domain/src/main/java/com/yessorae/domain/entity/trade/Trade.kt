@@ -1,6 +1,7 @@
 package com.yessorae.domain.entity.trade
 
 import com.yessorae.domain.entity.value.Money
+import com.yessorae.domain.entity.value.asMoney
 
 data class Trade(
     val id: Long = 0,
@@ -30,7 +31,7 @@ data class Trade(
 
     // 실현 손익, 매도할 때만 유효
     val profit: Money = if (type.isBuy()) {
-        Money.of(-commission.value)
+        (-commission.value).asMoney()
     } else {
         val sellProfit = totalTradeMoney - commission
         val totalOwnedStockPrice = ownedAverageStockPrice * count

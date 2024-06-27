@@ -3,6 +3,7 @@ package com.yessorae.data.source.network.polygon.model.chart
 import com.yessorae.data.util.toLocalDateTime
 import com.yessorae.domain.entity.tick.Tick
 import com.yessorae.domain.entity.value.Money
+import com.yessorae.domain.entity.value.asMoney
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -28,10 +29,10 @@ data class TickDto(
 
 internal fun TickDto.asDomainModel() =
     Tick(
-        openPrice = Money(openPrice),
-        closePrice = Money(closePrice),
-        maxPrice = Money(maxPrice),
-        minPrice = Money(minPrice),
+        openPrice = openPrice.asMoney(),
+        closePrice = closePrice.asMoney(),
+        maxPrice = maxPrice.asMoney(),
+        minPrice = minPrice.asMoney(),
         transactionCount = transactionCount,
         startTimestamp = startTimestamp.toLocalDateTime(),
         tradingVolume = tradingVolume.toInt(),

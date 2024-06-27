@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yessorae.domain.entity.trade.TradeType
-import com.yessorae.domain.entity.value.Money
+import com.yessorae.domain.entity.value.asMoney
 import com.yessorae.presentation.R
 import com.yessorae.presentation.ui.designsystem.theme.Dimen
 import com.yessorae.presentation.ui.designsystem.util.DevicePreviews
@@ -115,21 +115,21 @@ fun TradeHistoryScreenPreview() {
                     id = 1,
                     turn = 1,
                     tradeType = TradeType.BUY,
-                    stockPrice = Money(123.0),
+                    stockPrice = 123.asMoney(),
                     count = 10,
-                    totalPrice = Money(1230.0),
-                    commission = Money(12.3),
-                    profit = Money(-123.0)
+                    totalPrice = 1230.asMoney(),
+                    commission = 12.3.asMoney(),
+                    profit = (-123).asMoney()
                 ),
                 TradeHistoryListItem(
                     id = 2,
                     turn = 2,
                     tradeType = TradeType.SELL,
-                    stockPrice = Money(125.0),
+                    stockPrice = 125.asMoney(),
                     count = 10,
-                    totalPrice = Money(1250.0),
-                    commission = Money(12.4),
-                    profit = Money(7.6)
+                    totalPrice = 1250.asMoney(),
+                    commission = 12.4.asMoney(),
+                    profit = 7.6.asMoney()
                 )
             )
         ),

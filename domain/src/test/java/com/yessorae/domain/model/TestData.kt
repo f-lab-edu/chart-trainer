@@ -7,6 +7,7 @@ import com.yessorae.domain.entity.tick.TickUnit
 import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
+import com.yessorae.domain.entity.value.asMoney
 import java.time.LocalDateTime
 
 const val TEST_CHART_GAME_ID = 1L
@@ -15,20 +16,20 @@ const val TEST_TICKER_SYMBOL = "AAPL"
 val testStartDate: LocalDateTime = LocalDateTime.of(2024, 5, 29, 0, 0)
 val testEndDate: LocalDateTime = LocalDateTime.of(2022, 5, 29, 0, 0)
 
-val baseClosePrice: Money = Money.of(150.0)
+val baseClosePrice: Money = 150.asMoney()
 const val TICK_COUNT = 10
 val testClosePrice: Money = baseClosePrice * TICK_COUNT
 
 fun createTestTick(index: Int) =
     Tick(
-        openPrice = Money.of(100.0) * index,
-        maxPrice = Money.of(200.0) * index,
-        minPrice = Money.of(50.0) * index,
+        openPrice = 100.asMoney() * index,
+        maxPrice = 200.asMoney() * index,
+        minPrice = 50.asMoney() * index,
         closePrice = baseClosePrice * index,
         transactionCount = 1000 * index,
         startTimestamp = testStartDate.plusDays(index.toLong()),
         tradingVolume = 1000 * index,
-        volumeWeightedAveragePrice = Money.of(150.0) * index
+        volumeWeightedAveragePrice = 150.asMoney() * index
     )
 
 fun createTestTicks() = (1..TICK_COUNT).map { index -> createTestTick(index = index) }
@@ -54,14 +55,14 @@ fun createTestChartGame(
     chartId: Long = TEST_CHART_ID,
     currentTurn: Int = 1,
     totalTurn: Int = 50,
-    startBalance: Money = Money.of(1000.0),
-    currentBalance: Money = Money.of(1000.0),
-    closeStockPrice: Money = Money.of(100.0),
+    startBalance: Money = 1000.asMoney(),
+    currentBalance: Money = 1000.asMoney(),
+    closeStockPrice: Money = 100.asMoney(),
     isQuit: Boolean = false,
     totalStockCount: Int = 0,
-    totalStockPrice: Money = Money.of(0.0),
-    averageStockPrice: Money = Money.of(0.0),
-    accumulatedTotalProfit: Money = Money.of(0.0)
+    totalStockPrice: Money = 0.asMoney(),
+    averageStockPrice: Money = 0.asMoney(),
+    accumulatedTotalProfit: Money = 0.asMoney()
 ) = ChartGame(
     id = id,
     chartId = chartId,
@@ -80,8 +81,8 @@ fun createTestChartGame(
 fun createTestTrade(
     gameId: Long = TEST_CHART_GAME_ID,
     ownedStockCount: Int = Int.MAX_VALUE,
-    ownedAverageStockPrice: Money = Money.of(Double.MAX_VALUE),
-    stockPrice: Money = Money.of(Double.MAX_VALUE),
+    ownedAverageStockPrice: Money = Double.MAX_VALUE.asMoney(),
+    stockPrice: Money = Double.MAX_VALUE.asMoney(),
     count: Int = Int.MAX_VALUE,
     turn: Int = Int.MAX_VALUE,
     type: TradeType = TradeType.BUY,

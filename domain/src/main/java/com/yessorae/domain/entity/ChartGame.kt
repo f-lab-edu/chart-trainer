@@ -2,6 +2,7 @@ package com.yessorae.domain.entity
 
 import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.entity.value.Money
+import com.yessorae.domain.entity.value.asMoney
 
 data class ChartGame(
     val id: Long = 0,
@@ -56,21 +57,19 @@ data class ChartGame(
         }
 
         return copy(
-            currentBalance = currentBalance + Money.of(
+            currentBalance = currentBalance +
                 if (newTrade.type.isBuy()) {
-                    -newTrade.totalTradeMoney.value
+                    (-newTrade.totalTradeMoney.value)
                 } else {
                     newTrade.totalTradeMoney.value
-                }
-            ),
+                }.asMoney(),
             totalStockCount = newTotalStockCount,
-            totalStockPrice = totalStockPrice + Money.of(
+            totalStockPrice = totalStockPrice +
                 if (newTrade.type.isBuy()) {
                     newTrade.totalTradeMoney.value
                 } else {
                     -newTrade.totalTradeMoney.value
-                }
-            ),
+                }.asMoney(),
             averageStockPrice = if (newTrade.type.isBuy()) {
                 (totalStockPrice + newTrade.totalTradeMoney) / newTotalStockCount
             } else {

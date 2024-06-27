@@ -2,7 +2,7 @@ package com.yessorae.domain
 
 import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
-import com.yessorae.domain.model.baseTestTrade
+import com.yessorae.domain.model.createTestTrade
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -10,7 +10,7 @@ class TradeTest {
     @Test
     fun profit_sell_calculation() {
         // 익절. 평단가 40,000원에 10개를 가지고 있다가 50,000원에 5개를 팔았을 때
-        val trade = baseTestTrade.copy(
+        val trade = createTestTrade(
             type = TradeType.SELL,
             ownedAverageStockPrice = Money.of(40_000.0),
             ownedStockCount = 10,
@@ -27,7 +27,7 @@ class TradeTest {
     @Test
     fun stop_loss_sell_calculation() {
         // 손절. 평단가 50,000원에 10개를 가지고 있다가 40,000원에 5개를 팔았을 때
-        val trade = baseTestTrade.copy(
+        val trade = createTestTrade(
             type = TradeType.SELL,
             ownedAverageStockPrice = Money.of(50_000.0),
             ownedStockCount = 10,
@@ -44,7 +44,7 @@ class TradeTest {
     @Test
     fun buy_profit_calculation() {
         // 매수한 경우 손익은 수수료만큼 손해
-        val trade = baseTestTrade.copy(
+        val trade = createTestTrade(
             type = TradeType.BUY,
             stockPrice = Money.of(50_000.0),
             commissionRate = 0.1,

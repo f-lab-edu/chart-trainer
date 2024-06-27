@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.yessorae.domain.entity.tick.TickUnit
-import com.yessorae.domain.entity.value.Money
+import com.yessorae.domain.entity.value.asMoney
 import com.yessorae.presentation.ui.designsystem.theme.Dimen
 import com.yessorae.presentation.ui.designsystem.theme.StockDownColor
 import com.yessorae.presentation.ui.designsystem.theme.StockUpColor
@@ -92,7 +92,7 @@ fun PreviewChartGameHistoryListItem() {
         ticker = "AAPL",
         totalTurn = 10,
         tickUnit = TickUnit.DAY,
-        totalProfit = Money(10.0),
+        totalProfit = 10.asMoney(),
         isTotalProfitPositive = true,
         startDate = LocalDateTime.of(2024, 1, 1, 0, 0),
         endDate = LocalDateTime.of(2026, 1, 1, 0, 0)

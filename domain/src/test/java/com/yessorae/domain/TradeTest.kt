@@ -8,8 +8,7 @@ import org.junit.Test
 
 class TradeTest {
     @Test
-    fun profit_sell_calculation() {
-        // 익절. 평단가 40,000원에 10개를 가지고 있다가 50,000원에 5개를 팔았을 때
+    fun profit_with_selling_part_of_owned_stock_at_higher_price() {
         val trade = createTestTrade(
             type = TradeType.SELL,
             ownedAverageStockPrice = Money.of(40_000.0),
@@ -25,8 +24,7 @@ class TradeTest {
     }
 
     @Test
-    fun stop_loss_sell_calculation() {
-        // 손절. 평단가 50,000원에 10개를 가지고 있다가 40,000원에 5개를 팔았을 때
+    fun stop_loss_with_selling_part_of_owned_stock_at_higher_price() {
         val trade = createTestTrade(
             type = TradeType.SELL,
             ownedAverageStockPrice = Money.of(50_000.0),
@@ -42,8 +40,7 @@ class TradeTest {
     }
 
     @Test
-    fun buy_profit_calculation() {
-        // 매수한 경우 손익은 수수료만큼 손해
+    fun loss_with_buying_commission_rate() {
         val trade = createTestTrade(
             type = TradeType.BUY,
             stockPrice = Money.of(50_000.0),

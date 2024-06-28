@@ -53,16 +53,15 @@ fun createTestChart(
 fun createTestChartGame(
     id: Long = TEST_CHART_GAME_ID,
     chartId: Long = TEST_CHART_ID,
-    currentTurn: Int = 1,
-    totalTurn: Int = 50,
-    startBalance: Money = 1000.asMoney(),
-    currentBalance: Money = 1000.asMoney(),
-    closeStockPrice: Money = 100.asMoney(),
+    currentTurn: Int = Int.MAX_VALUE,
+    totalTurn: Int = Int.MAX_VALUE,
+    startBalance: Money = Int.MAX_VALUE.asMoney(),
+    currentBalance: Money = Int.MAX_VALUE.asMoney(),
+    closeStockPrice: Money = Int.MAX_VALUE.asMoney(),
     isQuit: Boolean = false,
-    totalStockCount: Int = 0,
-    totalStockPrice: Money = 0.asMoney(),
-    averageStockPrice: Money = 0.asMoney(),
-    accumulatedTotalProfit: Money = 0.asMoney()
+    totalStockCount: Int = Int.MAX_VALUE,
+    averageStockPrice: Money = Int.MAX_VALUE.asMoney(),
+    accumulatedTotalProfit: Money = Int.MAX_VALUE.asMoney()
 ) = ChartGame(
     id = id,
     chartId = chartId,
@@ -73,7 +72,6 @@ fun createTestChartGame(
     closeStockPrice = closeStockPrice,
     isQuit = isQuit,
     totalStockCount = totalStockCount,
-    totalStockPrice = totalStockPrice,
     averageStockPrice = averageStockPrice,
     accumulatedTotalProfit = accumulatedTotalProfit
 )

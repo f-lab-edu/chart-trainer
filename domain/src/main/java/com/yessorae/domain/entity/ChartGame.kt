@@ -22,13 +22,13 @@ data class ChartGame(
     val isQuit: Boolean,
     // 현재 보유 주식 수량
     val totalStockCount: Int,
-    // 현재 보유 주식 가격의 총합
-    val totalStockPrice: Money,
     // 현재 보유 주식 평단가
     val averageStockPrice: Money,
-    // 누적 수익
+    // 누적 실현 손익
     val accumulatedTotalProfit: Money
 ) {
+    // 현재 보유 주식 가격의 총합
+    val totalStockPrice: Money = closeStockPrice * totalStockCount
 
     // 누적 수익률
     val accumulatedRateOfProfit: Double = (accumulatedTotalProfit / startBalance).value
@@ -42,10 +42,11 @@ data class ChartGame(
     // 정상종료이든 강제종료이든 종료된 경우 true
     val isGameEnd: Boolean = isQuit || isGameComplete
 
-    internal fun getNextTurnResult(): ChartGame {
+    internal fun getNextTurnResult(closeStockPrice: Money): ChartGame {
         val nextTurn = currentTurn + 1
         return this.copy(
-            currentTurn = nextTurn
+            currentTurn = nextTurn,
+            closeStockPrice = closeStockPrice
         )
     }
 
@@ -59,19 +60,14 @@ data class ChartGame(
         return copy(
             currentBalance = currentBalance +
                 if (newTrade.type.isBuy()) {
-                    (-newTrade.totalTradeMoney.value)
+                    -(newTrade.totalTradeMoney + newTrade.commission).value
                 } else {
-                    newTrade.totalTradeMoney.value
+                    (newTrade.totalTradeMoney - newTrade.commission).value
                 }.asMoney(),
             totalStockCount = newTotalStockCount,
-            totalStockPrice = totalStockPrice +
-                if (newTrade.type.isBuy()) {
-                    newTrade.totalTradeMoney.value
-                } else {
-                    -newTrade.totalTradeMoney.value
-                }.asMoney(),
             averageStockPrice = if (newTrade.type.isBuy()) {
-                (totalStockPrice + newTrade.totalTradeMoney) / newTotalStockCount
+                (averageStockPrice * totalStockCount + newTrade.totalTradeMoney) /
+                    newTotalStockCount
             } else {
                 averageStockPrice
             },
@@ -85,7 +81,6 @@ data class ChartGame(
             currentBalance = startBalance,
             closeStockPrice = closeStockPrice,
             totalStockCount = 0,
-            totalStockPrice = Money.ZERO,
             averageStockPrice = Money.ZERO,
             accumulatedTotalProfit = Money.ZERO
         )
@@ -115,7 +110,6 @@ data class ChartGame(
                 closeStockPrice = closeStockPrice,
                 isQuit = false,
                 totalStockCount = 0,
-                totalStockPrice = Money.ZERO,
                 averageStockPrice = Money.ZERO,
                 accumulatedTotalProfit = Money.ZERO
             )

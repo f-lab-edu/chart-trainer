@@ -24,8 +24,15 @@ interface ChartGameDao : BaseDao<ChartGameEntity> {
 
     @Query(
         """
-            SELECT * from ${ChartGameEntity.NAME}
+            SELECT * from ${ChartGameEntity.NAME} WHERE ${ChartGameEntity.COL_IS_QUIT} = 0
         """
     )
     fun getChartGamePagingSource(): PagingSource<Int, ChartGameEntity>
+
+    @Query(
+        """
+            SELECT ${ChartGameEntity.COL_CHART_ID} from ${ChartGameEntity.NAME} WHERE id = (:gameId) 
+        """
+    )
+    fun getChartId(gameId: Long): Long
 }

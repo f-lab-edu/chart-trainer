@@ -1,15 +1,12 @@
 package com.yessorae.domain.entity
 
-import com.yessorae.domain.entity.tick.Tick
 import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.entity.value.Money
 
 data class ChartGame(
     val id: Long = 0,
-    // 차트 데이터
-    val chart: Chart,
-    // 거래 내역
-    val trades: List<Trade>,
+    // 게임에 종속된 차트의 id
+    val chartId: Long,
     // 현재 턴
     val currentTurn: Int,
     // 전체 턴
@@ -18,57 +15,19 @@ data class ChartGame(
     val startBalance: Money,
     // 현재 잔고
     val currentBalance: Money,
-    // 유저의 게임 강제 종료 여부
-    val isQuit: Boolean
-) {
-
-    private val sortedTicks = chart.ticks.sortedBy { it.startTimestamp }
-
-    private val lastVisibleIndex = (chart.ticks.size - 1) - (totalTurn - currentTurn)
-
-    // 현재 턴의까지의 차트 데이터
-    val visibleTicks: List<Tick> = if (chart.ticks.size <= lastVisibleIndex) {
-        sortedTicks
-    } else {
-        sortedTicks.subList(0, lastVisibleIndex)
-    }
-
-    // 보유 주식 수량
-    val ownedStockCount = trades.sumOf { trade ->
-        if (trade.type.isBuy()) {
-            trade.count
-        } else {
-            -trade.count
-        }
-    }
-
-    // 보유 주식 총 가치
-    private val ownedTotalStockPrice = trades.sumOf { trade ->
-        if (trade.type.isBuy()) {
-            trade.totalTradeMoney.value
-        } else {
-            -trade.totalTradeMoney.value
-        }
-    }
-
-    // 현재 보유 주식 평단가
-    val ownedAverageStockPrice = if (ownedStockCount != 0) {
-        Money(ownedTotalStockPrice / ownedStockCount)
-    } else {
-        Money(0.0)
-    }
-
     // 현재 종가
-    val currentClosePrice: Money = (visibleTicks.lastOrNull()?.closePrice ?: Money(0.0))
-
+    val closeStockPrice: Money,
+    // 유저의 게임 강제 종료 여부
+    val isQuit: Boolean,
+    // 현재 보유 주식 수량
+    val totalStockCount: Int,
+    // 현재 보유 주식 가격의 총합
+    val totalStockPrice: Money,
+    // 현재 보유 주식 평단가
+    val averageStockPrice: Money,
     // 누적 수익
-    val accumulatedTotalProfit: Money = trades.fold(Money(0.0)) { acc, trade ->
-        acc + trade.profit
-    } + if (ownedStockCount != 0) {
-        currentClosePrice - ownedAverageStockPrice
-    } else {
-        Money(0.0)
-    }
+    val accumulatedTotalProfit: Money
+) {
 
     // 누적 수익률
     val accumulatedRateOfProfit: Double = (accumulatedTotalProfit / startBalance).value
@@ -82,51 +41,84 @@ data class ChartGame(
     // 정상종료이든 강제종료이든 종료된 경우 true
     val isGameEnd: Boolean = isQuit || isGameComplete
 
-    internal fun getNextTurn(): ChartGame {
+    internal fun getNextTurnResult(): ChartGame {
         val nextTurn = currentTurn + 1
         return this.copy(
             currentTurn = nextTurn
         )
     }
 
-    internal fun copyFrom(newChart: Chart): ChartGame {
+    internal fun getTradeResult(newTrade: Trade): ChartGame {
+        val newTotalStockCount: Int = totalStockCount + if (newTrade.type.isBuy()) {
+            newTrade.count
+        } else {
+            -newTrade.count
+        }
+
         return copy(
-            chart = newChart,
+            currentBalance = currentBalance + Money.of(
+                if (newTrade.type.isBuy()) {
+                    -newTrade.totalTradeMoney.value
+                } else {
+                    newTrade.totalTradeMoney.value
+                }
+            ),
+            totalStockCount = newTotalStockCount,
+            totalStockPrice = totalStockPrice + Money.of(
+                if (newTrade.type.isBuy()) {
+                    newTrade.totalTradeMoney.value
+                } else {
+                    -newTrade.totalTradeMoney.value
+                }
+            ),
+            averageStockPrice = if (newTrade.type.isBuy()) {
+                (totalStockPrice + newTrade.totalTradeMoney) / newTotalStockCount
+            } else {
+                averageStockPrice
+            },
+            accumulatedTotalProfit = accumulatedTotalProfit + newTrade.profit
+        )
+    }
+
+    internal fun getChartChangeResult(closeStockPrice: Money): ChartGame {
+        return copy(
             currentTurn = START_TURN,
-            trades = emptyList(),
-            currentBalance = startBalance
+            currentBalance = startBalance,
+            closeStockPrice = closeStockPrice,
+            totalStockCount = 0,
+            totalStockPrice = Money.ZERO,
+            averageStockPrice = Money.ZERO,
+            accumulatedTotalProfit = Money.ZERO
         )
     }
 
-    internal fun copyFrom(newTrade: Trade): ChartGame {
-        return copy(
-            trades = trades + newTrade,
-            currentBalance = currentBalance - newTrade.totalTradeMoney
-        )
-    }
-
-    internal fun createFromQuit(): ChartGame {
+    internal fun getQuitResult(): ChartGame {
         return copy(
             isQuit = true
         )
     }
 
     companion object {
-        private const val START_TURN = 1
+        const val START_TURN = 1
 
         fun new(
-            chart: Chart,
+            chartId: Long,
             totalTurn: Int,
-            startBalance: Money
+            startBalance: Money,
+            closeStockPrice: Money
         ): ChartGame {
             return ChartGame(
-                chart = chart,
-                trades = emptyList(),
+                chartId = chartId,
                 currentTurn = START_TURN,
                 totalTurn = totalTurn,
                 startBalance = startBalance,
                 currentBalance = startBalance,
-                isQuit = false
+                closeStockPrice = closeStockPrice,
+                isQuit = false,
+                totalStockCount = 0,
+                totalStockPrice = Money.ZERO,
+                averageStockPrice = Money.ZERO,
+                accumulatedTotalProfit = Money.ZERO
             )
         }
     }

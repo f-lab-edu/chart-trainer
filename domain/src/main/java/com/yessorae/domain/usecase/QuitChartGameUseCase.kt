@@ -2,7 +2,6 @@ package com.yessorae.domain.usecase
 
 import com.yessorae.domain.common.Result
 import com.yessorae.domain.common.delegateEmptyResultFlow
-import com.yessorae.domain.entity.User
 import com.yessorae.domain.repository.ChartGameRepository
 import com.yessorae.domain.repository.UserRepository
 import javax.inject.Inject
@@ -15,18 +14,10 @@ class QuitChartGameUseCase @Inject constructor(
 ) {
     operator fun invoke(gameId: Long): Flow<Result<Unit>> =
         flow<Nothing> {
-            val oldChartGame = chartGameRepository.fetchChartGame(gameId = gameId)
-            chartGameRepository.updateChartGame(chartGame = oldChartGame.createFromQuit())
-
-            chartGameRepository.clearLastChartGameId()
-
-            // Quit 하면 패배 처리
-            val oldUser: User = userRepository.fetchUser()
-            userRepository.updateUser(
-                oldUser.copyFrom(
-                    profit = oldChartGame.accumulatedTotalProfit.value,
-                    rateOfProfit = oldChartGame.accumulatedRateOfProfit
-                )
+            chartGameRepository.updateChartGame(
+                chartGame = chartGameRepository.fetchChartGame(gameId = gameId).getQuitResult()
             )
+            chartGameRepository.clearLastChartGameId()
+            userRepository.updateUser(user = userRepository.fetchUser().quiteGame())
         }.delegateEmptyResultFlow()
 }

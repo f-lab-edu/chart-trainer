@@ -3,9 +3,7 @@ package com.yessorae.data.source.local.database.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.yessorae.domain.entity.Chart
 import com.yessorae.domain.entity.ChartGame
-import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.entity.value.Money
 
 @Entity(ChartGameEntity.NAME)
@@ -23,7 +21,17 @@ data class ChartGameEntity(
     @ColumnInfo(name = COL_CURRENT_BALANCE)
     val currentBalance: Money,
     @ColumnInfo(name = COL_IS_QUIT)
-    val isQuit: Boolean
+    val isQuit: Boolean,
+    @ColumnInfo(name = COL_CLOSE_STOCK_PRICE)
+    val closeStockPrice: Money,
+    @ColumnInfo(name = COL_TOTAL_STOCK_COUNT)
+    val totalStockCount: Int,
+    @ColumnInfo(name = COL_TOTAL_STOCK_PRICE)
+    val totalStockPrice: Money,
+    @ColumnInfo(name = COL_AVERAGE_STOCK_PRICE)
+    val averageStockPrice: Money,
+    @ColumnInfo(name = COL_ACCUMULATED_TOTAL_PROFIT)
+    val accumulatedTotalProfit: Money
 ) {
     companion object {
         const val NAME = "chart_game_table"
@@ -33,30 +41,42 @@ data class ChartGameEntity(
         const val COL_START_BALANCE = "start_balance"
         const val COL_CURRENT_BALANCE = "current_balance"
         const val COL_IS_QUIT = "is_quit"
+        const val COL_CLOSE_STOCK_PRICE = "close_stock_price"
+        const val COL_TOTAL_STOCK_COUNT = "total_stock_count"
+        const val COL_TOTAL_STOCK_PRICE = "total_stock_price"
+        const val COL_AVERAGE_STOCK_PRICE = "average_stock_price"
+        const val COL_ACCUMULATED_TOTAL_PROFIT = "accumulated_total_profit"
     }
 }
 
 fun ChartGame.asEntity() =
     ChartGameEntity(
         id = id,
-        chartId = chart.id,
+        chartId = chartId,
         currentTurn = currentTurn,
         totalTurn = totalTurn,
         startBalance = startBalance,
         currentBalance = currentBalance,
-        isQuit = isQuit
+        isQuit = isQuit,
+        closeStockPrice = closeStockPrice,
+        totalStockCount = totalStockCount,
+        totalStockPrice = totalStockPrice,
+        averageStockPrice = averageStockPrice,
+        accumulatedTotalProfit = accumulatedTotalProfit
     )
 
-fun ChartGameEntity.asDomainModel(
-    chart: Chart,
-    trades: List<Trade>
-) = ChartGame(
-    id = id,
-    chart = chart,
-    trades = trades,
-    currentTurn = currentTurn,
-    totalTurn = totalTurn,
-    startBalance = startBalance,
-    currentBalance = currentBalance,
-    isQuit = isQuit
-)
+fun ChartGameEntity.asDomainModel() =
+    ChartGame(
+        id = id,
+        chartId = chartId,
+        currentTurn = currentTurn,
+        totalTurn = totalTurn,
+        startBalance = startBalance,
+        currentBalance = currentBalance,
+        isQuit = isQuit,
+        closeStockPrice = closeStockPrice,
+        totalStockCount = totalStockCount,
+        totalStockPrice = totalStockPrice,
+        averageStockPrice = averageStockPrice,
+        accumulatedTotalProfit = accumulatedTotalProfit
+    )

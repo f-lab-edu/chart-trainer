@@ -25,12 +25,21 @@ class ChangeChartUseCase @Inject constructor(
                 )
             }
 
-            chartGameRepository.updateChartGame(
-                chartGame = oldChartGame.copyFrom(
-                    newChart = chartRepository.fetchNewChartRandomly(
-                        totalTurn = userRepository.fetchTotalTurn()
-                    )
+            val totalTurn = userRepository.fetchTotalTurn()
+
+            val newChart = chartRepository.fetchNewChartRandomly(totalTurn = totalTurn)
+
+            if (newChart.ticks.size < totalTurn) {
+                throw ChartGameException.CanNotChangeChartException(
+                    message = "can't change chart because new chart has not enough ticks"
                 )
+            }
+            val closeStockPrice = newChart.ticks[totalTurn - 1].closePrice
+
+            val newChartGame = oldChartGame.getChartChangeResult(closeStockPrice = closeStockPrice)
+
+            chartGameRepository.updateChartGame(
+                chartGame = newChartGame
             )
         }.delegateEmptyResultFlow()
 }

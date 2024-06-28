@@ -23,18 +23,20 @@ class ChartGameHistoryViewModel @Inject constructor(
     val pagedChartGameFlow =
         subscribeChartGameHistoryUseCase()
             .map { pagingData ->
-                pagingData.map { chartGame ->
+                pagingData.map { data ->
 
-                    GameHistoryItem(
-                        id = chartGame.id,
-                        ticker = chartGame.chart.tickerSymbol,
-                        totalTurn = chartGame.totalTurn,
-                        tickUnit = chartGame.chart.tickUnit,
-                        totalProfit = chartGame.accumulatedTotalProfit,
-                        isTotalProfitPositive = chartGame.accumulatedTotalProfit.value > 0.0,
-                        startDate = chartGame.chart.startDateTime,
-                        endDate = chartGame.chart.endDateTime
-                    )
+                    with(data) {
+                        GameHistoryItem(
+                            id = chartGame.id,
+                            ticker = chart.tickerSymbol,
+                            totalTurn = chartGame.totalTurn,
+                            tickUnit = chart.tickUnit,
+                            totalProfit = chartGame.accumulatedTotalProfit,
+                            isTotalProfitPositive = chartGame.accumulatedTotalProfit.value > 0.0,
+                            startDate = chart.startDateTime,
+                            endDate = chart.endDateTime
+                        )
+                    }
                 }
             }
             .cachedIn(viewModelScope)

@@ -14,6 +14,7 @@ interface ChartGameRepository {
 
     suspend fun fetchChartGame(gameId: Long): ChartGame
 
+    // TODO::NOW 호출하는 곳들 확인. 이제 Chart, List<Trade> 를 독립적으로 업데이트해야함
     suspend fun updateChartGame(chartGame: ChartGame)
 
     fun fetchLastChartGameId(): Flow<Long?>

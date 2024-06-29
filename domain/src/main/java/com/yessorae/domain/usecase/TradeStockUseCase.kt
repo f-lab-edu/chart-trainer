@@ -22,6 +22,7 @@ class TradeStockUseCase @Inject constructor(
             with(param) {
                 val trade = Trade.new(
                     gameId = gameId,
+                    ownedStockCount = ownedStockCount,
                     ownedAverageStockPrice = ownedAverageStockPrice,
                     stockPrice = stockPrice,
                     count = count,
@@ -39,6 +40,7 @@ class TradeStockUseCase @Inject constructor(
 
     data class Param(
         val gameId: Long,
+        val ownedStockCount: Int,
         val ownedAverageStockPrice: Money,
         val stockPrice: Money,
         val count: Int,

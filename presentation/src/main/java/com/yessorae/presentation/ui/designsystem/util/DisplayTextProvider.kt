@@ -26,14 +26,14 @@ fun provideTickUnitText(tickUnit: TickUnit) =
 @Composable
 fun TradeType.asText(): String =
     when (this) {
-        TradeType.Buy -> stringResource(id = R.string.common_buy)
-        TradeType.Sell -> stringResource(id = R.string.common_sell)
+        TradeType.BUY -> stringResource(id = R.string.common_buy)
+        TradeType.SELL -> stringResource(id = R.string.common_sell)
     }
 
 fun TradeType.asColor(): Color =
     when (this) {
-        TradeType.Buy -> StockUpColor
-        TradeType.Sell -> StockDownColor
+        TradeType.BUY -> StockUpColor
+        TradeType.SELL -> StockDownColor
     }
 
 fun Money.asDefaultDisplayText(): String = "%.2f".format(value)

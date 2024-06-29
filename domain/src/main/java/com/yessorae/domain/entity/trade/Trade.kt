@@ -1,11 +1,14 @@
 package com.yessorae.domain.entity.trade
 
 import com.yessorae.domain.entity.value.Money
+import com.yessorae.domain.entity.value.asMoney
 
 data class Trade(
     val id: Long = 0,
     // 차트게임 아이디
     val gameId: Long,
+    // 현재 가지고 있는 주식 개수
+    val ownedStockCount: Int,
     // 현재 가지고 있는 가격
     val ownedAverageStockPrice: Money,
     // 1 주당 가격
@@ -24,18 +27,22 @@ data class Trade(
     val totalTradeMoney: Money = stockPrice * count
 
     // 수수료
-    val commission: Money = totalTradeMoney * commissionRate
+    val commission: Money = totalTradeMoney * commissionRate / 100
 
     // 실현 손익, 매도할 때만 유효
     val profit: Money = if (type.isBuy()) {
-        Money(0.0) // TODO::CT-52 버그 수정 필요. 도메인 모델 Unit Testing 브랜치에서 수정 예정.
+        (-commission.value).asMoney()
     } else {
-        ((stockPrice - ownedAverageStockPrice) * count) - commission
+        val sellProfit = totalTradeMoney - commission
+        val totalOwnedStockPrice = ownedAverageStockPrice * count
+
+        sellProfit - totalOwnedStockPrice
     }
 
     companion object {
         internal fun new(
             gameId: Long,
+            ownedStockCount: Int,
             ownedAverageStockPrice: Money,
             stockPrice: Money,
             count: Int,
@@ -45,6 +52,7 @@ data class Trade(
         ): Trade {
             return Trade(
                 gameId = gameId,
+                ownedStockCount = ownedStockCount,
                 ownedAverageStockPrice = ownedAverageStockPrice,
                 stockPrice = stockPrice,
                 count = count,

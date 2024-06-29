@@ -150,6 +150,7 @@ class ChartGameViewModel @Inject constructor(
             is ChartGameScreenUserAction.ClickBuyButton -> {
                 showBuyOrderUi(
                     gameId = gameId,
+                    ownedStockCount = ownedStockCount,
                     ownedAverageStockPrice = ownedAverageStockPrice,
                     currentBalance = currentBalance,
                     currentStockPrice = currentStockPrice,
@@ -189,6 +190,7 @@ class ChartGameViewModel @Inject constructor(
 
     private fun showBuyOrderUi(
         gameId: Long,
+        ownedStockCount: Int,
         ownedAverageStockPrice: Money,
         currentBalance: Money,
         currentStockPrice: Money,
@@ -204,6 +206,7 @@ class ChartGameViewModel @Inject constructor(
                     onUserAction = { userAction ->
                         handleBuyingOrderUiUserAction(
                             gameId = gameId,
+                            ownedStockCount = ownedStockCount,
                             ownedAverageStockPrice = ownedAverageStockPrice,
                             currentStockPrice = currentStockPrice,
                             currentTurn = currentTurn,
@@ -219,6 +222,7 @@ class ChartGameViewModel @Inject constructor(
     private fun handleBuyingOrderUiUserAction(
         gameId: Long,
         maxAvailableStockCount: Int,
+        ownedStockCount: Int,
         ownedAverageStockPrice: Money,
         currentStockPrice: Money,
         currentTurn: Int,
@@ -246,11 +250,12 @@ class ChartGameViewModel @Inject constructor(
                 tradeStock(
                     TradeStockUseCase.Param(
                         gameId = gameId,
+                        ownedStockCount = ownedStockCount,
                         ownedAverageStockPrice = ownedAverageStockPrice,
                         stockPrice = currentStockPrice,
                         count = count.toInt(),
                         turn = currentTurn,
-                        type = TradeType.Buy
+                        type = TradeType.BUY
                     )
                 )
             }
@@ -366,11 +371,12 @@ class ChartGameViewModel @Inject constructor(
                 tradeStock(
                     tradeStockParam = TradeStockUseCase.Param(
                         gameId = gameId,
+                        ownedStockCount = ownedStockCount,
                         ownedAverageStockPrice = ownedAverageStockPrice,
                         stockPrice = currentStockPrice,
                         count = count.toInt(),
                         turn = currentTurn,
-                        type = TradeType.Sell
+                        type = TradeType.SELL
                     )
                 )
             }

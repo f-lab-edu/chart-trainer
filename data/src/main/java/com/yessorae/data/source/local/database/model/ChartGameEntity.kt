@@ -76,7 +76,6 @@ fun ChartGameEntity.asDomainModel() =
         isQuit = isQuit,
         closeStockPrice = closeStockPrice,
         totalStockCount = totalStockCount,
-        totalStockPrice = totalStockPrice,
         averageStockPrice = averageStockPrice,
         accumulatedTotalProfit = accumulatedTotalProfit
     )

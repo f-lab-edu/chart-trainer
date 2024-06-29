@@ -32,14 +32,18 @@ import com.yessorae.presentation.ui.designsystem.theme.StockDownColor
 import com.yessorae.presentation.ui.designsystem.theme.StockUpColor
 import com.yessorae.presentation.ui.designsystem.theme.TradeTextColor
 import com.yessorae.presentation.ui.designsystem.util.DevicePreviews
+import com.yessorae.presentation.ui.screen.chartgame.model.BuyingOrderUiUserAction
 import com.yessorae.presentation.ui.screen.chartgame.model.PercentageOrderShortCut
+import com.yessorae.presentation.ui.screen.chartgame.model.SellingOrderUiUserAction
+import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderKeyPad
 import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi
-import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUiUserAction
 
 @Composable
 fun TradeOrderUi(
+    tradeOrderUi: TradeOrderUi,
     modifier: Modifier = Modifier,
-    tradeOrderUi: TradeOrderUi
+    onBuyingUserAction: (BuyingOrderUiUserAction) -> Unit = {},
+    onSellingUserAction: (SellingOrderUiUserAction) -> Unit = {}
 ) {
     if (tradeOrderUi.show()) {
         when (tradeOrderUi) {
@@ -53,7 +57,56 @@ fun TradeOrderUi(
                     currentStockPrice = tradeOrderUi.currentStockPrice,
                     stockCountInput = tradeOrderUi.stockCountInput,
                     totalBuyingStockPrice = tradeOrderUi.totalBuyingStockPrice,
-                    onUserAction = tradeOrderUi.onUserAction
+                    onDismissRequest = {
+                        onBuyingUserAction(
+                            BuyingOrderUiUserAction.DoSystemBack
+                        )
+                    },
+                    onClickShowKeyPad = {
+                        onBuyingUserAction(
+                            BuyingOrderUiUserAction.ClickShowKeyPad
+                        )
+                    },
+                    onClickKeypad = { tradeOrderKeyPad, stockCountInput ->
+                        onBuyingUserAction(
+                            BuyingOrderUiUserAction.ClickKeyPad(
+                                keyPad = tradeOrderKeyPad,
+                                stockCountInput = stockCountInput,
+                                maxAvailableStockCount =
+                                tradeOrderUi.clickData.maxAvailableStockCount,
+                                ownedStockCount = tradeOrderUi.clickData.ownedStockCount
+                            )
+                        )
+                    },
+                    onClickRatioShortCut = { percentage ->
+                        onBuyingUserAction(
+                            BuyingOrderUiUserAction.ClickRatioShortCut(
+                                percentage = percentage,
+                                maxAvailableStockCount =
+                                tradeOrderUi.clickData.maxAvailableStockCount,
+                                ownedStockCount = tradeOrderUi.clickData.ownedStockCount
+                            )
+                        )
+                    },
+                    onClickCancelButton = {
+                        onBuyingUserAction(
+                            BuyingOrderUiUserAction.ClickCancelButton
+                        )
+                    },
+                    onClickTrade = { stockCountInput ->
+                        onBuyingUserAction(
+                            with(tradeOrderUi.clickData) {
+                                BuyingOrderUiUserAction.ClickTrade(
+                                    stockCountInput = stockCountInput,
+                                    gameId = gameId,
+                                    ownedStockCount = ownedStockCount,
+                                    ownedAverageStockPrice = ownedAverageStockPrice,
+                                    currentStockPrice = currentStockPrice,
+                                    currentTurn = currentTurn
+                                )
+                            }
+                        )
+                    }
                 )
             }
 
@@ -67,7 +120,52 @@ fun TradeOrderUi(
                     currentStockPrice = tradeOrderUi.currentStockPrice,
                     stockCountInput = tradeOrderUi.stockCountInput,
                     totalBuyingStockPrice = tradeOrderUi.totalBuyingStockPrice,
-                    onUserAction = tradeOrderUi.onUserAction
+                    onDismissRequest = {
+                        onSellingUserAction(
+                            SellingOrderUiUserAction.DoSystemBack
+                        )
+                    },
+                    onClickShowKeyPad = {
+                        onSellingUserAction(
+                            SellingOrderUiUserAction.ClickShowKeyPad
+                        )
+                    },
+                    onClickKeypad = { tradeOrderKeyPad, stockCountInput ->
+                        onSellingUserAction(
+                            SellingOrderUiUserAction.ClickKeyPad(
+                                keyPad = tradeOrderKeyPad,
+                                stockCountInput = stockCountInput,
+                                ownedStockCount = tradeOrderUi.clickData.ownedStockCount
+                            )
+                        )
+                    },
+                    onClickRatioShortCut = { percentage ->
+                        onSellingUserAction(
+                            SellingOrderUiUserAction.ClickRatioShortCut(
+                                percentage = percentage,
+                                ownedStockCount = tradeOrderUi.clickData.ownedStockCount
+                            )
+                        )
+                    },
+                    onClickCancelButton = {
+                        onSellingUserAction(
+                            SellingOrderUiUserAction.ClickCancelButton
+                        )
+                    },
+                    onClickTrade = { stockCountInput ->
+                        onSellingUserAction(
+                            with(tradeOrderUi.clickData) {
+                                SellingOrderUiUserAction.ClickTrade(
+                                    stockCountInput = stockCountInput,
+                                    gameId = gameId,
+                                    ownedStockCount = ownedStockCount,
+                                    ownedAverageStockPrice = ownedAverageStockPrice,
+                                    currentStockPrice = currentStockPrice,
+                                    currentTurn = currentTurn
+                                )
+                            }
+                        )
+                    }
                 )
             }
 
@@ -89,10 +187,15 @@ private fun TradeOrderBottomSheet(
     currentStockPrice: Double = 0.0,
     stockCountInput: String,
     totalBuyingStockPrice: Double,
-    onUserAction: (TradeOrderUiUserAction) -> Unit = {}
+    onDismissRequest: () -> Unit,
+    onClickShowKeyPad: () -> Unit = {},
+    onClickKeypad: (TradeOrderKeyPad, String) -> Unit = { _, _ -> },
+    onClickRatioShortCut: (PercentageOrderShortCut) -> Unit = {},
+    onClickCancelButton: () -> Unit,
+    onClickTrade: (String) -> Unit
 ) {
     DefaultModalBottomSheet(
-        onDismissRequest = { onUserAction(TradeOrderUiUserAction.DoSystemBack) },
+        onDismissRequest = onDismissRequest,
         sheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = true,
             confirmValueChange = { false }
@@ -112,7 +215,11 @@ private fun TradeOrderBottomSheet(
                 currentStockPrice = currentStockPrice,
                 stockCountInput = stockCountInput,
                 totalBuyingStockPrice = totalBuyingStockPrice,
-                onUserAction = onUserAction
+                onClickShowKeyPad = onClickShowKeyPad,
+                onClickKeypad = onClickKeypad,
+                onClickRatioShortCut = onClickRatioShortCut,
+                onClickCancelButton = onClickCancelButton,
+                onClickTrade = onClickTrade
             )
         }
     )
@@ -128,7 +235,11 @@ private fun TradeOrder(
     currentStockPrice: Double = 0.0,
     stockCountInput: String = "",
     totalBuyingStockPrice: Double,
-    onUserAction: (TradeOrderUiUserAction) -> Unit = {}
+    onClickShowKeyPad: () -> Unit = {},
+    onClickKeypad: (TradeOrderKeyPad, String) -> Unit = { _, _ -> },
+    onClickRatioShortCut: (PercentageOrderShortCut) -> Unit = {},
+    onClickCancelButton: () -> Unit,
+    onClickTrade: (String) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -191,9 +302,9 @@ private fun TradeOrder(
                     color = MaterialTheme.colorScheme.outline,
                     shape = containerShape
                 )
-                .clickable {
-                    onUserAction(TradeOrderUiUserAction.ClickInput)
-                }
+                .clickable(
+                    onClick = onClickShowKeyPad
+                )
                 .padding(horizontal = 16.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -230,9 +341,7 @@ private fun TradeOrder(
                     modifier = Modifier.weight(1f),
                     percentage = percentage.value,
                     onClick = {
-                        onUserAction(
-                            TradeOrderUiUserAction.ClickRatioShortCut(percentage = percentage)
-                        )
+                        onClickRatioShortCut(percentage)
                     }
                 )
             }
@@ -276,11 +385,9 @@ private fun TradeOrder(
         TradeOrderKeyPad(
             show = showKeyPad,
             onClick = { keyPad ->
-                onUserAction(
-                    TradeOrderUiUserAction.ClickKeyPad(
-                        keyPad = keyPad,
-                        stockCountInput = stockCountInput
-                    )
+                onClickKeypad(
+                    keyPad,
+                    stockCountInput
                 )
             },
             modifier = Modifier.fillMaxWidth()
@@ -296,7 +403,7 @@ private fun TradeOrder(
             DefaultTextButton(
                 text = stringResource(id = R.string.common_cancel),
                 modifier = Modifier.weight(1f),
-                onClick = { onUserAction(TradeOrderUiUserAction.ClickCancelButton) },
+                onClick = onClickCancelButton,
                 colors = ButtonDefaults.textButtonColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                     contentColor = tradeColor
@@ -307,7 +414,9 @@ private fun TradeOrder(
             DefaultTextButton(
                 text = tradeText,
                 modifier = Modifier.weight(1f),
-                onClick = { onUserAction(TradeOrderUiUserAction.ClickTrade(stockCountInput)) },
+                onClick = {
+                    onClickTrade(stockCountInput)
+                },
                 colors = ButtonDefaults.textButtonColors(
                     containerColor = tradeColor,
                     contentColor = TradeTextColor
@@ -326,8 +435,7 @@ fun TradeOrderUiBuyPreview() {
             showKeyPad = true,
             maxAvailableStockCount = 1231,
             currentStockPrice = 4893.12,
-            stockCountInput = "",
-            onUserAction = {}
+            stockCountInput = ""
         )
     )
 }
@@ -340,8 +448,7 @@ fun TradeOrderUiSellPreview() {
             showKeyPad = false,
             maxAvailableStockCount = 1231,
             currentStockPrice = 4893.12,
-            stockCountInput = "123",
-            onUserAction = {}
+            stockCountInput = "123"
         )
     )
 }

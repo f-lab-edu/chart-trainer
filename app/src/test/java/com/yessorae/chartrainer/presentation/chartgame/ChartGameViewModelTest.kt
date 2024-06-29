@@ -38,12 +38,10 @@ import com.yessorae.presentation.ui.screen.chartgame.ChartGameViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Rule
-import org.junit.Test
 
 class ChartGameViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = UnconfinedTestDispatcher()
-
 
     @get:Rule
     val dispatcherRule = MainDispatcherRule(dispatcher)
@@ -96,7 +94,6 @@ class ChartGameViewModelTest {
         chartDao = FakeChartDao(ticksFlow = (tickDao as FakeTickDao).ticksFlow)
         tradeDao = FakeTradeDao()
 
-
         chartNetworkDataSource = PolygonChartNetworkDataSource(
             api = polygonChartApi
         )
@@ -142,12 +139,12 @@ class ChartGameViewModelTest {
         tradeStockUseCase = TradeStockUseCase(
             chartGameRepository = chartGameRepository,
             tradeRepository = tradeRepository,
-            userRepository = userRepository,
+            userRepository = userRepository
         )
         updateNextTickUseCase = UpdateNextTickUseCase(
             chartGameRepository = chartGameRepository,
             chartRepository = chartRepository,
-            userRepository = userRepository,
+            userRepository = userRepository
         )
 
         quitChartGameUseCase = QuitChartGameUseCase(

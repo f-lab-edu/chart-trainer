@@ -16,13 +16,14 @@ import com.yessorae.domain.usecase.SubscribeChartGameUseCase
 import com.yessorae.domain.usecase.TradeStockUseCase
 import com.yessorae.domain.usecase.UpdateNextTickUseCase
 import com.yessorae.presentation.ui.NavigationConstants.CHART_GAME_ID_ARG_KEY
+import com.yessorae.presentation.ui.screen.chartgame.model.BuyingOrderUiUserAction
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameEvent
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenState
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenUserAction
+import com.yessorae.presentation.ui.screen.chartgame.model.SellingOrderUiUserAction
 import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderKeyPad
 import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi
-import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi.Companion.copy
-import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUiUserAction
+import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi.Companion.copyWith
 import com.yessorae.presentation.ui.screen.chartgame.model.asCandleStickChartUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -110,17 +111,14 @@ class ChartGameViewModel @Inject constructor(
                 candleStickChart = visibleTicks.asCandleStickChartUiState(),
                 isGameComplete = isGameComplete,
                 isGameEnd = isGameEnd,
-                onUserAction = { userAction ->
-                    handleChartGameScreenUserAction(
-                        userAction = userAction,
-                        gameId = id,
-                        ownedAverageStockPrice = averageStockPrice,
-                        currentBalance = currentBalance,
-                        currentStockPrice = closeStockPrice,
-                        currentTurn = currentTurn,
-                        ownedStockCount = totalStockCount
-                    )
-                }
+                clickData = ChartGameScreenState.ClickData(
+                    gameId = id,
+                    ownedAverageStockPrice = averageStockPrice,
+                    currentBalance = currentBalance,
+                    currentStockPrice = closeStockPrice,
+                    currentTurn = currentTurn,
+                    ownedStockCount = totalStockCount
+                )
             )
         }
 
@@ -129,51 +127,43 @@ class ChartGameViewModel @Inject constructor(
         }
     }
 
-    private fun handleChartGameScreenUserAction(
-        userAction: ChartGameScreenUserAction,
-        gameId: Long,
-        ownedAverageStockPrice: Money,
-        currentBalance: Money,
-        currentStockPrice: Money,
-        currentTurn: Int,
-        ownedStockCount: Int
-    ) {
+    fun handleChartGameScreenUserAction(userAction: ChartGameScreenUserAction) {
         when (userAction) {
             is ChartGameScreenUserAction.ClickNewChartButton -> {
-                changeChart(gameId = gameId)
+                changeChart(gameId = userAction.gameId)
             }
 
             is ChartGameScreenUserAction.ClickQuitGameButton -> {
-                quitChartGame(gameId = gameId)
+                quitChartGame(gameId = userAction.gameId)
             }
 
             is ChartGameScreenUserAction.ClickBuyButton -> {
                 showBuyOrderUi(
-                    gameId = gameId,
-                    ownedStockCount = ownedStockCount,
-                    ownedAverageStockPrice = ownedAverageStockPrice,
-                    currentBalance = currentBalance,
-                    currentStockPrice = currentStockPrice,
-                    currentTurn = currentTurn
+                    gameId = userAction.gameId,
+                    ownedStockCount = userAction.ownedStockCount,
+                    ownedAverageStockPrice = userAction.ownedAverageStockPrice,
+                    currentBalance = userAction.currentBalance,
+                    currentStockPrice = userAction.currentStockPrice,
+                    currentTurn = userAction.currentTurn
                 )
             }
 
             is ChartGameScreenUserAction.ClickSellButton -> {
                 showSellOrderUi(
-                    gameId = gameId,
-                    ownedAverageStockPrice = ownedAverageStockPrice,
-                    currentStockPrice = currentStockPrice,
-                    currentTurn = currentTurn,
-                    ownedStockCount = ownedStockCount
+                    gameId = userAction.gameId,
+                    ownedAverageStockPrice = userAction.ownedAverageStockPrice,
+                    currentStockPrice = userAction.currentStockPrice,
+                    currentTurn = userAction.currentTurn,
+                    ownedStockCount = userAction.ownedStockCount
                 )
             }
 
             is ChartGameScreenUserAction.ClickNextTickButton -> {
-                updateNextTick(gameId = gameId)
+                updateNextTick(gameId = userAction.gameId)
             }
 
             is ChartGameScreenUserAction.ClickChartGameScreenHistoryButton -> {
-                moveToChartTradeHistoryScreen(gameId = gameId)
+                moveToChartTradeHistoryScreen(gameId = userAction.gameId)
             }
         }
     }
@@ -203,43 +193,32 @@ class ChartGameViewModel @Inject constructor(
                     showKeyPad = false,
                     maxAvailableStockCount = maxAvailableStockCount,
                     currentStockPrice = currentStockPrice.value,
-                    onUserAction = { userAction ->
-                        handleBuyingOrderUiUserAction(
-                            gameId = gameId,
-                            ownedStockCount = ownedStockCount,
-                            ownedAverageStockPrice = ownedAverageStockPrice,
-                            currentStockPrice = currentStockPrice,
-                            currentTurn = currentTurn,
-                            maxAvailableStockCount = maxAvailableStockCount,
-                            userAction = userAction
-                        )
-                    }
+                    clickData = TradeOrderUi.Buy.ClickData(
+                        gameId = gameId,
+                        ownedStockCount = ownedStockCount,
+                        ownedAverageStockPrice = ownedAverageStockPrice,
+                        currentStockPrice = currentStockPrice,
+                        currentTurn = currentTurn,
+                        maxAvailableStockCount = maxAvailableStockCount
+                    )
                 )
             )
         }
     }
 
-    private fun handleBuyingOrderUiUserAction(
-        gameId: Long,
-        maxAvailableStockCount: Int,
-        ownedStockCount: Int,
-        ownedAverageStockPrice: Money,
-        currentStockPrice: Money,
-        currentTurn: Int,
-        userAction: TradeOrderUiUserAction
-    ) {
+    fun handleBuyingOrderUiUserAction(userAction: BuyingOrderUiUserAction) {
         when (userAction) {
-            is TradeOrderUiUserAction.ClickInput -> {
+            is BuyingOrderUiUserAction.ClickShowKeyPad -> {
                 _screenState.update { old ->
                     old.copy(
-                        tradeOrderUi = old.tradeOrderUi.copy(
+                        tradeOrderUi = old.tradeOrderUi.copyWith(
                             showKeyPad = true
                         )
                     )
                 }
             }
 
-            is TradeOrderUiUserAction.ClickTrade -> {
+            is BuyingOrderUiUserAction.ClickTrade -> {
                 val count = userAction.stockCountInput
 
                 if (count == null) {
@@ -249,41 +228,41 @@ class ChartGameViewModel @Inject constructor(
 
                 tradeStock(
                     TradeStockUseCase.Param(
-                        gameId = gameId,
-                        ownedStockCount = ownedStockCount,
-                        ownedAverageStockPrice = ownedAverageStockPrice,
-                        stockPrice = currentStockPrice,
+                        gameId = userAction.gameId,
+                        ownedStockCount = userAction.ownedStockCount,
+                        ownedAverageStockPrice = userAction.ownedAverageStockPrice,
+                        stockPrice = userAction.currentStockPrice,
                         count = count.toInt(),
-                        turn = currentTurn,
+                        turn = userAction.currentTurn,
                         type = TradeType.BUY
                     )
                 )
             }
 
-            is TradeOrderUiUserAction.ClickCancelButton -> {
+            is BuyingOrderUiUserAction.ClickCancelButton -> {
                 hideTradeOrderUi()
             }
 
-            is TradeOrderUiUserAction.DoSystemBack -> {
+            is BuyingOrderUiUserAction.DoSystemBack -> {
                 hideTradeOrderUi()
             }
 
-            is TradeOrderUiUserAction.ClickRatioShortCut -> {
+            is BuyingOrderUiUserAction.ClickRatioShortCut -> {
                 _screenState.update { old ->
                     val percentage = (userAction.percentage.value / 100.0)
-                    val newStockCount = maxAvailableStockCount * percentage
+                    val newStockCount = userAction.maxAvailableStockCount * percentage
                     old.copy(
-                        tradeOrderUi = old.tradeOrderUi.copy(
+                        tradeOrderUi = old.tradeOrderUi.copyWith(
                             stockCountInput = newStockCount.toInt().toString()
                         )
                     )
                 }
             }
 
-            is TradeOrderUiUserAction.ClickKeyPad -> {
+            is BuyingOrderUiUserAction.ClickKeyPad -> {
                 _screenState.update { old ->
                     old.copy(
-                        tradeOrderUi = old.tradeOrderUi.copy(
+                        tradeOrderUi = old.tradeOrderUi.copyWith(
                             stockCountInput = when (val keyPad = userAction.keyPad) {
                                 is TradeOrderKeyPad.Number -> {
                                     val oldValue = userAction.stockCountInput
@@ -291,7 +270,9 @@ class ChartGameViewModel @Inject constructor(
                                         ""
                                     } else {
                                         val newValue = oldValue + keyPad.value
-                                        newValue.toInt().coerceAtMost(maxAvailableStockCount)
+                                        newValue.toInt().coerceAtMost(
+                                            maximumValue = userAction.maxAvailableStockCount
+                                        )
                                             .toString()
                                     }
                                 }
@@ -327,41 +308,31 @@ class ChartGameViewModel @Inject constructor(
                     showKeyPad = false,
                     maxAvailableStockCount = ownedStockCount,
                     currentStockPrice = currentStockPrice.value,
-                    onUserAction = { userAction ->
-                        handleSellOrderUiUserAction(
-                            gameId = gameId,
-                            ownedAverageStockPrice = ownedAverageStockPrice,
-                            currentStockPrice = currentStockPrice,
-                            currentTurn = currentTurn,
-                            ownedStockCount = ownedStockCount,
-                            userAction = userAction
-                        )
-                    }
+                    clickData = TradeOrderUi.Sell.ClickData(
+                        gameId = gameId,
+                        ownedStockCount = ownedStockCount,
+                        ownedAverageStockPrice = ownedAverageStockPrice,
+                        currentStockPrice = currentStockPrice,
+                        currentTurn = currentTurn
+                    )
                 )
             )
         }
     }
 
-    private fun handleSellOrderUiUserAction(
-        gameId: Long,
-        ownedAverageStockPrice: Money,
-        currentStockPrice: Money,
-        currentTurn: Int,
-        ownedStockCount: Int,
-        userAction: TradeOrderUiUserAction
-    ) {
+    fun handleSellOrderUiUserAction(userAction: SellingOrderUiUserAction) {
         when (userAction) {
-            is TradeOrderUiUserAction.ClickInput -> {
+            is SellingOrderUiUserAction.ClickShowKeyPad -> {
                 _screenState.update { old ->
                     old.copy(
-                        tradeOrderUi = old.tradeOrderUi.copy(
+                        tradeOrderUi = old.tradeOrderUi.copyWith(
                             showKeyPad = true
                         )
                     )
                 }
             }
 
-            is TradeOrderUiUserAction.ClickTrade -> {
+            is SellingOrderUiUserAction.ClickTrade -> {
                 val count = userAction.stockCountInput
 
                 if (count == null) {
@@ -370,46 +341,48 @@ class ChartGameViewModel @Inject constructor(
                 }
                 tradeStock(
                     tradeStockParam = TradeStockUseCase.Param(
-                        gameId = gameId,
-                        ownedStockCount = ownedStockCount,
-                        ownedAverageStockPrice = ownedAverageStockPrice,
-                        stockPrice = currentStockPrice,
+                        gameId = userAction.gameId,
+                        ownedStockCount = userAction.ownedStockCount,
+                        ownedAverageStockPrice = userAction.ownedAverageStockPrice,
+                        stockPrice = userAction.currentStockPrice,
                         count = count.toInt(),
-                        turn = currentTurn,
+                        turn = userAction.currentTurn,
                         type = TradeType.SELL
                     )
                 )
             }
 
-            is TradeOrderUiUserAction.ClickCancelButton -> {
+            is SellingOrderUiUserAction.ClickCancelButton -> {
                 hideTradeOrderUi()
             }
 
-            is TradeOrderUiUserAction.DoSystemBack -> {
+            is SellingOrderUiUserAction.DoSystemBack -> {
                 hideTradeOrderUi()
             }
 
-            is TradeOrderUiUserAction.ClickRatioShortCut -> {
+            is SellingOrderUiUserAction.ClickRatioShortCut -> {
                 _screenState.update { old ->
                     val percentage = (userAction.percentage.value / 100.0)
-                    val newStockCount = ownedStockCount * percentage
+                    val newStockCount = userAction.ownedStockCount * percentage
                     old.copy(
-                        tradeOrderUi = old.tradeOrderUi.copy(
+                        tradeOrderUi = old.tradeOrderUi.copyWith(
                             stockCountInput = newStockCount.toInt().toString()
                         )
                     )
                 }
             }
 
-            is TradeOrderUiUserAction.ClickKeyPad -> {
+            is SellingOrderUiUserAction.ClickKeyPad -> {
                 _screenState.update { old ->
                     old.copy(
-                        tradeOrderUi = old.tradeOrderUi.copy(
+                        tradeOrderUi = old.tradeOrderUi.copyWith(
                             stockCountInput = when (val keyPad = userAction.keyPad) {
                                 is TradeOrderKeyPad.Number -> {
                                     val oldValue = userAction.stockCountInput
                                     val newValue = oldValue + keyPad.value
-                                    newValue.toInt().coerceAtMost(ownedStockCount).toString()
+                                    newValue.toInt()
+                                        .coerceAtMost(userAction.ownedStockCount)
+                                        .toString()
                                 }
 
                                 is TradeOrderKeyPad.Delete -> {

@@ -5,7 +5,7 @@ import com.yessorae.data.source.local.database.model.TickEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class FakeTickDao : FakeBaseDao<TickEntity>(), TickDao {
-    private val ticksFlow = MutableStateFlow<List<TickEntity>>(emptyList())
+    val ticksFlow = MutableStateFlow<List<TickEntity>>(emptyList())
 
     override suspend fun getTicks(chartId: Long): List<TickEntity> {
         return ticksFlow.value.filter { it.chartId == chartId }

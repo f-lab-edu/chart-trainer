@@ -2,8 +2,12 @@ package com.yessorae.presentation.ui.screen.home.model
 
 sealed interface HomeScreenUserAction {
     object ClickStartChartGame : HomeScreenUserAction
-    object ClickKeepGoingChartGame : HomeScreenUserAction
-    object ClickQuitInProgressChartGame : HomeScreenUserAction
+    data class ClickKeepGoingChartGame(
+        val lastChartGameId: Long
+    ) : HomeScreenUserAction
+    data class ClickQuitInProgressChartGame(
+        val lastChartGameId: Long
+    ) : HomeScreenUserAction
     object ClickCommissionRate : HomeScreenUserAction
     object ClickTotalTurn : HomeScreenUserAction
     object ClickTickUnit : HomeScreenUserAction

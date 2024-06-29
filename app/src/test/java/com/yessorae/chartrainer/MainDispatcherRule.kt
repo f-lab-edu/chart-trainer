@@ -10,7 +10,7 @@ import org.junit.runner.Description
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainDispatcherRule constructor(
-    private val testDispatcher: TestDispatcher,
+    private val testDispatcher: TestDispatcher
 ) : TestWatcher() {
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun starting(description: Description) {

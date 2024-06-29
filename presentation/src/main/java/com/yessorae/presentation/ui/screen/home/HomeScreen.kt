@@ -125,11 +125,19 @@ fun HomeScreen(
                     onClickStartChartGame = {
                         onUserAction(HomeScreenUserAction.ClickStartChartGame)
                     },
-                    onClickKeepGoingChartGame = {
-                        onUserAction(HomeScreenUserAction.ClickKeepGoingChartGame)
+                    onClickKeepGoingChartGame = { id ->
+                        onUserAction(
+                            HomeScreenUserAction.ClickKeepGoingChartGame(
+                                lastChartGameId = id
+                            )
+                        )
                     },
-                    onClickQuitInProgressChartGame = {
-                        onUserAction(HomeScreenUserAction.ClickQuitInProgressChartGame)
+                    onClickQuitInProgressChartGame = { id ->
+                        onUserAction(
+                            HomeScreenUserAction.ClickQuitInProgressChartGame(
+                                lastChartGameId = id
+                            )
+                        )
                     }
                 )
             }

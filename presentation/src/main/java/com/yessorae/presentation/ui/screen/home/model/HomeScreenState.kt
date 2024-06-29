@@ -34,9 +34,16 @@ data class UserInfoUi(
 
 sealed interface HomeBottomButtonUi {
     object Loading : HomeBottomButtonUi
-    data class Success(
-        val hasOnGoingCharGame: Boolean
-    ) : HomeBottomButtonUi
+
+    object NewGame : HomeBottomButtonUi
+
+    data class KeepGoingGameOrQuit(
+        val clickData: ClickData
+    ) : HomeBottomButtonUi {
+        data class ClickData(
+            val lastChartGameId: Long
+        )
+    }
 }
 
 sealed interface SettingDialogState {

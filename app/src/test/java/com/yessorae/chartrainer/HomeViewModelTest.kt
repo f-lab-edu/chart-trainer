@@ -1,5 +1,6 @@
 package com.yessorae.chartrainer
 
+import app.cash.turbine.test
 import com.yessorae.chartrainer.fake.FakeChartDao
 import com.yessorae.chartrainer.fake.FakeChartGameDao
 import com.yessorae.chartrainer.fake.FakeChartTrainerPreferencesDataSource
@@ -7,30 +8,41 @@ import com.yessorae.chartrainer.fake.FakeTickDao
 import com.yessorae.chartrainer.fake.FakeTradeDao
 import com.yessorae.data.repository.ChartGameRepositoryImpl
 import com.yessorae.data.repository.UserRepositoryImpl
+import com.yessorae.data.source.ChartTrainerLocalDBDataSource
+import com.yessorae.data.source.ChartTrainerPreferencesDataSource
 import com.yessorae.data.source.local.database.ChartTrainerLocalDBDataSourceImpl
+import com.yessorae.data.source.local.database.dao.ChartDao
+import com.yessorae.data.source.local.database.dao.ChartGameDao
+import com.yessorae.data.source.local.database.dao.TickDao
+import com.yessorae.data.source.local.database.dao.TradeDao
 import com.yessorae.domain.common.DefaultValues
+import com.yessorae.domain.entity.User
+import com.yessorae.domain.entity.tick.TickUnit
 import com.yessorae.domain.entity.value.Money
+import com.yessorae.domain.entity.value.asMoney
+import com.yessorae.domain.repository.ChartGameRepository
+import com.yessorae.domain.repository.UserRepository
 import com.yessorae.domain.usecase.ChangeCommissionRateSettingUseCase
 import com.yessorae.domain.usecase.ChangeTickUnitSettingUseCase
 import com.yessorae.domain.usecase.ChangeTotalTurnSettingUseCase
 import com.yessorae.domain.usecase.QuitChartGameUseCase
 import com.yessorae.domain.usecase.SubscribeHomeDataUseCase
+import com.yessorae.domain.usecase.SubscribeLastGameIdUseCase
 import com.yessorae.presentation.ui.screen.home.HomeViewModel
 import com.yessorae.presentation.ui.screen.home.model.HomeBottomButtonUi
+import com.yessorae.presentation.ui.screen.home.model.HomeScreenEvent
+import com.yessorae.presentation.ui.screen.home.model.HomeScreenUserAction
 import com.yessorae.presentation.ui.screen.home.model.HomeState
-import com.yessorae.presentation.ui.screen.home.model.SettingDialogState
 import com.yessorae.presentation.ui.screen.home.model.SettingInfoUi
 import com.yessorae.presentation.ui.screen.home.model.UserInfoUi
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 class HomeViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = UnconfinedTestDispatcher()
@@ -39,83 +51,119 @@ class HomeViewModelTest {
     val dispatcherRule = MainDispatcherRule(dispatcher)
 
     // dao
-    private val chartGameDao = FakeChartGameDao()
-    private val chartDao = FakeChartDao()
-    private val tickDao = FakeTickDao()
-    private val tradeDao = FakeTradeDao()
+    private lateinit var chartGameDao: ChartGameDao
+    private lateinit var chartDao: ChartDao
+    private lateinit var tickDao: TickDao
+    private lateinit var tradeDao: TradeDao
 
     // datasource
-    private val localDBDataSource = ChartTrainerLocalDBDataSourceImpl(
-        chartGameDao = chartGameDao,
-        chartDao = chartDao,
-        tradeDao = tradeDao,
-        tickDao = tickDao
-    )
-    private val chartTrainerPreferencesDataSource = FakeChartTrainerPreferencesDataSource()
+    private lateinit var localDBDataSource: ChartTrainerLocalDBDataSource
+    private lateinit var chartTrainerPreferencesDataSource: ChartTrainerPreferencesDataSource
 
     // repository
-    private val userRepository = UserRepositoryImpl(
-        appPreference = chartTrainerPreferencesDataSource
-    )
-    private val chartGameRepository = ChartGameRepositoryImpl(
-        localDataSource = localDBDataSource,
-        chartGamePreferencesDataSource = chartTrainerPreferencesDataSource,
-        dispatcher = dispatcher
-    )
+    private lateinit var userRepository: UserRepository
+    private lateinit var chartGameRepository: ChartGameRepository
 
     // usecase
-    private val subscribeHomeDataUseCase = SubscribeHomeDataUseCase(
-        userRepository = userRepository,
-        chartGameRepository = chartGameRepository
+    private lateinit var subscribeHomeDataUseCase: SubscribeHomeDataUseCase
+    private lateinit var subscribeLastGameIdUseCase: SubscribeLastGameIdUseCase
+    private lateinit var changeCommissionRateSettingUseCase: ChangeCommissionRateSettingUseCase
+    private lateinit var changeTickUnitSettingUseCase: ChangeTickUnitSettingUseCase
+    private lateinit var changeTotalTurnSettingUseCase: ChangeTotalTurnSettingUseCase
+    private lateinit var quitChartGameUseCase: QuitChartGameUseCase
+
+    private lateinit var viewModel: HomeViewModel
+
+    private fun createUserInfoUi(
+        currentBalance: Money = Money(0.0),
+        winCount: Int = 0,
+        loseCount: Int = 0,
+        averageRateOfProfit: Float = 0f,
+        rateOfWinning: Float = 0f,
+        rateOfLosing: Float = 0f
+    ) = UserInfoUi(
+        currentBalance = currentBalance,
+        winCount = winCount,
+        loseCount = loseCount,
+        averageRateOfProfit = averageRateOfProfit,
+        rateOfWinning = rateOfWinning,
+        rateOfLosing = rateOfLosing
     )
 
-    private val changeCommissionRateSettingUseCase = ChangeCommissionRateSettingUseCase(
-        userRepository = userRepository
+    private fun createSettingInfoUi(
+        commissionRate: Float = 0f,
+        totalTurn: Int = 0,
+        tickUnit: TickUnit = DefaultValues.defaultTickUnit
+    ) = SettingInfoUi(
+        commissionRate = commissionRate,
+        totalTurn = totalTurn,
+        tickUnit = tickUnit
     )
 
-    private val changeTickUnitSettingUseCase = ChangeTickUnitSettingUseCase(
-        userRepository = userRepository
-    )
-
-    private val changeTotalTurnSettingUseCase = ChangeTotalTurnSettingUseCase(
-        userRepository = userRepository
-    )
-
-    private val quitChartGameUseCase = QuitChartGameUseCase(
-        userRepository = userRepository,
-        chartGameRepository = chartGameRepository
-    )
-
-    lateinit var viewModel: HomeViewModel
-
-    private val initialUserInfo = UserInfoUi(
-        currentBalance = Money.of(0.0),
-        winCount = 0,
-        loseCount = 0,
-        averageRateOfProfit = 0f,
-        rateOfWinning = 0f,
-        rateOfLosing = 0f
-    )
-
-    private val initialSettingInfoUi = SettingInfoUi(
-        commissionRate = 0f,
-        totalTurn = 0,
-        tickUnit = DefaultValues.defaultTickUnit
-    )
-
-    private val initialHomeState = HomeState(
-        userInfoUi = initialUserInfo,
-        settingInfoUi = initialSettingInfoUi,
-        bottomButtonState = HomeBottomButtonUi.Loading,
-        screenLoading = false,
-        error = false,
-        settingDialogState = SettingDialogState.None
+    private fun createHomeState(
+        userInfoUi: UserInfoUi = createUserInfoUi(),
+        settingInfoUi: SettingInfoUi = createSettingInfoUi(),
+        bottomButtonState: HomeBottomButtonUi = HomeBottomButtonUi.Loading,
+        screenLoading: Boolean = false,
+        error: Boolean = false
+    ) = HomeState(
+        userInfoUi = userInfoUi,
+        settingInfoUi = settingInfoUi,
+        bottomButtonState = bottomButtonState,
+        screenLoading = screenLoading,
+        error = error
     )
 
     @Before
     fun setup() {
+        chartGameDao = FakeChartGameDao()
+        tickDao = FakeTickDao()
+        chartDao = FakeChartDao(ticksFlow = (tickDao as FakeTickDao).ticksFlow)
+        tradeDao = FakeTradeDao()
+
+        localDBDataSource = ChartTrainerLocalDBDataSourceImpl(
+            chartGameDao = chartGameDao,
+            chartDao = chartDao,
+            tradeDao = tradeDao,
+            tickDao = tickDao
+        )
+        chartTrainerPreferencesDataSource = FakeChartTrainerPreferencesDataSource()
+
+        userRepository = UserRepositoryImpl(
+            appPreference = chartTrainerPreferencesDataSource
+        )
+        chartGameRepository = ChartGameRepositoryImpl(
+            localDataSource = localDBDataSource,
+            chartGamePreferencesDataSource = chartTrainerPreferencesDataSource,
+            dispatcher = dispatcher
+        )
+
+        subscribeHomeDataUseCase = SubscribeHomeDataUseCase(
+            userRepository = userRepository
+        )
+        subscribeLastGameIdUseCase = SubscribeLastGameIdUseCase(
+            chartGameRepository = chartGameRepository
+        )
+        changeCommissionRateSettingUseCase = ChangeCommissionRateSettingUseCase(
+            userRepository = userRepository
+        )
+
+        changeTickUnitSettingUseCase = ChangeTickUnitSettingUseCase(
+            userRepository = userRepository
+        )
+
+        changeTotalTurnSettingUseCase = ChangeTotalTurnSettingUseCase(
+            userRepository = userRepository
+        )
+
+        quitChartGameUseCase = QuitChartGameUseCase(
+            userRepository = userRepository,
+            chartGameRepository = chartGameRepository
+        )
+
         viewModel = HomeViewModel(
             subscribeUserDataUseCase = subscribeHomeDataUseCase,
+            subscribeLastGameIdUseCase = subscribeLastGameIdUseCase,
             changeCommissionRateSettingUseCase = changeCommissionRateSettingUseCase,
             changeTickUnitSettingUseCase = changeTickUnitSettingUseCase,
             changeTotalTurnSettingUseCase = changeTotalTurnSettingUseCase,
@@ -123,18 +171,119 @@ class HomeViewModelTest {
         )
     }
 
-
 //    @Test
-//    fun `initial state is loading`() = runTest {
+//    fun initiate_state_is_loading() = runTest {
+//        val result = viewModel.screenState.first()
+//
+//
 //        assertEquals(
-//            initialHomeState.copy(
+//            createHomeState(
 //                screenLoading = true,
 //                error = false
 //            ),
-//            viewModel.screenState.first()
+//            result
 //        )
 //    }
 
+    @Test
+    fun success_state_corresponds_to_ui_state() =
+        runTest {
+            // test 안으로 넣으면 test 통과하지 못함
+            chartTrainerPreferencesDataSource.apply {
+                updateUser(
+                    user = User(
+                        balance = 1000.asMoney(),
+                        winCount = 99,
+                        loseCount = 1,
+                        averageRateOfProfit = 0.99
+                    )
+                )
+                updateLastChartGameId(gameId = 1L)
+                updateTickUnit(tickUnit = TickUnit.HOUR)
+                updateTotalTurn(turn = 1)
+                updateCommissionRate(rate = 0.2)
+            }
 
+            viewModel.screenState.test {
+                assertEquals(
+                    createHomeState(
+                        userInfoUi = createUserInfoUi(
+                            currentBalance = 1000.asMoney(),
+                            winCount = 99,
+                            loseCount = 1,
+                            averageRateOfProfit = 0.99f,
+                            rateOfWinning = 0.99f,
+                            rateOfLosing = 0.01f
+                        ),
+                        settingInfoUi = createSettingInfoUi(
+                            commissionRate = 0.2f,
+                            totalTurn = 1,
+                            tickUnit = TickUnit.HOUR
+                        ),
+                        bottomButtonState = HomeBottomButtonUi.KeepGoingGameOrQuit(
+                            clickData = HomeBottomButtonUi.KeepGoingGameOrQuit.ClickData(
+                                lastChartGameId = 1L
+                            )
+                        ),
+                        screenLoading = false,
+                        error = false
+                    ),
+                    awaitItem()
+                )
+            }
+        }
+
+    @Test
+    fun home_bottom_button_state_on_going_game_corresponds_to_last_chart_game_id() =
+        runTest {
+            chartTrainerPreferencesDataSource.updateLastChartGameId(1L)
+
+            viewModel.screenState.test {
+                assertEquals(
+                    HomeBottomButtonUi.KeepGoingGameOrQuit(
+                        clickData = HomeBottomButtonUi.KeepGoingGameOrQuit.ClickData(
+                            lastChartGameId = 1L
+                        )
+                    ),
+                    awaitItem().bottomButtonState
+                )
+            }
+
+            chartTrainerPreferencesDataSource.clearLastChartGameId()
+
+            viewModel.screenState.test {
+                assertEquals(
+                    HomeBottomButtonUi.NewGame,
+                    awaitItem().bottomButtonState
+                )
+            }
+        }
+
+    @Test
+    fun navigate_to_new_chart_game_when_click_start_chart_game() =
+        runTest {
+            viewModel.screenEvent.test {
+                viewModel.handleUserAction(userAction = HomeScreenUserAction.ClickStartChartGame)
+                assertEquals(
+                    HomeScreenEvent.NavigateToChartGameScreen(chartGameId = null),
+                    awaitItem()
+                )
+            }
+        }
+
+    @Test
+    fun navigate_to_chart_game_when_click_keep_going_chart_game() =
+        runTest {
+            viewModel.screenEvent.test {
+                viewModel.handleUserAction(
+                    userAction = HomeScreenUserAction.ClickKeepGoingChartGame(
+                        lastChartGameId = 1L
+                    )
+                )
+                assertEquals(
+                    HomeScreenEvent.NavigateToChartGameScreen(chartGameId = 1L),
+                    awaitItem()
+                )
+            }
+        }
 }
-

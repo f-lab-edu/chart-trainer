@@ -422,4 +422,19 @@ class HomeViewModelTest {
                 )
             }
         }
+
+    @Test
+    fun dismiss_setting_dialog_when_user_dismiss_dialog() =
+        runTest {
+            viewModel.handleUserAction(
+                userAction = HomeScreenUserAction.DismissDialog
+            )
+
+            viewModel.screenState.test {
+                assertEquals(
+                    SettingDialogState.None,
+                    awaitItem().settingDialogState
+                )
+            }
+        }
 }

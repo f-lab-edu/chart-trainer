@@ -408,4 +408,18 @@ class HomeViewModelTest {
         }
     }
 
+    @Test
+    fun navigate_to_chart_game_history_when_click_chart_game_history_button() =
+        runTest {
+            viewModel.screenEvent.test {
+                viewModel.handleUserAction(
+                    userAction = HomeScreenUserAction.ClickChartGameHistory
+                )
+
+                assertEquals(
+                    HomeScreenEvent.NavigateToChartGameHistoryScreen,
+                    awaitItem()
+                )
+            }
+        }
 }

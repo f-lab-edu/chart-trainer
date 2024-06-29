@@ -16,6 +16,8 @@ import com.yessorae.data.source.local.database.dao.ChartGameDao
 import com.yessorae.data.source.local.database.dao.TickDao
 import com.yessorae.data.source.local.database.dao.TradeDao
 import com.yessorae.domain.common.DefaultValues
+import com.yessorae.domain.common.DefaultValues.MAX_TOTAL_TURN
+import com.yessorae.domain.common.DefaultValues.MIN_TOTAL_TURN
 import com.yessorae.domain.entity.User
 import com.yessorae.domain.entity.tick.TickUnit
 import com.yessorae.domain.entity.value.Money
@@ -43,6 +45,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.random.Random
 
 class HomeViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -186,9 +189,8 @@ class HomeViewModelTest {
 //    }
 
     @Test
-    fun success_state_corresponds_to_ui_state() =
+    fun success_data_corresponds_to_ui_state() =
         runTest {
-            // test 안으로 넣으면 test 통과하지 못함
             chartTrainerPreferencesDataSource.apply {
                 updateUser(
                     user = User(
@@ -234,7 +236,7 @@ class HomeViewModelTest {
         }
 
     @Test
-    fun home_bottom_button_state_on_going_game_corresponds_to_last_chart_game_id() =
+    fun bottom_button_state_is_keep_going_game_when_last_chart_game_id_is_not_null() =
         runTest {
             chartTrainerPreferencesDataSource.updateLastChartGameId(1L)
 
@@ -248,9 +250,11 @@ class HomeViewModelTest {
                     awaitItem().bottomButtonState
                 )
             }
+        }
 
-            chartTrainerPreferencesDataSource.clearLastChartGameId()
-
+    @Test
+    fun bottom_button_state_is_new_game_when_last_chart_game_id_is_null() =
+        runTest {
             viewModel.screenState.test {
                 assertEquals(
                     HomeBottomButtonUi.NewGame,
@@ -260,7 +264,7 @@ class HomeViewModelTest {
         }
 
     @Test
-    fun navigate_to_new_chart_game_when_click_start_chart_game() =
+    fun navigation_to_new_chart_game_when_click_start_chart_game() =
         runTest {
             viewModel.screenEvent.test {
                 viewModel.handleUserAction(userAction = HomeScreenUserAction.ClickStartChartGame)
@@ -273,7 +277,7 @@ class HomeViewModelTest {
         }
 
     @Test
-    fun navigate_to_chart_game_when_click_keep_going_chart_game() =
+    fun navigation_to_existing_chart_game_when_click_keep_going_chart_game() =
         runTest {
             viewModel.screenEvent.test {
                 viewModel.handleUserAction(
@@ -290,7 +294,7 @@ class HomeViewModelTest {
         }
 
     @Test
-    fun bottom_button_change_to_new_game_start_button_when_click_quit_in_progress_chart_game() =
+    fun bottom_button_state_is_new_game_when_click_quit_in_progress_chart_game() =
         runTest {
             viewModel.handleUserAction(
                 userAction = HomeScreenUserAction.ClickQuitInProgressChartGame(
@@ -307,7 +311,7 @@ class HomeViewModelTest {
         }
 
     @Test
-    fun show_commission_rate_setting_dialog_when_click_commission_rate() =
+    fun commission_rate_setting_dialog_is_shown_when_click_commission_rate() =
         runTest {
             viewModel.handleUserAction(userAction = HomeScreenUserAction.ClickCommissionRate)
 
@@ -320,7 +324,7 @@ class HomeViewModelTest {
         }
 
     @Test
-    fun update_commission_rate_when_click_update_commission_rate_with_valid_value() =
+    fun commission_rate_ui_is_updated_when_update_with_valid_value() =
         runTest {
             viewModel.handleUserAction(
                 userAction = HomeScreenUserAction.UpdateCommissionRate("123")
@@ -336,10 +340,23 @@ class HomeViewModelTest {
             }
         }
 
-    // TODO::SR-N 입력이 invalid 한 경우 추가
+    @Test
+    fun commission_rate_setting_error_is_shown_when_update_with_invalid_value() =
+        runTest {
+            viewModel.screenEvent.test {
+                viewModel.handleUserAction(
+                    userAction = HomeScreenUserAction.UpdateCommissionRate("invalid number")
+                )
+
+                assertEquals(
+                    HomeScreenEvent.CommissionRateSettingError,
+                    awaitItem()
+                )
+            }
+        }
 
     @Test
-    fun show_total_turn_setting_dialog_when_click_total_turn() =
+    fun total_turn_setting_dialog_is_shown_when_click_total_turn() =
         runTest {
             viewModel.handleUserAction(
                 userAction = HomeScreenUserAction.ClickTotalTurn
@@ -354,7 +371,7 @@ class HomeViewModelTest {
         }
 
     @Test
-    fun update_total_turn_when_click_update_total_turn_with_valid_value() =
+    fun total_turn_ui_is_updated_when_update_with_valid_value() =
         runTest {
             viewModel.handleUserAction(
                 userAction = HomeScreenUserAction.UpdateTotalTurn("60")
@@ -370,10 +387,59 @@ class HomeViewModelTest {
             }
         }
 
-    // TODO::SR-N 입력이 invalid 한 경우 추가
+    @Test
+    fun total_turn_setting_error_is_shown_when_update_with_not_number_value() =
+        runTest {
+            viewModel.screenEvent.test {
+                viewModel.handleUserAction(
+                    userAction = HomeScreenUserAction.UpdateTotalTurn("not number")
+                )
+
+                assertEquals(
+                    HomeScreenEvent.TotalTurnSettingError,
+                    awaitItem()
+                )
+            }
+        }
+
 
     @Test
-    fun show_tick_unit_setting_dialog_when_click_tick_unit() =
+    fun total_turn_setting_error_is_shown_when_update_with_smaller_than_min_value() =
+        runTest {
+            val invalidValue = Random.nextInt(until = MIN_TOTAL_TURN)
+
+            viewModel.screenEvent.test {
+                viewModel.handleUserAction(
+                    userAction = HomeScreenUserAction.UpdateTotalTurn("$invalidValue")
+                )
+
+                assertEquals(
+                    HomeScreenEvent.TotalTurnSettingError,
+                    awaitItem()
+                )
+            }
+        }
+
+    @Test
+    fun total_turn_setting_error_is_shown_when_update_with_bigger_than_max_value() =
+        runTest {
+            val invalidValue = Random.nextInt(from = MAX_TOTAL_TURN + 1, until = Int.MAX_VALUE)
+
+            viewModel.screenEvent.test {
+                viewModel.handleUserAction(
+                    userAction = HomeScreenUserAction.UpdateTotalTurn("$invalidValue")
+                )
+
+                assertEquals(
+                    HomeScreenEvent.TotalTurnSettingError,
+                    awaitItem()
+                )
+            }
+        }
+
+
+    @Test
+    fun tick_unit_setting_dialog_is_shown_when_click_tick_unit() =
         runTest {
             val existingValue = viewModel.screenState.value.settingInfoUi.tickUnit
             viewModel.handleUserAction(
@@ -391,7 +457,7 @@ class HomeViewModelTest {
         }
 
     @Test
-    fun update_tick_unit_when_click_update_tick_unit() = runTest {
+    fun tick_unit_ui_is_updated_when_click_update_tick_unit() = runTest {
         viewModel.handleUserAction(
             userAction = HomeScreenUserAction.UpdateTickUnit(
                 newValue = TickUnit.HOUR
@@ -409,7 +475,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun navigate_to_chart_game_history_when_click_chart_game_history_button() =
+    fun navigation_to_chart_game_history_when_click_chart_game_history_button() =
         runTest {
             viewModel.screenEvent.test {
                 viewModel.handleUserAction(
@@ -424,7 +490,7 @@ class HomeViewModelTest {
         }
 
     @Test
-    fun dismiss_setting_dialog_when_user_dismiss_dialog() =
+    fun setting_dialog_is_dismissed_when_user_dismiss_dialog() =
         runTest {
             viewModel.handleUserAction(
                 userAction = HomeScreenUserAction.DismissDialog

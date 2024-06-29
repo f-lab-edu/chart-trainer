@@ -50,19 +50,13 @@ sealed interface SettingDialogState {
     object None : SettingDialogState
     data class CommissionRate(
         val initialValue: String,
-        val onDismissRequest: () -> Unit,
-        val onDone: (String) -> Unit
     ) : SettingDialogState
 
     data class TotalTurn(
         val initialValue: String,
-        val onDismissRequest: () -> Unit,
-        val onDone: (String) -> Unit
     ) : SettingDialogState
 
     data class TickUnit(
-        val initialTickUnit: com.yessorae.domain.entity.tick.TickUnit,
-        val onDone: (com.yessorae.domain.entity.tick.TickUnit) -> Unit,
-        val onDismissRequest: () -> Unit
+        val initialTickUnit: com.yessorae.domain.entity.tick.TickUnit
     ) : SettingDialogState
 }

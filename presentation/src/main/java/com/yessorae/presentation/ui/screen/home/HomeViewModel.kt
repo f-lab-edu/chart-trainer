@@ -17,7 +17,6 @@ import com.yessorae.presentation.ui.screen.home.model.HomeScreenUserAction
 import com.yessorae.presentation.ui.screen.home.model.HomeState
 import com.yessorae.presentation.ui.screen.home.model.SettingDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -30,6 +29,7 @@ import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -161,58 +161,53 @@ class HomeViewModel @Inject constructor(
                         old.copy(
                             settingDialogState = SettingDialogState.CommissionRate(
                                 initialValue = "",
-                                onDismissRequest = {
-                                    dismissSettingDialog()
-                                },
-                                onDone = { newValue ->
-                                    val newRate = ("0.$newValue").toFloatOrNull()
-                                    if (newRate == null) {
-                                        viewModelScope.launch {
-                                            _screenEvent.emit(
-                                                HomeScreenEvent.CommissionRateSettingError
-                                            )
-                                        }
-                                        return@CommissionRate
-                                    }
-
-                                    dismissSettingDialog()
-                                    changeCommissionRateSettingUseCase(
-                                        rate = newRate.toDouble()
-                                    ).launchIn(viewModelScope)
-                                }
                             )
                         )
                     }
                 }
 
+                is HomeScreenUserAction.UpdateCommissionRate -> {
+                    val newRate = ("0.${userAction.newValue}").toFloatOrNull()
+                    if (newRate == null) {
+                        viewModelScope.launch {
+                            _screenEvent.emit(
+                                HomeScreenEvent.CommissionRateSettingError
+                            )
+                        }
+                        return@launch
+                    }
+
+                    dismissSettingDialog()
+                    changeCommissionRateSettingUseCase(
+                        rate = newRate.toDouble()
+                    ).launchIn(viewModelScope)
+                }
+
                 is HomeScreenUserAction.ClickTotalTurn -> {
                     _screenState.update { old ->
                         old.copy(
-                            settingDialogState = SettingDialogState.TotalTurn(
-                                initialValue = "",
-                                onDismissRequest = {
-                                    dismissSettingDialog()
-                                },
-                                onDone = { newValue ->
-                                    val newTotalTurn = newValue.toIntOrNull()
-                                    if (
-                                        newTotalTurn == null ||
-                                        (newTotalTurn in MIN_TOTAL_TURN..MAX_TOTAL_TURN).not()
-                                    ) {
-                                        viewModelScope.launch {
-                                            _screenEvent.emit(HomeScreenEvent.TotalTurnSettingError)
-                                        }
-                                        return@TotalTurn
-                                    }
-
-                                    dismissSettingDialog()
-                                    changeTotalTurnSettingUseCase(
-                                        turn = newTotalTurn
-                                    ).launchIn(viewModelScope)
-                                }
-                            )
+                            settingDialogState = SettingDialogState.TotalTurn(initialValue = "")
                         )
                     }
+                }
+
+                is HomeScreenUserAction.UpdateTotalTurn -> {
+                    val newValue = userAction.newValue
+                    val newTotalTurn = newValue.toIntOrNull()
+                    if (
+                        newTotalTurn == null ||
+                        (newTotalTurn in MIN_TOTAL_TURN..MAX_TOTAL_TURN).not()
+                    ) {
+                        viewModelScope.launch {
+                            _screenEvent.emit(HomeScreenEvent.TotalTurnSettingError)
+                        }
+                        return@launch
+                    }
+
+                    dismissSettingDialog()
+                    changeTotalTurnSettingUseCase(
+                        turn = newTotalTurn
+                    ).launchIn(viewModelScope)
                 }
 
                 is HomeScreenUserAction.ClickTickUnit -> {
@@ -220,22 +215,25 @@ class HomeViewModel @Inject constructor(
                         old.copy(
                             settingDialogState = SettingDialogState.TickUnit(
                                 initialTickUnit = old.settingInfoUi.tickUnit,
-                                onDismissRequest = {
-                                    dismissSettingDialog()
-                                },
-                                onDone = { newTickUnit ->
-                                    dismissSettingDialog()
-                                    changeTickUnitSettingUseCase(
-                                        tickUnit = newTickUnit
-                                    ).launchIn(viewModelScope)
-                                }
                             )
                         )
                     }
                 }
 
+                is HomeScreenUserAction.UpdateTickUnit -> {
+                    val newTickUnit = userAction.newValue
+                    dismissSettingDialog()
+                    changeTickUnitSettingUseCase(
+                        tickUnit = newTickUnit
+                    ).launchIn(viewModelScope)
+                }
+
                 is HomeScreenUserAction.ClickChartGameHistory -> {
                     _screenEvent.emit(HomeScreenEvent.NavigateToChartGameHistoryScreen)
+                }
+
+                is HomeScreenUserAction.DismissDialog -> {
+                    dismissSettingDialog()
                 }
             }
         }

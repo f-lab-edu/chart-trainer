@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -66,6 +67,11 @@ fun HomeScreen(
     screenState: HomeState,
     onUserAction: (HomeScreenUserAction) -> Unit
 ) {
+    val dismissDialog = remember {
+        {
+            onUserAction(HomeScreenUserAction.DismissDialog)
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -146,24 +152,42 @@ fun HomeScreen(
                 is SettingDialogState.CommissionRate -> {
                     CommissionRateSettingDialog(
                         initialValue = data.initialValue,
-                        onDismissRequest = data.onDismissRequest,
-                        onDone = data.onDone
+                        onDismissRequest = dismissDialog,
+                        onDone = { newValue ->
+                            onUserAction(
+                                HomeScreenUserAction.UpdateCommissionRate(
+                                    newValue = newValue
+                                )
+                            )
+                        }
                     )
                 }
 
                 is SettingDialogState.TotalTurn -> {
                     TotalTurnSettingDialog(
                         initialValue = data.initialValue,
-                        onDismissRequest = data.onDismissRequest,
-                        onDone = data.onDone
+                        onDismissRequest = dismissDialog,
+                        onDone = { newValue ->
+                            onUserAction(
+                                HomeScreenUserAction.UpdateTotalTurn(
+                                    newValue = newValue
+                                )
+                            )
+                        }
                     )
                 }
 
                 is SettingDialogState.TickUnit -> {
                     TickUnitSettingModelBottomSheet(
                         tickUnit = data.initialTickUnit,
-                        onDone = data.onDone,
-                        onDismissRequest = data.onDismissRequest
+                        onDismissRequest = dismissDialog,
+                        onDone = { newValue ->
+                            onUserAction(
+                                HomeScreenUserAction.UpdateTickUnit(
+                                    newValue = newValue
+                                )
+                            )
+                        }
                     )
                 }
 

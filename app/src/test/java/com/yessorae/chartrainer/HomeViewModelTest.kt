@@ -33,6 +33,7 @@ import com.yessorae.presentation.ui.screen.home.model.HomeBottomButtonUi
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenEvent
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenUserAction
 import com.yessorae.presentation.ui.screen.home.model.HomeState
+import com.yessorae.presentation.ui.screen.home.model.SettingDialogState
 import com.yessorae.presentation.ui.screen.home.model.SettingInfoUi
 import com.yessorae.presentation.ui.screen.home.model.UserInfoUi
 import junit.framework.TestCase.assertEquals
@@ -263,6 +264,7 @@ class HomeViewModelTest {
         runTest {
             viewModel.screenEvent.test {
                 viewModel.handleUserAction(userAction = HomeScreenUserAction.ClickStartChartGame)
+
                 assertEquals(
                     HomeScreenEvent.NavigateToChartGameScreen(chartGameId = null),
                     awaitItem()
@@ -279,10 +281,60 @@ class HomeViewModelTest {
                         lastChartGameId = 1L
                     )
                 )
+
                 assertEquals(
                     HomeScreenEvent.NavigateToChartGameScreen(chartGameId = 1L),
                     awaitItem()
                 )
             }
         }
+
+    @Test
+    fun bottom_button_change_to_new_game_start_button_when_click_quit_in_progress_chart_game() =
+        runTest {
+            viewModel.handleUserAction(
+                userAction = HomeScreenUserAction.ClickQuitInProgressChartGame(
+                    lastChartGameId = 1L
+                )
+            )
+
+            viewModel.screenState.test {
+                assertEquals(
+                    HomeBottomButtonUi.NewGame,
+                    awaitItem().bottomButtonState
+                )
+            }
+        }
+
+    @Test
+    fun show_commission_rate_setting_dialog_when_click_commission_rate() =
+        runTest {
+            viewModel.handleUserAction(userAction = HomeScreenUserAction.ClickCommissionRate)
+
+            viewModel.screenState.test {
+                assertEquals(
+                    SettingDialogState.CommissionRate(initialValue = ""),
+                    awaitItem().settingDialogState
+                )
+            }
+        }
+
+    @Test
+    fun update_commission_rate_when_click_update_commission_rate_with_valid_value() =
+        runTest {
+            viewModel.handleUserAction(
+                userAction = HomeScreenUserAction.UpdateCommissionRate("123")
+            )
+
+            viewModel.screenState.test {
+                assertEquals(
+                    viewModel.screenState.value.settingInfoUi.copy(
+                        commissionRate = 0.123f
+                    ),
+                    awaitItem().settingInfoUi
+                )
+
+            }
+        }
+
 }

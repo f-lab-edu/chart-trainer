@@ -2,6 +2,7 @@ package com.yessorae.chartrainer.fake.model
 
 import com.yessorae.data.source.network.polygon.model.chart.ChartDto
 import com.yessorae.data.source.network.polygon.model.chart.TickDto
+import java.time.LocalDateTime
 
 fun createChartDto(
     ticker: String = "AAPL",
@@ -13,7 +14,7 @@ fun createChartDto(
         createTickDto(),
         createTickDto()
     ),
-    ticksCount: Int = 3,
+    ticksCount: Int = ticks.size,
     status: String = "success"
 ): ChartDto {
     return ChartDto(
@@ -32,7 +33,7 @@ fun createTickDto(
     maxPrice: Double = 105.0,
     minPrice: Double = 95.0,
     openPrice: Double = 98.0,
-    startTimestamp: Long = System.currentTimeMillis(),
+    startTimestamp: Long = 1L,
     tradingVolume: Double = 10000.0,
     volumeWeightedAveragePrice: Double = 100.0,
     transactionCount: Int = 100

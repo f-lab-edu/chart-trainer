@@ -8,6 +8,7 @@ import com.yessorae.chartrainer.fake.FakeChartRequestArgumentHelper
 import com.yessorae.chartrainer.fake.FakeChartTrainerPreferencesDataSource
 import com.yessorae.chartrainer.fake.FakeTickDao
 import com.yessorae.chartrainer.fake.FakeTradeDao
+import com.yessorae.chartrainer.fake.model.createChartDto
 import com.yessorae.data.repository.ChartGameRepositoryImpl
 import com.yessorae.data.repository.ChartRepositoryImpl
 import com.yessorae.data.repository.TradeRepositoryImpl
@@ -76,7 +77,12 @@ class ChartGameViewModelTest {
 
     private lateinit var viewModel: ChartGameViewModel
 
-    fun setup(chartDto: ChartDto) {
+    fun setup(
+        ticker: String,
+        chartDto: ChartDto = createChartDto(
+            ticker = ticker
+        )
+    ) {
         polygonChartApi = object : PolygonChartApi {
             override suspend fun getChartData(
                 ticker: String,

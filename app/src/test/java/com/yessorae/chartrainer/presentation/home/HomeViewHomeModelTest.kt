@@ -1,6 +1,7 @@
-package com.yessorae.chartrainer
+package com.yessorae.chartrainer.presentation.home
 
 import app.cash.turbine.test
+import com.yessorae.chartrainer.MainDispatcherRule
 import com.yessorae.chartrainer.fake.FakeChartDao
 import com.yessorae.chartrainer.fake.FakeChartGameDao
 import com.yessorae.chartrainer.fake.FakeChartTrainerPreferencesDataSource
@@ -15,12 +16,10 @@ import com.yessorae.data.source.local.database.dao.ChartDao
 import com.yessorae.data.source.local.database.dao.ChartGameDao
 import com.yessorae.data.source.local.database.dao.TickDao
 import com.yessorae.data.source.local.database.dao.TradeDao
-import com.yessorae.domain.common.DefaultValues
 import com.yessorae.domain.common.DefaultValues.MAX_TOTAL_TURN
 import com.yessorae.domain.common.DefaultValues.MIN_TOTAL_TURN
 import com.yessorae.domain.entity.User
 import com.yessorae.domain.entity.tick.TickUnit
-import com.yessorae.domain.entity.value.Money
 import com.yessorae.domain.entity.value.asMoney
 import com.yessorae.domain.repository.ChartGameRepository
 import com.yessorae.domain.repository.UserRepository
@@ -34,20 +33,17 @@ import com.yessorae.presentation.ui.screen.home.HomeViewModel
 import com.yessorae.presentation.ui.screen.home.model.HomeBottomButtonUi
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenEvent
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenUserAction
-import com.yessorae.presentation.ui.screen.home.model.HomeState
 import com.yessorae.presentation.ui.screen.home.model.SettingDialogState
-import com.yessorae.presentation.ui.screen.home.model.SettingInfoUi
-import com.yessorae.presentation.ui.screen.home.model.UserInfoUi
 import junit.framework.TestCase.assertEquals
+import kotlin.random.Random
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.random.Random
 
-class HomeViewModelTest {
+class HomeViewHomeModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = UnconfinedTestDispatcher()
 
@@ -77,46 +73,6 @@ class HomeViewModelTest {
     private lateinit var quitChartGameUseCase: QuitChartGameUseCase
 
     private lateinit var viewModel: HomeViewModel
-
-    private fun createUserInfoUi(
-        currentBalance: Money = Money(0.0),
-        winCount: Int = 0,
-        loseCount: Int = 0,
-        averageRateOfProfit: Float = 0f,
-        rateOfWinning: Float = 0f,
-        rateOfLosing: Float = 0f
-    ) = UserInfoUi(
-        currentBalance = currentBalance,
-        winCount = winCount,
-        loseCount = loseCount,
-        averageRateOfProfit = averageRateOfProfit,
-        rateOfWinning = rateOfWinning,
-        rateOfLosing = rateOfLosing
-    )
-
-    private fun createSettingInfoUi(
-        commissionRate: Float = 0f,
-        totalTurn: Int = 0,
-        tickUnit: TickUnit = DefaultValues.defaultTickUnit
-    ) = SettingInfoUi(
-        commissionRate = commissionRate,
-        totalTurn = totalTurn,
-        tickUnit = tickUnit
-    )
-
-    private fun createHomeState(
-        userInfoUi: UserInfoUi = createUserInfoUi(),
-        settingInfoUi: SettingInfoUi = createSettingInfoUi(),
-        bottomButtonState: HomeBottomButtonUi = HomeBottomButtonUi.Loading,
-        screenLoading: Boolean = false,
-        error: Boolean = false
-    ) = HomeState(
-        userInfoUi = userInfoUi,
-        settingInfoUi = settingInfoUi,
-        bottomButtonState = bottomButtonState,
-        screenLoading = screenLoading,
-        error = error
-    )
 
     @Before
     fun setup() {
@@ -234,6 +190,11 @@ class HomeViewModelTest {
                 )
             }
         }
+
+    @Test
+    fun rate_bar_is_shown_when_has_play_history() {
+        createUserInfoUi()
+    }
 
     @Test
     fun bottom_button_state_is_keep_going_game_when_last_chart_game_id_is_not_null() =
@@ -402,7 +363,6 @@ class HomeViewModelTest {
             }
         }
 
-
     @Test
     fun total_turn_setting_error_is_shown_when_update_with_smaller_than_min_value() =
         runTest {
@@ -437,7 +397,6 @@ class HomeViewModelTest {
             }
         }
 
-
     @Test
     fun tick_unit_setting_dialog_is_shown_when_click_tick_unit() =
         runTest {
@@ -457,22 +416,23 @@ class HomeViewModelTest {
         }
 
     @Test
-    fun tick_unit_ui_is_updated_when_click_update_tick_unit() = runTest {
-        viewModel.handleUserAction(
-            userAction = HomeScreenUserAction.UpdateTickUnit(
-                newValue = TickUnit.HOUR
+    fun tick_unit_ui_is_updated_when_click_update_tick_unit() =
+        runTest {
+            viewModel.handleUserAction(
+                userAction = HomeScreenUserAction.UpdateTickUnit(
+                    newValue = TickUnit.HOUR
+                )
             )
-        )
 
-        viewModel.screenState.test {
-            assertEquals(
-                viewModel.screenState.value.settingInfoUi.copy(
-                    tickUnit = TickUnit.HOUR
-                ),
-                awaitItem().settingInfoUi
-            )
+            viewModel.screenState.test {
+                assertEquals(
+                    viewModel.screenState.value.settingInfoUi.copy(
+                        tickUnit = TickUnit.HOUR
+                    ),
+                    awaitItem().settingInfoUi
+                )
+            }
         }
-    }
 
     @Test
     fun navigation_to_chart_game_history_when_click_chart_game_history_button() =

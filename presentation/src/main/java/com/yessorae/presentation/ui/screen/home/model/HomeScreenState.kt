@@ -29,7 +29,7 @@ data class UserInfoUi(
     val rateOfLosing: Float = 0f
 ) {
     val showWinningRateBar: Boolean =
-        (rateOfWinning != 0f && rateOfLosing != 0f) && rateOfWinning + rateOfLosing == 1f
+        (rateOfWinning != 0f || rateOfLosing != 0f) && rateOfWinning + rateOfLosing == 1f
 }
 
 sealed interface HomeBottomButtonUi {
@@ -49,11 +49,11 @@ sealed interface HomeBottomButtonUi {
 sealed interface SettingDialogState {
     object None : SettingDialogState
     data class CommissionRate(
-        val initialValue: String,
+        val initialValue: String
     ) : SettingDialogState
 
     data class TotalTurn(
-        val initialValue: String,
+        val initialValue: String
     ) : SettingDialogState
 
     data class TickUnit(

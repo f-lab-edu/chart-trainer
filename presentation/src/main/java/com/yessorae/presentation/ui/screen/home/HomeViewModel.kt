@@ -17,6 +17,7 @@ import com.yessorae.presentation.ui.screen.home.model.HomeScreenUserAction
 import com.yessorae.presentation.ui.screen.home.model.HomeState
 import com.yessorae.presentation.ui.screen.home.model.SettingDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -29,7 +30,6 @@ import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -160,7 +160,7 @@ class HomeViewModel @Inject constructor(
                     _screenState.update { old ->
                         old.copy(
                             settingDialogState = SettingDialogState.CommissionRate(
-                                initialValue = "",
+                                initialValue = ""
                             )
                         )
                     }
@@ -214,7 +214,7 @@ class HomeViewModel @Inject constructor(
                     _screenState.update { old ->
                         old.copy(
                             settingDialogState = SettingDialogState.TickUnit(
-                                initialTickUnit = old.settingInfoUi.tickUnit,
+                                initialTickUnit = old.settingInfoUi.tickUnit
                             )
                         )
                     }

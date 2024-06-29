@@ -1,11 +1,9 @@
-package com.yessorae.domain
+package com.yessorae.domain.model
 
 import com.yessorae.domain.entity.ChartGame
 import com.yessorae.domain.entity.trade.Trade
 import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
-import com.yessorae.domain.model.createTestChartGame
-import com.yessorae.domain.model.createTestTrade
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

@@ -1,8 +1,7 @@
-package com.yessorae.domain
+package com.yessorae.domain.model
 
 import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.asMoney
-import com.yessorae.domain.model.createTestTrade
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

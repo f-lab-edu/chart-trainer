@@ -173,16 +173,15 @@ class HomeViewModelTest {
 
 //    @Test
 //    fun initiate_state_is_loading() = runTest {
-//        val result = viewModel.screenState.first()
-//
-//
-//        assertEquals(
-//            createHomeState(
-//                screenLoading = true,
-//                error = false
-//            ),
-//            result
-//        )
+//        viewModel.screenState.test {
+//            assertEquals(
+//                createHomeState(
+//                    screenLoading = true,
+//                    error = false
+//                ),
+//                awaitItem()
+//            )
+//        }
 //    }
 
     @Test

@@ -333,8 +333,79 @@ class HomeViewModelTest {
                     ),
                     awaitItem().settingInfoUi
                 )
-
             }
         }
+
+    // TODO::SR-N 입력이 invalid 한 경우 추가
+
+    @Test
+    fun show_total_turn_setting_dialog_when_click_total_turn() =
+        runTest {
+            viewModel.handleUserAction(
+                userAction = HomeScreenUserAction.ClickTotalTurn
+            )
+
+            viewModel.screenState.test {
+                assertEquals(
+                    SettingDialogState.TotalTurn(initialValue = ""),
+                    awaitItem().settingDialogState
+                )
+            }
+        }
+
+    @Test
+    fun update_total_turn_when_click_update_total_turn_with_valid_value() =
+        runTest {
+            viewModel.handleUserAction(
+                userAction = HomeScreenUserAction.UpdateTotalTurn("60")
+            )
+
+            viewModel.screenState.test {
+                assertEquals(
+                    viewModel.screenState.value.settingInfoUi.copy(
+                        totalTurn = 60
+                    ),
+                    awaitItem().settingInfoUi
+                )
+            }
+        }
+
+    // TODO::SR-N 입력이 invalid 한 경우 추가
+
+    @Test
+    fun show_tick_unit_setting_dialog_when_click_tick_unit() =
+        runTest {
+            val existingValue = viewModel.screenState.value.settingInfoUi.tickUnit
+            viewModel.handleUserAction(
+                userAction = HomeScreenUserAction.ClickTickUnit
+            )
+
+            viewModel.screenState.test {
+                assertEquals(
+                    SettingDialogState.TickUnit(
+                        initialTickUnit = existingValue
+                    ),
+                    awaitItem().settingDialogState
+                )
+            }
+        }
+
+    @Test
+    fun update_tick_unit_when_click_update_tick_unit() = runTest {
+        viewModel.handleUserAction(
+            userAction = HomeScreenUserAction.UpdateTickUnit(
+                newValue = TickUnit.HOUR
+            )
+        )
+
+        viewModel.screenState.test {
+            assertEquals(
+                viewModel.screenState.value.settingInfoUi.copy(
+                    tickUnit = TickUnit.HOUR
+                ),
+                awaitItem().settingInfoUi
+            )
+        }
+    }
 
 }

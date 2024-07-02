@@ -145,7 +145,7 @@ class HomeViewHomeModelTest {
 //    }
 
     @Test
-    fun success_data_corresponds_to_ui_state() =
+    fun test_datasource_data_to_ui_state_mapping() =
         runTest {
             chartTrainerPreferencesDataSource.apply {
                 updateUser(
@@ -197,7 +197,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun bottom_button_state_is_keep_going_game_when_last_chart_game_id_is_not_null() =
+    fun test_bottom_button_state_is_keep_going_game_or_quit_when_last_chart_game_id_is_not_null() =
         runTest {
             val lastChartGameId = 1L
             chartTrainerPreferencesDataSource.updateLastChartGameId(lastChartGameId)
@@ -215,7 +215,7 @@ class HomeViewHomeModelTest {
         }
 
     @Test
-    fun bottom_button_state_is_new_game_when_last_chart_game_id_is_null() =
+    fun test_bottom_button_state_is_new_game_when_last_chart_game_id_is_null() =
         runTest {
             chartTrainerPreferencesDataSource.clearLastChartGameId()
 
@@ -228,10 +228,10 @@ class HomeViewHomeModelTest {
         }
 
     @Test
-    fun navigation_to_new_chart_game_when_click_start_chart_game() =
+    fun test_navigation_to_new_chart_game_when_click_start_chart_game() =
         runTest {
             viewModel.screenEvent.test {
-                viewModel.handleUserAction(userAction = HomeScreenUserAction.ClickStartChartGame)
+                viewModel.onUserAction(userAction = HomeScreenUserAction.ClickStartChartGame)
 
                 assertEquals(
                     HomeScreenEvent.NavigateToChartGameScreen(chartGameId = null),
@@ -241,10 +241,10 @@ class HomeViewHomeModelTest {
         }
 
     @Test
-    fun navigation_to_existing_chart_game_when_click_keep_going_chart_game() =
+    fun test_navigation_to_existing_chart_game_when_click_keep_going_chart_game() =
         runTest {
             viewModel.screenEvent.test {
-                viewModel.handleUserAction(
+                viewModel.onUserAction(
                     userAction = HomeScreenUserAction.ClickKeepGoingChartGame(
                         lastChartGameId = 1L
                     )
@@ -258,9 +258,9 @@ class HomeViewHomeModelTest {
         }
 
     @Test
-    fun bottom_button_state_is_new_game_when_click_quit_in_progress_chart_game() =
+    fun test_bottom_button_state_is_new_game_when_click_quit_in_progress_chart_game() =
         runTest {
-            viewModel.handleUserAction(
+            viewModel.onUserAction(
                 userAction = HomeScreenUserAction.ClickQuitInProgressChartGame(
                     lastChartGameId = 1L
                 )
@@ -275,9 +275,9 @@ class HomeViewHomeModelTest {
         }
 
     @Test
-    fun commission_rate_setting_dialog_is_shown_when_click_commission_rate() =
+    fun test_commission_rate_setting_dialog_is_shown_when_click_commission_rate() =
         runTest {
-            viewModel.handleUserAction(userAction = HomeScreenUserAction.ClickCommissionRate)
+            viewModel.onUserAction(userAction = HomeScreenUserAction.ClickCommissionRate)
 
             viewModel.screenState.test {
                 assertEquals(
@@ -288,9 +288,9 @@ class HomeViewHomeModelTest {
         }
 
     @Test
-    fun commission_rate_ui_is_updated_when_update_with_valid_value() =
+    fun test_commission_rate_ui_is_updated_when_update_with_valid_value() =
         runTest {
-            viewModel.handleUserAction(
+            viewModel.onUserAction(
                 userAction = HomeScreenUserAction.UpdateCommissionRate("123")
             )
 
@@ -305,10 +305,10 @@ class HomeViewHomeModelTest {
         }
 
     @Test
-    fun commission_rate_setting_error_is_shown_when_update_with_invalid_value() =
+    fun test_commission_rate_setting_error_is_shown_when_update_with_invalid_value() =
         runTest {
             viewModel.screenEvent.test {
-                viewModel.handleUserAction(
+                viewModel.onUserAction(
                     userAction = HomeScreenUserAction.UpdateCommissionRate("invalid number")
                 )
 
@@ -320,9 +320,9 @@ class HomeViewHomeModelTest {
         }
 
     @Test
-    fun total_turn_setting_dialog_is_shown_when_click_total_turn() =
+    fun test_total_turn_setting_dialog_is_shown_when_click_total_turn() =
         runTest {
-            viewModel.handleUserAction(
+            viewModel.onUserAction(
                 userAction = HomeScreenUserAction.ClickTotalTurn
             )
 
@@ -335,9 +335,9 @@ class HomeViewHomeModelTest {
         }
 
     @Test
-    fun total_turn_ui_is_updated_when_update_with_valid_value() =
+    fun test_total_turn_ui_is_updated_when_update_with_valid_value() =
         runTest {
-            viewModel.handleUserAction(
+            viewModel.onUserAction(
                 userAction = HomeScreenUserAction.UpdateTotalTurn("60")
             )
 
@@ -352,10 +352,10 @@ class HomeViewHomeModelTest {
         }
 
     @Test
-    fun total_turn_setting_error_is_shown_when_update_with_not_number_value() =
+    fun test_total_turn_setting_error_is_shown_when_update_with_not_number_value() =
         runTest {
             viewModel.screenEvent.test {
-                viewModel.handleUserAction(
+                viewModel.onUserAction(
                     userAction = HomeScreenUserAction.UpdateTotalTurn("not number")
                 )
 
@@ -367,12 +367,12 @@ class HomeViewHomeModelTest {
         }
 
     @Test
-    fun total_turn_setting_error_is_shown_when_update_with_smaller_than_min_value() =
+    fun test_total_turn_setting_error_is_shown_when_update_with_smaller_than_min_value() =
         runTest {
             val invalidValue = Random.nextInt(until = MIN_TOTAL_TURN)
 
             viewModel.screenEvent.test {
-                viewModel.handleUserAction(
+                viewModel.onUserAction(
                     userAction = HomeScreenUserAction.UpdateTotalTurn("$invalidValue")
                 )
 
@@ -384,12 +384,12 @@ class HomeViewHomeModelTest {
         }
 
     @Test
-    fun total_turn_setting_error_is_shown_when_update_with_bigger_than_max_value() =
+    fun test_total_turn_setting_error_is_shown_when_update_with_bigger_than_max_value() =
         runTest {
             val invalidValue = Random.nextInt(from = MAX_TOTAL_TURN + 1, until = Int.MAX_VALUE)
 
             viewModel.screenEvent.test {
-                viewModel.handleUserAction(
+                viewModel.onUserAction(
                     userAction = HomeScreenUserAction.UpdateTotalTurn("$invalidValue")
                 )
 
@@ -401,10 +401,10 @@ class HomeViewHomeModelTest {
         }
 
     @Test
-    fun tick_unit_setting_dialog_is_shown_when_click_tick_unit() =
+    fun test_tick_unit_setting_dialog_is_shown_when_click_tick_unit() =
         runTest {
             val existingValue = viewModel.screenState.value.settingInfoUi.tickUnit
-            viewModel.handleUserAction(
+            viewModel.onUserAction(
                 userAction = HomeScreenUserAction.ClickTickUnit
             )
 
@@ -419,9 +419,9 @@ class HomeViewHomeModelTest {
         }
 
     @Test
-    fun tick_unit_ui_is_updated_when_click_update_tick_unit() =
+    fun test_tick_unit_ui_is_updated_when_click_update_tick_unit() =
         runTest {
-            viewModel.handleUserAction(
+            viewModel.onUserAction(
                 userAction = HomeScreenUserAction.UpdateTickUnit(
                     newValue = TickUnit.HOUR
                 )
@@ -438,10 +438,10 @@ class HomeViewHomeModelTest {
         }
 
     @Test
-    fun navigation_to_chart_game_history_when_click_chart_game_history_button() =
+    fun test_navigation_to_chart_game_history_when_click_chart_game_history_button() =
         runTest {
             viewModel.screenEvent.test {
-                viewModel.handleUserAction(
+                viewModel.onUserAction(
                     userAction = HomeScreenUserAction.ClickChartGameHistory
                 )
 
@@ -453,9 +453,9 @@ class HomeViewHomeModelTest {
         }
 
     @Test
-    fun setting_dialog_is_dismissed_when_user_dismiss_dialog() =
+    fun test_setting_dialog_is_dismissed_when_user_dismiss_dialog() =
         runTest {
-            viewModel.handleUserAction(
+            viewModel.onUserAction(
                 userAction = HomeScreenUserAction.DismissDialog
             )
 

@@ -50,7 +50,7 @@ fun HomeScreenRoute(
     HomeScreen(
         screenState = screenState,
         onUserAction = { userAction ->
-            viewModel.handleUserAction(userAction = userAction)
+            viewModel.onUserAction(userAction = userAction)
         }
     )
 

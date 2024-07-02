@@ -134,7 +134,9 @@ class HomeViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun handleUserAction(userAction: HomeScreenUserAction) =
+    fun onUserAction(userAction: HomeScreenUserAction) = handleUserAction(userAction = userAction)
+
+    private fun handleUserAction(userAction: HomeScreenUserAction) =
         viewModelScope.launch {
             when (userAction) {
                 is HomeScreenUserAction.ClickStartChartGame -> {

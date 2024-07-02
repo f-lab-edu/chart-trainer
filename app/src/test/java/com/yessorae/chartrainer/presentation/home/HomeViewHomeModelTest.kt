@@ -217,6 +217,8 @@ class HomeViewHomeModelTest {
     @Test
     fun bottom_button_state_is_new_game_when_last_chart_game_id_is_null() =
         runTest {
+            chartTrainerPreferencesDataSource.clearLastChartGameId()
+
             viewModel.screenState.test {
                 assertEquals(
                     HomeBottomButtonUi.NewGame,

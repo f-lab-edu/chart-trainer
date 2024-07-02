@@ -57,7 +57,7 @@ class UserInfoUiTest {
     }
 
     @Test
-    fun winning_rate_bar_is_hidden_when_rate_is_zero() {
+    fun winning_rate_bar_is_hidden_when_rate_is_0() {
         val userInfoUi = createUserInfoUi(
             rateOfWinning = 0f,
             rateOfLosing = 0f

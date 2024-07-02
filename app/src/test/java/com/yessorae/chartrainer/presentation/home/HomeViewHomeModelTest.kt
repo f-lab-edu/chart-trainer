@@ -199,13 +199,14 @@ class HomeViewHomeModelTest {
     @Test
     fun bottom_button_state_is_keep_going_game_when_last_chart_game_id_is_not_null() =
         runTest {
-            chartTrainerPreferencesDataSource.updateLastChartGameId(1L)
+            val lastChartGameId = 1L
+            chartTrainerPreferencesDataSource.updateLastChartGameId(lastChartGameId)
 
             viewModel.screenState.test {
                 assertEquals(
                     HomeBottomButtonUi.KeepGoingGameOrQuit(
                         clickData = HomeBottomButtonUi.KeepGoingGameOrQuit.ClickData(
-                            lastChartGameId = 1L
+                            lastChartGameId = lastChartGameId
                         )
                     ),
                     awaitItem().bottomButtonState

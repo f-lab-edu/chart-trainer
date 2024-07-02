@@ -5,16 +5,13 @@ import com.yessorae.data.source.network.polygon.model.chart.TickDto
 import java.time.LocalDateTime
 
 fun createChartDto(
-    ticker: String = "AAPL",
+    ticker: String,
+    ticks: List<TickDto> = listOf(),
+    ticksCount: Int = ticks.size,
+
     adjusted: Boolean = true,
     queryCount: Int = 10,
     requestId: String = "123456789",
-    ticks: List<TickDto> = listOf(
-        createTickDto(),
-        createTickDto(),
-        createTickDto()
-    ),
-    ticksCount: Int = ticks.size,
     status: String = "success"
 ): ChartDto {
     return ChartDto(

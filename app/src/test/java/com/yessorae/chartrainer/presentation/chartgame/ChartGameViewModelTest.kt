@@ -1,14 +1,17 @@
 package com.yessorae.chartrainer.presentation.chartgame
 
 import androidx.lifecycle.SavedStateHandle
+import app.cash.turbine.test
 import com.yessorae.chartrainer.MainDispatcherRule
 import com.yessorae.chartrainer.fake.FakeChartDao
 import com.yessorae.chartrainer.fake.FakeChartGameDao
 import com.yessorae.chartrainer.fake.FakeChartRequestArgumentHelper
 import com.yessorae.chartrainer.fake.FakeChartTrainerPreferencesDataSource
+import com.yessorae.chartrainer.fake.FakePolygonChartApi
 import com.yessorae.chartrainer.fake.FakeTickDao
 import com.yessorae.chartrainer.fake.FakeTradeDao
 import com.yessorae.chartrainer.fake.model.createChartDto
+import com.yessorae.chartrainer.fake.model.createTickDto
 import com.yessorae.data.repository.ChartGameRepositoryImpl
 import com.yessorae.data.repository.ChartRepositoryImpl
 import com.yessorae.data.repository.TradeRepositoryImpl
@@ -23,7 +26,6 @@ import com.yessorae.data.source.local.database.dao.TickDao
 import com.yessorae.data.source.local.database.dao.TradeDao
 import com.yessorae.data.source.network.polygon.PolygonChartNetworkDataSource
 import com.yessorae.data.source.network.polygon.api.PolygonChartApi
-import com.yessorae.data.source.network.polygon.model.chart.ChartDto
 import com.yessorae.domain.common.ChartRequestArgumentHelper
 import com.yessorae.domain.common.ChartTrainerLogger
 import com.yessorae.domain.repository.ChartGameRepository
@@ -36,9 +38,14 @@ import com.yessorae.domain.usecase.SubscribeChartGameUseCase
 import com.yessorae.domain.usecase.TradeStockUseCase
 import com.yessorae.domain.usecase.UpdateNextTickUseCase
 import com.yessorae.presentation.ui.screen.chartgame.ChartGameViewModel
+import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenUserAction
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Rule
+import org.junit.Test
 
 class ChartGameViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -77,29 +84,35 @@ class ChartGameViewModelTest {
 
     private lateinit var viewModel: ChartGameViewModel
 
-    fun setup(
-        ticker: String,
-        chartDto: ChartDto = createChartDto(
-            ticker = ticker
+    private val testTicks = (1..300).map {
+        createTickDto(
+            closePrice = it.toDouble(),
+            openPrice = it.toDouble(),
+            maxPrice = it.toDouble(),
+            minPrice = it.toDouble(),
+            startTimestamp = it.toLong(),
+            volumeWeightedAveragePrice = it.toDouble(),
+            transactionCount = it
         )
+    }
+    private val APPLE_TICKER = "AAPL"
+    private val TESLA_TICKER = "TSLA"
+
+
+    fun setup(
+        chartApi: PolygonChartApi = FakePolygonChartApi(),
+        randomChartRequestArgumentHelper: ChartRequestArgumentHelper = FakeChartRequestArgumentHelper()
     ) {
-        polygonChartApi = object : PolygonChartApi {
-            override suspend fun getChartData(
-                ticker: String,
-                timeSpan: String,
-                from: String,
-                to: String,
-                multiplier: Int,
-                adjusted: Boolean,
-                sort: String,
-                apiKey: String
-            ): ChartDto = chartDto
-        }
+        // api
+        polygonChartApi = chartApi
+
+        // dao
         chartGameDao = FakeChartGameDao()
         tickDao = FakeTickDao()
         chartDao = FakeChartDao(ticksFlow = (tickDao as FakeTickDao).ticksFlow)
         tradeDao = FakeTradeDao()
 
+        // datasource
         chartNetworkDataSource = PolygonChartNetworkDataSource(
             api = polygonChartApi
         )
@@ -111,6 +124,10 @@ class ChartGameViewModelTest {
         )
         chartTrainerPreferencesDataSource = FakeChartTrainerPreferencesDataSource()
 
+        // helper
+        chartRequestArgumentHelper = randomChartRequestArgumentHelper
+
+        // repository
         userRepository = UserRepositoryImpl(
             appPreference = chartTrainerPreferencesDataSource
         )
@@ -130,8 +147,7 @@ class ChartGameViewModelTest {
             dispatcher = dispatcher
         )
 
-        chartRequestArgumentHelper = FakeChartRequestArgumentHelper()
-
+        // usecase
         subscribeChartGameUseCase = SubscribeChartGameUseCase(
             userRepository = userRepository,
             chartRepository = chartRepository,
@@ -152,11 +168,11 @@ class ChartGameViewModelTest {
             chartRepository = chartRepository,
             userRepository = userRepository
         )
-
         quitChartGameUseCase = QuitChartGameUseCase(
             userRepository = userRepository,
             chartGameRepository = chartGameRepository
         )
+
         logger = object : ChartTrainerLogger {
             override fun cehLog(throwable: Throwable) {
                 // do nothing
@@ -174,5 +190,42 @@ class ChartGameViewModelTest {
             logger = logger,
             savedStateHandle = savedStateHandle
         )
+    }
+
+    @Test
+    fun chart_is_changed_and_game_is_re_initialized_when_click_new_chart_button() = runTest {
+        // given
+        setup(
+            chartApi = FakePolygonChartApi(
+                tickerToDtoMap = mapOf(
+                    APPLE_TICKER to createChartDto(ticker = APPLE_TICKER, ticks = testTicks),
+                    TESLA_TICKER to createChartDto(ticker = TESLA_TICKER, ticks = testTicks)
+                )
+            ),
+            randomChartRequestArgumentHelper = FakeChartRequestArgumentHelper(
+                getTicker = { callingCount ->
+                    if (callingCount > 0) {
+                        APPLE_TICKER
+                    } else {
+                        TESLA_TICKER
+                    }
+                }
+            )
+        )
+        viewModel.screenState.launchIn(this)
+
+        // when
+        viewModel.handleChartGameScreenUserAction(
+            userAction = ChartGameScreenUserAction.ClickNewChartButton(
+                gameId = 1L
+            )
+        )
+
+
+        viewModel.screenState.test {
+            assertEquals(
+                ...
+            )
+        }
     }
 }

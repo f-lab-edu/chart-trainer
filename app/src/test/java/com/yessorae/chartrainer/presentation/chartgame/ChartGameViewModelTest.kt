@@ -390,6 +390,57 @@ class ChartGameViewModelTest {
             )
         }
     }
+
+    @Test
+    fun `screenState should show selling trade ui when user click sell button`() = runTest {
+        viewModel.screenState.test {
+            val oldState = awaitItem()
+            val gameId = 1L
+            val ownedAverageStockPrice = 500.asMoney()
+            val currentStockPrice = 1000.asMoney()
+            val currentTurn = 10
+            val ownedStockCount = 10
+
+
+            viewModel.handleChartGameScreenUserAction(
+                ChartGameScreenUserAction.ClickSellButton(
+                    gameId = gameId,
+                    ownedAverageStockPrice = ownedAverageStockPrice,
+                    currentStockPrice = currentStockPrice,
+                    currentTurn = currentTurn,
+                    ownedStockCount = ownedStockCount
+                )
+            )
+
+            assertEquals(
+                oldState.copy(
+                    tradeOrderUi = TradeOrderUi.Sell(
+                        showKeyPad = false,
+                        maxAvailableStockCount = ownedStockCount,
+                        currentStockPrice = currentStockPrice.value,
+                        clickData = TradeOrderUi.Sell.ClickData(
+                            gameId = gameId,
+                            ownedStockCount = ownedStockCount,
+                            ownedAverageStockPrice = ownedAverageStockPrice,
+                            currentStockPrice = currentStockPrice,
+                            currentTurn = currentTurn,
+                        )
+                    )
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `screenState should update next tick when click user next tick button`() = runTest {
+
+    }
+
+    @Test
+    fun `screenEvent should emit moveToTradeHistory when user click chart game history button`() = runTest {
+
+    }
 }
 
 

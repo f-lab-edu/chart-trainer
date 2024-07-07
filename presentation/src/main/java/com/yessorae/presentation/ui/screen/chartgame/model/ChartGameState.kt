@@ -3,7 +3,7 @@ package com.yessorae.presentation.ui.screen.chartgame.model
 import com.yessorae.domain.common.DefaultValues.defaultTickUnit
 import com.yessorae.domain.entity.tick.Tick
 import com.yessorae.domain.entity.tick.TickUnit
-import java.lang.NumberFormatException
+import com.yessorae.domain.entity.value.Money
 
 data class ChartGameScreenState(
     val currentTurn: Int = 0,
@@ -19,13 +19,22 @@ data class ChartGameScreenState(
     val isGameComplete: Boolean = false,
     val isGameEnd: Boolean = false,
     val tradeOrderUi: TradeOrderUi = TradeOrderUi.Hide,
-    val onUserAction: (ChartGameScreenUserAction) -> Unit = {}
+    val clickData: ClickData = ClickData()
 ) {
     val isBeforeStart = currentTurn <= 1
     val enableChangeChartButton: Boolean = isGameEnd.not()
     val enabledBuyButton: Boolean = (currentTurn > 0 || totalProfit != 0.0) && isGameEnd.not()
     val enabledSellButton: Boolean = (currentTurn > 0 && totalProfit != 0.0) && isGameEnd.not()
     val enabledNextTurnButton: Boolean = currentTurn != totalTurn && isGameEnd.not()
+
+    data class ClickData(
+        val gameId: Long = 0,
+        val ownedAverageStockPrice: Money = Money.ZERO,
+        val currentBalance: Money = Money.ZERO,
+        val currentStockPrice: Money = Money.ZERO,
+        val currentTurn: Int = 0,
+        val ownedStockCount: Int = 0
+    )
 }
 
 data class CandleStickChartUi(
@@ -44,7 +53,7 @@ sealed class TradeOrderUi {
         val maxAvailableStockCount: Int = 0,
         val currentStockPrice: Double = 0.0,
         val stockCountInput: String = "",
-        val onUserAction: (TradeOrderUiUserAction) -> Unit = {}
+        val clickData: ClickData = ClickData()
     ) : TradeOrderUi() {
         val totalBuyingStockPrice: Double by lazy {
             getTotalBuyingStockPrice(
@@ -52,6 +61,15 @@ sealed class TradeOrderUi {
                 stockCountInput = stockCountInput
             )
         }
+
+        data class ClickData(
+            val gameId: Long = 0L,
+            val maxAvailableStockCount: Int = 0,
+            val ownedStockCount: Int = 0,
+            val ownedAverageStockPrice: Money = Money.ZERO,
+            val currentStockPrice: Money = Money.ZERO,
+            val currentTurn: Int = 0
+        )
     }
 
     data class Sell(
@@ -59,7 +77,7 @@ sealed class TradeOrderUi {
         val maxAvailableStockCount: Int = 0,
         val currentStockPrice: Double = 0.0,
         val stockCountInput: String = "",
-        val onUserAction: (TradeOrderUiUserAction) -> Unit = {}
+        val clickData: ClickData = ClickData()
     ) : TradeOrderUi() {
         val totalBuyingStockPrice: Double by lazy {
             getTotalBuyingStockPrice(
@@ -67,6 +85,14 @@ sealed class TradeOrderUi {
                 stockCountInput = stockCountInput
             )
         }
+
+        data class ClickData(
+            val gameId: Long = 0L,
+            val ownedAverageStockPrice: Money = Money.ZERO,
+            val currentStockPrice: Money = Money.ZERO,
+            val currentTurn: Int = 0,
+            val ownedStockCount: Int = 0
+        )
     }
 
     object Hide : TradeOrderUi()
@@ -86,33 +112,22 @@ sealed class TradeOrderUi {
             return currentStockPrice * input
         }
 
-        fun TradeOrderUi.copy(
+        fun TradeOrderUi.copyWith(
             showKeyPad: Boolean? = null,
-            maxAvailableStockCount: Int? = null,
-            currentStockPrice: Double? = null,
-            stockCountInput: String? = null,
-            onUserAction: ((TradeOrderUiUserAction) -> Unit)? = null
+            stockCountInput: String? = null
         ): TradeOrderUi {
             return when (val old = this) {
                 is Buy -> {
-                    Buy(
+                    old.copy(
                         showKeyPad = showKeyPad ?: old.showKeyPad,
-                        maxAvailableStockCount = maxAvailableStockCount
-                            ?: old.maxAvailableStockCount,
-                        currentStockPrice = currentStockPrice ?: old.currentStockPrice,
-                        stockCountInput = stockCountInput ?: old.stockCountInput,
-                        onUserAction = onUserAction ?: old.onUserAction
+                        stockCountInput = stockCountInput ?: old.stockCountInput
                     )
                 }
 
                 is Sell -> {
-                    Sell(
+                    old.copy(
                         showKeyPad = showKeyPad ?: old.showKeyPad,
-                        maxAvailableStockCount = maxAvailableStockCount
-                            ?: old.maxAvailableStockCount,
-                        currentStockPrice = currentStockPrice ?: old.currentStockPrice,
-                        stockCountInput = stockCountInput ?: old.stockCountInput,
-                        onUserAction = onUserAction ?: old.onUserAction
+                        stockCountInput = stockCountInput ?: old.stockCountInput
                     )
                 }
 

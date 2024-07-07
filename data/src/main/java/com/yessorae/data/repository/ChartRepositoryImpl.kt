@@ -4,9 +4,9 @@ import com.yessorae.data.di.ChartTrainerDispatcher
 import com.yessorae.data.di.Dispatcher
 import com.yessorae.data.source.ChartNetworkDataSource
 import com.yessorae.data.source.ChartTrainerLocalDBDataSource
+import com.yessorae.data.source.ChartTrainerPreferencesDataSource
 import com.yessorae.data.source.local.database.model.asDomainModel
 import com.yessorae.data.source.local.database.model.asEntity
-import com.yessorae.data.source.local.preference.ChartTrainerPreferencesDataSource
 import com.yessorae.data.source.network.polygon.model.chart.asDomainModel
 import com.yessorae.domain.common.ChartRequestArgumentHelper
 import com.yessorae.domain.entity.Chart

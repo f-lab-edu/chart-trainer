@@ -20,9 +20,11 @@ import com.yessorae.presentation.ui.screen.chartgame.component.CandleChartUi
 import com.yessorae.presentation.ui.screen.chartgame.component.ChartGameBottomBarUi
 import com.yessorae.presentation.ui.screen.chartgame.component.ChartGameTopAppBarUi
 import com.yessorae.presentation.ui.screen.chartgame.component.order.TradeOrderUi
+import com.yessorae.presentation.ui.screen.chartgame.model.BuyingOrderUiUserAction
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameEvent
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenState
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenUserAction
+import com.yessorae.presentation.ui.screen.chartgame.model.SellingOrderUiUserAction
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -34,7 +36,10 @@ fun ChartGameRoute(
 ) {
     val state by viewModel.screenState.collectAsState()
     ChartGameScreen(
-        state = state
+        state = state,
+        onScreenUserAction = viewModel::handleChartGameScreenUserAction,
+        onBuyingOrderUiUserAction = viewModel::handleBuyingOrderUiUserAction,
+        onSellingOrderUiUserAction = viewModel::handleSellOrderUiUserAction
     )
 
     ChartGameEventHandler(
@@ -45,7 +50,12 @@ fun ChartGameRoute(
 }
 
 @Composable
-fun ChartGameScreen(state: ChartGameScreenState) {
+fun ChartGameScreen(
+    state: ChartGameScreenState,
+    onScreenUserAction: (ChartGameScreenUserAction) -> Unit,
+    onBuyingOrderUiUserAction: (BuyingOrderUiUserAction) -> Unit,
+    onSellingOrderUiUserAction: (SellingOrderUiUserAction) -> Unit
+) {
     Scaffold(
         topBar = {
             ChartGameTopAppBarUi(
@@ -54,13 +64,25 @@ fun ChartGameScreen(state: ChartGameScreenState) {
                 totalRateOfProfit = state.rateOfProfit,
                 enableChangeChartButton = state.enableChangeChartButton,
                 onClickNewChartButton = {
-                    state.onUserAction(ChartGameScreenUserAction.ClickNewChartButton)
+                    onScreenUserAction(
+                        ChartGameScreenUserAction.ClickNewChartButton(
+                            gameId = state.clickData.gameId
+                        )
+                    )
                 },
                 onClickChartHistoryButton = {
-                    state.onUserAction(ChartGameScreenUserAction.ClickChartGameScreenHistoryButton)
+                    onScreenUserAction(
+                        ChartGameScreenUserAction.ClickChartGameScreenHistoryButton(
+                            gameId = state.clickData.gameId
+                        )
+                    )
                 },
                 onClickQuitGameButton = {
-                    state.onUserAction(ChartGameScreenUserAction.ClickQuitGameButton)
+                    onScreenUserAction(
+                        ChartGameScreenUserAction.ClickQuitGameButton(
+                            gameId = state.clickData.gameId
+                        )
+                    )
                 }
             )
         },
@@ -90,18 +112,47 @@ fun ChartGameScreen(state: ChartGameScreenState) {
                     enabledSellButton = state.enabledSellButton,
                     enabledNextTurnButton = state.enabledNextTurnButton,
                     onClickBuyButton = {
-                        state.onUserAction(ChartGameScreenUserAction.ClickBuyButton)
+                        onScreenUserAction(
+                            with(state.clickData) {
+                                ChartGameScreenUserAction.ClickBuyButton(
+                                    gameId = gameId,
+                                    ownedStockCount = ownedStockCount,
+                                    ownedAverageStockPrice = ownedAverageStockPrice,
+                                    currentBalance = currentBalance,
+                                    currentStockPrice = currentStockPrice,
+                                    currentTurn = currentTurn
+                                )
+                            }
+                        )
                     },
                     onClickSellButton = {
-                        state.onUserAction(ChartGameScreenUserAction.ClickSellButton)
+                        onScreenUserAction(
+                            with(state.clickData) {
+                                ChartGameScreenUserAction.ClickSellButton(
+                                    gameId = gameId,
+                                    ownedAverageStockPrice = ownedAverageStockPrice,
+                                    currentStockPrice = currentStockPrice,
+                                    currentTurn = currentTurn,
+                                    ownedStockCount = ownedStockCount
+                                )
+                            }
+                        )
                     },
                     onClickNextTurnButton = {
-                        state.onUserAction(ChartGameScreenUserAction.ClickNextTickButton)
+                        onScreenUserAction(
+                            ChartGameScreenUserAction.ClickNextTickButton(
+                                gameId = state.clickData.gameId
+                            )
+                        )
                     }
                 )
             }
 
-            TradeOrderUi(tradeOrderUi = state.tradeOrderUi)
+            TradeOrderUi(
+                tradeOrderUi = state.tradeOrderUi,
+                onBuyingUserAction = onBuyingOrderUiUserAction,
+                onSellingUserAction = onSellingOrderUiUserAction
+            )
 
             ChartTrainerLoadingProgressBar(
                 modifier = Modifier.fillMaxSize(),

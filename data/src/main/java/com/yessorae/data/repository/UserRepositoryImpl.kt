@@ -1,6 +1,6 @@
 package com.yessorae.data.repository
 
-import com.yessorae.data.source.local.preference.ChartTrainerPreferencesDataSource
+import com.yessorae.data.source.ChartTrainerPreferencesDataSource
 import com.yessorae.domain.entity.User
 import com.yessorae.domain.entity.tick.TickUnit
 import com.yessorae.domain.repository.UserRepository

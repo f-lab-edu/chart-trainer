@@ -4,35 +4,30 @@ import com.yessorae.domain.common.Result
 import com.yessorae.domain.common.delegateValueResultFlow
 import com.yessorae.domain.entity.User
 import com.yessorae.domain.entity.tick.TickUnit
-import com.yessorae.domain.repository.ChartGameRepository
 import com.yessorae.domain.repository.UserRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
 class SubscribeHomeDataUseCase @Inject constructor(
-    private val userRepository: UserRepository,
-    private val chartGameRepository: ChartGameRepository
+    private val userRepository: UserRepository
 ) {
     operator fun invoke(): Flow<Result<Home>> =
         combine(
             userRepository.fetchUserAsFlow(),
             userRepository.fetchCommissionRateAsFlow(),
             userRepository.fetchTickUnitAsFlow(),
-            userRepository.fetchTotalTurnAsFlow(),
-            chartGameRepository.fetchLastChartGameId().delegateValueResultFlow()
+            userRepository.fetchTotalTurnAsFlow()
         ) { user,
             commissionRate,
             tickUnit,
-            totalTurn,
-            lastChartGameId ->
+            totalTurn ->
 
             Home(
                 user = user,
                 commissionRate = commissionRate,
                 tickUnit = tickUnit,
-                totalTurn = totalTurn,
-                lastChartGameIdResult = lastChartGameId
+                totalTurn = totalTurn
             )
         }.delegateValueResultFlow()
 
@@ -40,7 +35,6 @@ class SubscribeHomeDataUseCase @Inject constructor(
         val user: User,
         val commissionRate: Double,
         val totalTurn: Int,
-        val tickUnit: TickUnit,
-        val lastChartGameIdResult: Result<Long?>
+        val tickUnit: TickUnit
     )
 }

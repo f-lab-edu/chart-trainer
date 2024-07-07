@@ -10,6 +10,7 @@ import com.yessorae.domain.usecase.ChangeTickUnitSettingUseCase
 import com.yessorae.domain.usecase.ChangeTotalTurnSettingUseCase
 import com.yessorae.domain.usecase.QuitChartGameUseCase
 import com.yessorae.domain.usecase.SubscribeHomeDataUseCase
+import com.yessorae.domain.usecase.SubscribeLastGameIdUseCase
 import com.yessorae.presentation.ui.screen.home.model.HomeBottomButtonUi
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenEvent
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenUserAction
@@ -33,6 +34,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val subscribeUserDataUseCase: SubscribeHomeDataUseCase,
+    private val subscribeLastGameIdUseCase: SubscribeLastGameIdUseCase,
     private val changeCommissionRateSettingUseCase: ChangeCommissionRateSettingUseCase,
     private val changeTickUnitSettingUseCase: ChangeTickUnitSettingUseCase,
     private val changeTotalTurnSettingUseCase: ChangeTotalTurnSettingUseCase,
@@ -42,7 +44,9 @@ class HomeViewModel @Inject constructor(
     val screenState: StateFlow<HomeState> = _screenState
         .onSubscription {
             subscribeUserData()
-        }.stateIn(
+            subscribeLastChartGameId()
+        }
+        .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = HomeState()
@@ -80,21 +84,8 @@ class HomeViewModel @Inject constructor(
                                     tickUnit = tickUnit,
                                     totalTurn = totalTurn
                                 ),
-                                bottomButtonState = when (lastChartGameIdResult) {
-                                    is Result.Loading -> HomeBottomButtonUi.Loading
-                                    else -> HomeBottomButtonUi.Success(
-                                        hasOnGoingCharGame =
-                                        lastChartGameIdResult.getOrNull() != null
-                                    )
-                                },
                                 screenLoading = false,
-                                error = false,
-                                onUserAction = { userAction ->
-                                    handleUserAction(
-                                        userAction = userAction,
-                                        lastChartGameId = lastChartGameIdResult.getOrNull()
-                                    )
-                                }
+                                error = false
                             )
                         }
                     }
@@ -112,114 +103,142 @@ class HomeViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun handleUserAction(
-        userAction: HomeScreenUserAction,
-        lastChartGameId: Long?
-    ) = viewModelScope.launch {
-        when (userAction) {
-            is HomeScreenUserAction.ClickStartChartGame -> {
-                _screenEvent.emit(
-                    HomeScreenEvent.NavigateToChartGameScreen(chartGameId = null)
+    private fun subscribeLastChartGameId() {
+        subscribeLastGameIdUseCase().onEach { result ->
+            _screenState.update { old ->
+                old.copy(
+                    bottomButtonState = when (result) {
+                        is Result.Loading -> {
+                            HomeBottomButtonUi.Loading
+                        }
+
+                        is Result.Success -> {
+                            val lastChartGameId = result.data
+                            if (lastChartGameId != null) {
+                                HomeBottomButtonUi.KeepGoingGameOrQuit(
+                                    clickData = HomeBottomButtonUi.KeepGoingGameOrQuit.ClickData(
+                                        lastChartGameId = lastChartGameId
+                                    )
+                                )
+                            } else {
+                                HomeBottomButtonUi.NewGame
+                            }
+                        }
+
+                        is Result.Failure -> {
+                            HomeBottomButtonUi.NewGame
+                        }
+                    }
                 )
             }
+        }.launchIn(viewModelScope)
+    }
 
-            is HomeScreenUserAction.ClickKeepGoingChartGame -> {
-                lastChartGameId?.let { gameId ->
+    fun onUserAction(userAction: HomeScreenUserAction) = handleUserAction(userAction = userAction)
+
+    private fun handleUserAction(userAction: HomeScreenUserAction) =
+        viewModelScope.launch {
+            when (userAction) {
+                is HomeScreenUserAction.ClickStartChartGame -> {
                     _screenEvent.emit(
-                        HomeScreenEvent.NavigateToChartGameScreen(chartGameId = lastChartGameId)
+                        HomeScreenEvent.NavigateToChartGameScreen(chartGameId = null)
                     )
                 }
-            }
 
-            is HomeScreenUserAction.ClickQuitInProgressChartGame -> {
-                lastChartGameId?.let { gameId ->
-                    quitChartGameUseCase(gameId = gameId).launchIn(viewModelScope)
-                }
-            }
-
-            is HomeScreenUserAction.ClickCommissionRate -> {
-                _screenState.update { old ->
-                    old.copy(
-                        settingDialogState = SettingDialogState.CommissionRate(
-                            initialValue = "",
-                            onDismissRequest = {
-                                dismissSettingDialog()
-                            },
-                            onDone = { newValue ->
-                                val newRate = ("0.$newValue").toFloatOrNull()
-                                if (newRate == null) {
-                                    viewModelScope.launch {
-                                        _screenEvent.emit(
-                                            HomeScreenEvent.CommissionRateSettingError
-                                        )
-                                    }
-                                    return@CommissionRate
-                                }
-
-                                dismissSettingDialog()
-                                changeCommissionRateSettingUseCase(
-                                    rate = newRate.toDouble()
-                                ).launchIn(viewModelScope)
-                            }
+                is HomeScreenUserAction.ClickKeepGoingChartGame -> {
+                    _screenEvent.emit(
+                        HomeScreenEvent.NavigateToChartGameScreen(
+                            chartGameId = userAction.lastChartGameId
                         )
                     )
                 }
-            }
 
-            is HomeScreenUserAction.ClickTotalTurn -> {
-                _screenState.update { old ->
-                    old.copy(
-                        settingDialogState = SettingDialogState.TotalTurn(
-                            initialValue = "",
-                            onDismissRequest = {
-                                dismissSettingDialog()
-                            },
-                            onDone = { newValue ->
-                                val newTotalTurn = newValue.toIntOrNull()
-                                if (
-                                    newTotalTurn == null ||
-                                    (newTotalTurn in MIN_TOTAL_TURN..MAX_TOTAL_TURN).not()
-                                ) {
-                                    viewModelScope.launch {
-                                        _screenEvent.emit(HomeScreenEvent.TotalTurnSettingError)
-                                    }
-                                    return@TotalTurn
-                                }
-
-                                dismissSettingDialog()
-                                changeTotalTurnSettingUseCase(
-                                    turn = newTotalTurn
-                                ).launchIn(viewModelScope)
-                            }
-                        )
-                    )
+                is HomeScreenUserAction.ClickQuitInProgressChartGame -> {
+                    quitChartGameUseCase(gameId = userAction.lastChartGameId)
+                        .launchIn(viewModelScope)
                 }
-            }
 
-            is HomeScreenUserAction.ClickTickUnit -> {
-                _screenState.update { old ->
-                    old.copy(
-                        settingDialogState = SettingDialogState.TickUnit(
-                            initialTickUnit = old.settingInfoUi.tickUnit,
-                            onDismissRequest = {
-                                dismissSettingDialog()
-                            },
-                            onDone = { newTickUnit ->
-                                dismissSettingDialog()
-                                changeTickUnitSettingUseCase(
-                                    tickUnit = newTickUnit
-                                ).launchIn(viewModelScope)
-                            }
+                is HomeScreenUserAction.ClickCommissionRate -> {
+                    _screenState.update { old ->
+                        old.copy(
+                            settingDialogState = SettingDialogState.CommissionRate(
+                                initialValue = ""
+                            )
                         )
-                    )
+                    }
                 }
-            }
 
-            is HomeScreenUserAction.ClickChartGameHistory -> {
-                _screenEvent.emit(HomeScreenEvent.NavigateToChartGameHistoryScreen)
+                is HomeScreenUserAction.UpdateCommissionRate -> {
+                    val newRate = ("0.${userAction.newValue}").toFloatOrNull()
+                    if (newRate == null) {
+                        viewModelScope.launch {
+                            _screenEvent.emit(
+                                HomeScreenEvent.CommissionRateSettingError
+                            )
+                        }
+                        return@launch
+                    }
+
+                    dismissSettingDialog()
+                    changeCommissionRateSettingUseCase(
+                        rate = newRate.toDouble()
+                    ).launchIn(viewModelScope)
+                }
+
+                is HomeScreenUserAction.ClickTotalTurn -> {
+                    _screenState.update { old ->
+                        old.copy(
+                            settingDialogState = SettingDialogState.TotalTurn(initialValue = "")
+                        )
+                    }
+                }
+
+                is HomeScreenUserAction.UpdateTotalTurn -> {
+                    val newValue = userAction.newValue
+                    val newTotalTurn = newValue.toIntOrNull()
+                    if (
+                        newTotalTurn == null ||
+                        (newTotalTurn in MIN_TOTAL_TURN..MAX_TOTAL_TURN).not()
+                    ) {
+                        viewModelScope.launch {
+                            _screenEvent.emit(HomeScreenEvent.TotalTurnSettingError)
+                        }
+                        return@launch
+                    }
+
+                    dismissSettingDialog()
+                    changeTotalTurnSettingUseCase(
+                        turn = newTotalTurn
+                    ).launchIn(viewModelScope)
+                }
+
+                is HomeScreenUserAction.ClickTickUnit -> {
+                    _screenState.update { old ->
+                        old.copy(
+                            settingDialogState = SettingDialogState.TickUnit(
+                                initialTickUnit = old.settingInfoUi.tickUnit
+                            )
+                        )
+                    }
+                }
+
+                is HomeScreenUserAction.UpdateTickUnit -> {
+                    val newTickUnit = userAction.newValue
+                    dismissSettingDialog()
+                    changeTickUnitSettingUseCase(
+                        tickUnit = newTickUnit
+                    ).launchIn(viewModelScope)
+                }
+
+                is HomeScreenUserAction.ClickChartGameHistory -> {
+                    _screenEvent.emit(HomeScreenEvent.NavigateToChartGameHistoryScreen)
+                }
+
+                is HomeScreenUserAction.DismissDialog -> {
+                    dismissSettingDialog()
+                }
             }
         }
-    }
 
     private fun dismissSettingDialog() {
         _screenState.update { old ->

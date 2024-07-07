@@ -7,9 +7,9 @@ import androidx.paging.map
 import com.yessorae.data.di.ChartTrainerDispatcher
 import com.yessorae.data.di.Dispatcher
 import com.yessorae.data.source.ChartTrainerLocalDBDataSource
+import com.yessorae.data.source.ChartTrainerPreferencesDataSource
 import com.yessorae.data.source.local.database.model.asDomainModel
 import com.yessorae.data.source.local.database.model.asEntity
-import com.yessorae.data.source.local.preference.ChartTrainerPreferencesDataSource
 import com.yessorae.domain.entity.ChartGame
 import com.yessorae.domain.repository.ChartGameRepository
 import javax.inject.Inject

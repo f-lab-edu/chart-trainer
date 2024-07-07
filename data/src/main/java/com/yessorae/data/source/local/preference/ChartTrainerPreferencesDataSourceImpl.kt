@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.yessorae.data.source.ChartTrainerPreferencesDataSource
 import com.yessorae.domain.common.DefaultValues.DEFAULT_COMMISSION_RATE
 import com.yessorae.domain.common.DefaultValues.DEFAULT_TOTAL_TURN
 import com.yessorae.domain.common.DefaultValues.defaultTickUnit
@@ -19,9 +20,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class ChartTrainerPreferencesDataSource @Inject constructor(
+class ChartTrainerPreferencesDataSourceImpl @Inject constructor(
     private val appPreference: DataStore<Preferences>
-) {
+) : ChartTrainerPreferencesDataSource {
     private val userKey = stringPreferencesKey("user")
     private val commissionRateKey = doublePreferencesKey("commission_rate")
     private val totalTurnKey = intPreferencesKey("total_turn")
@@ -30,71 +31,71 @@ class ChartTrainerPreferencesDataSource @Inject constructor(
 
     private val data: Flow<Preferences> = appPreference.data
 
-    val userFlow: Flow<User> = data.map { preferences ->
+    override val userFlow: Flow<User> = data.map { preferences ->
         preferences[userKey]?.let { value ->
             // Data 레이어 전용 User 값-객체를 만들지 고민중
             Json.decodeFromString<User>(value)
         } ?: User.createInitialUser()
     }
 
-    val commissionRateFlow: Flow<Double> = data.map { preferences ->
+    override val commissionRateFlow: Flow<Double> = data.map { preferences ->
         preferences[commissionRateKey] ?: DEFAULT_COMMISSION_RATE
     }
 
-    val totalTurnFlow: Flow<Int> = data.map { preferences ->
+    override val totalTurnFlow: Flow<Int> = data.map { preferences ->
         preferences[totalTurnKey] ?: DEFAULT_TOTAL_TURN
     }
 
-    val tickUnitFlow: Flow<TickUnit> = data.map { preferences ->
+    override val tickUnitFlow: Flow<TickUnit> = data.map { preferences ->
         preferences[tickUnitKey]?.let { value ->
             TickUnit.valueOf(value)
         } ?: defaultTickUnit
     }
 
-    val lastChartGameIdFlow: Flow<Long?> = data.map { preferences ->
+    override val lastChartGameIdFlow: Flow<Long?> = data.map { preferences ->
         preferences[lastChartGameIdKey]
     }
 
-    suspend fun getUser(): User = userFlow.firstOrNull() ?: User.createInitialUser()
+    override suspend fun getUser(): User = userFlow.firstOrNull() ?: User.createInitialUser()
 
-    suspend fun getCommissionRate(): Double = commissionRateFlow.firstOrNull() ?: DEFAULT_COMMISSION_RATE
+    override suspend fun getCommissionRate(): Double = commissionRateFlow.firstOrNull() ?: DEFAULT_COMMISSION_RATE
 
-    suspend fun getTotalTurn(): Int = totalTurnFlow.firstOrNull() ?: DEFAULT_TOTAL_TURN
+    override suspend fun getTotalTurn(): Int = totalTurnFlow.firstOrNull() ?: DEFAULT_TOTAL_TURN
 
-    suspend fun getTickUnit(): TickUnit = tickUnitFlow.firstOrNull() ?: defaultTickUnit
+    override suspend fun getTickUnit(): TickUnit = tickUnitFlow.firstOrNull() ?: defaultTickUnit
 
     // Data 레이어 전용 User 값-객체를 만들지 고민중
-    suspend fun updateUser(user: User) {
+    override suspend fun updateUser(user: User) {
         appPreference.edit { preferences ->
             preferences[userKey] = Json.encodeToString(user)
         }
     }
 
-    suspend fun updateCommissionRate(rate: Double) {
+    override suspend fun updateCommissionRate(rate: Double) {
         appPreference.edit { preferences ->
             preferences[commissionRateKey] = rate
         }
     }
 
-    suspend fun updateTotalTurn(turn: Int) {
+    override suspend fun updateTotalTurn(turn: Int) {
         appPreference.edit { preferences ->
             preferences[totalTurnKey] = turn
         }
     }
 
-    suspend fun updateTickUnit(tickUnit: TickUnit) {
+    override suspend fun updateTickUnit(tickUnit: TickUnit) {
         appPreference.edit { preferences ->
             preferences[tickUnitKey] = tickUnit.name
         }
     }
 
-    suspend fun clearLastChartGameId() {
+    override suspend fun clearLastChartGameId() {
         appPreference.edit { preferences ->
             preferences.remove(lastChartGameIdKey)
         }
     }
 
-    suspend fun updateLastChartGameId(gameId: Long) {
+    override suspend fun updateLastChartGameId(gameId: Long) {
         appPreference.edit { preferences ->
             preferences[lastChartGameIdKey] = gameId
         }

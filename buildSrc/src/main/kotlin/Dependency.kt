@@ -14,6 +14,12 @@ object Dependency {
         const val PAGING_RUNTIME = "androidx.paging:paging-runtime:${Version.PAGING}"
         const val PAGING_COMMON = "androidx.paging:paging-common:${Version.PAGING}"
 
+        const val TURBINE = "app.cash.turbine:turbine:${Version.TURBINE}"
+        const val MOCKK = "io.mockk:mockk:${Version.MOCKK}"
+        const val COROUTINE_TEST =
+            "org.jetbrains.kotlinx:kotlinx-coroutines-test:" +
+                    PlatformIndependent.Version.KOTLINX_COROUTINSE
+
         object Version {
             const val HILT = "2.44"
             const val ANDROIDX_CORE = "1.9.0"
@@ -24,6 +30,10 @@ object Dependency {
             const val KOTOIN_SERIALIZATION_JSON = "1.5.0"
 
             const val PAGING = "3.3.0"
+
+            const val TURBINE = "1.1.0"
+            const val MOCKK = "1.12.0"
+
         }
     }
 

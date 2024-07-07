@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -46,7 +47,12 @@ fun HomeScreenRoute(
     navigateToChartGameHistory: () -> Unit
 ) {
     val screenState by viewModel.screenState.collectAsState()
-    HomeScreen(screenState = screenState)
+    HomeScreen(
+        screenState = screenState,
+        onUserAction = { userAction ->
+            viewModel.onUserAction(userAction = userAction)
+        }
+    )
 
     HomeScreenEventHandler(
         screenEvent = viewModel.screenEvent,
@@ -57,7 +63,15 @@ fun HomeScreenRoute(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(screenState: HomeState) {
+fun HomeScreen(
+    screenState: HomeState,
+    onUserAction: (HomeScreenUserAction) -> Unit
+) {
+    val dismissDialog = remember {
+        {
+            onUserAction(HomeScreenUserAction.DismissDialog)
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -68,7 +82,7 @@ fun HomeScreen(screenState: HomeState) {
                     DefaultIconButton(
                         imageVector = ChartTrainerIcons.ChartGameList,
                         onClick = {
-                            screenState.onUserAction(HomeScreenUserAction.ClickChartGameHistory)
+                            onUserAction(HomeScreenUserAction.ClickChartGameHistory)
                         }
                     )
                 }
@@ -101,13 +115,13 @@ fun HomeScreen(screenState: HomeState) {
                         .padding(bottom = Dimen.defaultLayoutSidePadding),
                     settingInfoUi = screenState.settingInfoUi,
                     onClickCommissionRate = {
-                        screenState.onUserAction(HomeScreenUserAction.ClickCommissionRate)
+                        onUserAction(HomeScreenUserAction.ClickCommissionRate)
                     },
                     onClickTotalTurn = {
-                        screenState.onUserAction(HomeScreenUserAction.ClickTotalTurn)
+                        onUserAction(HomeScreenUserAction.ClickTotalTurn)
                     },
                     onClickTickUnit = {
-                        screenState.onUserAction(HomeScreenUserAction.ClickTickUnit)
+                        onUserAction(HomeScreenUserAction.ClickTickUnit)
                     }
                 )
 
@@ -115,13 +129,21 @@ fun HomeScreen(screenState: HomeState) {
                     modifier = Modifier.fillMaxWidth(),
                     homeBottomButtonUi = screenState.bottomButtonState,
                     onClickStartChartGame = {
-                        screenState.onUserAction(HomeScreenUserAction.ClickStartChartGame)
+                        onUserAction(HomeScreenUserAction.ClickStartChartGame)
                     },
-                    onClickKeepGoingChartGame = {
-                        screenState.onUserAction(HomeScreenUserAction.ClickKeepGoingChartGame)
+                    onClickKeepGoingChartGame = { id ->
+                        onUserAction(
+                            HomeScreenUserAction.ClickKeepGoingChartGame(
+                                lastChartGameId = id
+                            )
+                        )
                     },
-                    onClickQuitInProgressChartGame = {
-                        screenState.onUserAction(HomeScreenUserAction.ClickQuitInProgressChartGame)
+                    onClickQuitInProgressChartGame = { id ->
+                        onUserAction(
+                            HomeScreenUserAction.ClickQuitInProgressChartGame(
+                                lastChartGameId = id
+                            )
+                        )
                     }
                 )
             }
@@ -130,24 +152,42 @@ fun HomeScreen(screenState: HomeState) {
                 is SettingDialogState.CommissionRate -> {
                     CommissionRateSettingDialog(
                         initialValue = data.initialValue,
-                        onDismissRequest = data.onDismissRequest,
-                        onDone = data.onDone
+                        onDismissRequest = dismissDialog,
+                        onDone = { newValue ->
+                            onUserAction(
+                                HomeScreenUserAction.UpdateCommissionRate(
+                                    newValue = newValue
+                                )
+                            )
+                        }
                     )
                 }
 
                 is SettingDialogState.TotalTurn -> {
                     TotalTurnSettingDialog(
                         initialValue = data.initialValue,
-                        onDismissRequest = data.onDismissRequest,
-                        onDone = data.onDone
+                        onDismissRequest = dismissDialog,
+                        onDone = { newValue ->
+                            onUserAction(
+                                HomeScreenUserAction.UpdateTotalTurn(
+                                    newValue = newValue
+                                )
+                            )
+                        }
                     )
                 }
 
                 is SettingDialogState.TickUnit -> {
                     TickUnitSettingModelBottomSheet(
                         tickUnit = data.initialTickUnit,
-                        onDone = data.onDone,
-                        onDismissRequest = data.onDismissRequest
+                        onDismissRequest = dismissDialog,
+                        onDone = { newValue ->
+                            onUserAction(
+                                HomeScreenUserAction.UpdateTickUnit(
+                                    newValue = newValue
+                                )
+                            )
+                        }
                     )
                 }
 

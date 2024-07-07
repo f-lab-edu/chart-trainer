@@ -25,9 +25,9 @@ import com.yessorae.presentation.ui.screen.home.model.HomeBottomButtonUi
 fun HomeBottomButton(
     modifier: Modifier = Modifier,
     homeBottomButtonUi: HomeBottomButtonUi,
-    onClickStartChartGame: () -> Unit,
-    onClickKeepGoingChartGame: () -> Unit,
-    onClickQuitInProgressChartGame: () -> Unit
+    onClickQuitInProgressChartGame: (Long) -> Unit,
+    onClickKeepGoingChartGame: (Long) -> Unit,
+    onClickStartChartGame: () -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -45,59 +45,67 @@ fun HomeBottomButton(
                 )
             }
 
-            is HomeBottomButtonUi.Success -> {
-                if (homeBottomButtonUi.hasOnGoingCharGame) {
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+            is HomeBottomButtonUi.KeepGoingGameOrQuit -> {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.home_there_is_on_going_game),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = StockUpColor
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = stringResource(id = R.string.home_there_is_on_going_game),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = StockUpColor
+                        DefaultTextButton(
+                            text = stringResource(id = R.string.home_quit_game),
+                            onClick = {
+                                onClickQuitInProgressChartGame(
+                                    homeBottomButtonUi.clickData.lastChartGameId
+                                )
+                            },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.textButtonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                                contentColor = StockUpColor
+                            ),
+                            shape = MaterialTheme.shapes.small
                         )
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            DefaultTextButton(
-                                text = stringResource(id = R.string.home_quit_game),
-                                onClick = onClickQuitInProgressChartGame,
-                                modifier = Modifier.weight(1f),
-                                colors = ButtonDefaults.textButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                                    contentColor = StockUpColor
-                                ),
-                                shape = MaterialTheme.shapes.small
-                            )
-
-                            DefaultTextButton(
-                                text = stringResource(id = R.string.home_continue_game),
-                                onClick = onClickKeepGoingChartGame,
-                                modifier = Modifier.weight(1f),
-                                colors = ButtonDefaults.textButtonColors(
-                                    containerColor = StockUpColor,
-                                    contentColor = TradeTextColor
-                                ),
-                                shape = MaterialTheme.shapes.small
-                            )
-                        }
+                        DefaultTextButton(
+                            text = stringResource(id = R.string.home_continue_game),
+                            onClick = {
+                                onClickKeepGoingChartGame(
+                                    homeBottomButtonUi.clickData.lastChartGameId
+                                )
+                            },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.textButtonColors(
+                                containerColor = StockUpColor,
+                                contentColor = TradeTextColor
+                            ),
+                            shape = MaterialTheme.shapes.small
+                        )
                     }
-                } else {
-                    DefaultTextButton(
-                        text = stringResource(id = R.string.home_start_game),
-                        onClick = onClickStartChartGame,
-                        modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.textButtonColors(
-                            containerColor = StockUpColor,
-                            contentColor = TradeTextColor
-                        ),
-                        shape = MaterialTheme.shapes.small
-                    )
                 }
+            }
+
+            is HomeBottomButtonUi.NewGame -> {
+                DefaultTextButton(
+                    text = stringResource(id = R.string.home_start_game),
+                    onClick = onClickStartChartGame,
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.textButtonColors(
+                        containerColor = StockUpColor,
+                        contentColor = TradeTextColor
+                    ),
+                    shape = MaterialTheme.shapes.small
+                )
             }
         }
     }
@@ -107,12 +115,10 @@ fun HomeBottomButton(
 @Composable
 private fun HomeBottomOneWayButtonPreview() {
     HomeBottomButton(
-        homeBottomButtonUi = HomeBottomButtonUi.Success(
-            hasOnGoingCharGame = false
-        ),
-        onClickStartChartGame = {},
+        homeBottomButtonUi = HomeBottomButtonUi.NewGame,
+        onClickQuitInProgressChartGame = {},
         onClickKeepGoingChartGame = {},
-        onClickQuitInProgressChartGame = {}
+        onClickStartChartGame = {}
     )
 }
 
@@ -120,12 +126,14 @@ private fun HomeBottomOneWayButtonPreview() {
 @Composable
 private fun HomeBottomTwoWayButtonPreview() {
     HomeBottomButton(
-        homeBottomButtonUi = HomeBottomButtonUi.Success(
-            hasOnGoingCharGame = true
+        homeBottomButtonUi = HomeBottomButtonUi.KeepGoingGameOrQuit(
+            clickData = HomeBottomButtonUi.KeepGoingGameOrQuit.ClickData(
+                lastChartGameId = 1L
+            )
         ),
-        onClickStartChartGame = {},
+        onClickQuitInProgressChartGame = {},
         onClickKeepGoingChartGame = {},
-        onClickQuitInProgressChartGame = {}
+        onClickStartChartGame = {}
     )
 }
 

@@ -20,8 +20,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun fetchCommissionRate(): Double = appPreference.getCommissionRate()
 
-    override suspend fun updateCommissionRate(rate: Double) =
-        appPreference.updateCommissionRate(rate)
+    override suspend fun updateCommissionRate(rate: Double) = appPreference.updateCommissionRate(rate)
 
     override fun fetchTotalTurnAsFlow(): Flow<Int> = appPreference.totalTurnFlow
 

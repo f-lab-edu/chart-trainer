@@ -53,6 +53,5 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun providePolygonChartApi(retrofit: Retrofit): PolygonChartApi =
-        retrofit.create(PolygonChartApi::class.java)
+    fun providePolygonChartApi(retrofit: Retrofit): PolygonChartApi = retrofit.create(PolygonChartApi::class.java)
 }

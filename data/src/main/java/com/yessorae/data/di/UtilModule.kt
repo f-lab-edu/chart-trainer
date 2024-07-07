@@ -17,9 +17,7 @@ import javax.inject.Singleton
 abstract class UtilModule {
     @Binds
     @Singleton
-    abstract fun bindsRandomChartArgumentGenerator(
-        defaultRandomChartArgumentGenerator: DefaultChartRequestArgumentHelper
-    ): ChartRequestArgumentHelper
+    abstract fun bindsRandomChartArgumentGenerator(defaultRandomChartArgumentGenerator: DefaultChartRequestArgumentHelper): ChartRequestArgumentHelper
 
     @Binds
     @Singleton
@@ -29,7 +27,5 @@ abstract class UtilModule {
 
     @Binds
     @Singleton
-    abstract fun bindsDefaultChartTrainerLogger(
-        chartTrainerLogger: DefaultChartTrainerLoggerImpl
-    ): ChartTrainerLogger
+    abstract fun bindsDefaultChartTrainerLogger(chartTrainerLogger: DefaultChartTrainerLoggerImpl): ChartTrainerLogger
 }

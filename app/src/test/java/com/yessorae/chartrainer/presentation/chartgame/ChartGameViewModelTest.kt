@@ -455,6 +455,21 @@ class ChartGameViewModelTest {
             )
         }
     }
+
+    @Test
+    fun `screenEvent should emit moveToTradeHistory when user click chart game history button`() = runTest {
+        val gameId = 1L
+        viewModel.screenEvent.test {
+            viewModel.handleChartGameScreenUserAction(
+                userAction = ChartGameScreenUserAction.ClickChartGameScreenHistoryButton(gameId = gameId)
+            )
+
+            assertEquals(
+                ChartGameEvent.MoveToTradeHistory(gameId = gameId),
+                awaitItem()
+            )
+        }
+    }
 }
 
 

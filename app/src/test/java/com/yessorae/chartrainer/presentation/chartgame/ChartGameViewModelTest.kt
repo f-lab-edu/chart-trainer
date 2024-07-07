@@ -335,6 +335,7 @@ class ChartGameViewModelTest {
     fun `screenState should not be completed but be ended when user click quit chart game button`() = runTest {
         viewModel.screenState.test {
             val old = awaitItem()
+
             viewModel.handleChartGameScreenUserAction(
                 userAction = ChartGameScreenUserAction.ClickQuitGameButton(gameId = 1L)
             )
@@ -342,6 +343,48 @@ class ChartGameViewModelTest {
             assertEquals(
                 old.copy(
                     isGameEnd = true
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `screenState should show buying trade ui when user click buy button`() = runTest {
+        viewModel.screenState.test {
+            val oldState = awaitItem()
+            val gameId = 1L
+            val currentTurn = 10
+            val ownedStockCount = 10
+            val ownedAverageStockPrice = 500.asMoney()
+            val currentStockPrice = 1000.asMoney()
+
+            viewModel.handleChartGameScreenUserAction(
+                userAction = ChartGameScreenUserAction.ClickBuyButton(
+                    gameId = gameId,
+                    ownedStockCount = ownedStockCount,
+                    ownedAverageStockPrice = ownedAverageStockPrice,
+                    currentBalance = 2900.asMoney(),
+                    currentStockPrice = currentStockPrice,
+                    currentTurn = currentTurn
+                )
+            )
+
+            assertEquals(
+                oldState.copy(
+                    tradeOrderUi = TradeOrderUi.Buy(
+                        showKeyPad = false,
+                        maxAvailableStockCount = 2,
+                        currentStockPrice = currentStockPrice.value,
+                        clickData = TradeOrderUi.Buy.ClickData(
+                            gameId = gameId,
+                            maxAvailableStockCount = 2,
+                            ownedStockCount = ownedStockCount,
+                            ownedAverageStockPrice = ownedAverageStockPrice,
+                            currentStockPrice = currentStockPrice,
+                            currentTurn = currentTurn,
+                        )
+                    )
                 ),
                 awaitItem()
             )

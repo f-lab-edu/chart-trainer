@@ -2,7 +2,6 @@ package com.yessorae.chartrainer.fake.model
 
 import com.yessorae.data.source.network.polygon.model.chart.ChartDto
 import com.yessorae.data.source.network.polygon.model.chart.TickDto
-import java.time.LocalDateTime
 
 fun createChartDto(
     ticker: String,
@@ -44,5 +43,23 @@ fun createTickDto(
         tradingVolume = tradingVolume,
         volumeWeightedAveragePrice = volumeWeightedAveragePrice,
         transactionCount = transactionCount
+    )
+}
+
+/**
+ * 다양한 값이 필요하지 않을 때 간소하게 테스트하기 위한 Factory 함수
+ */
+fun createTickDto(
+    singleValue: Double,
+): TickDto {
+    return TickDto(
+        closePrice = singleValue,
+        maxPrice = singleValue,
+        minPrice = singleValue,
+        openPrice = singleValue,
+        startTimestamp = singleValue.toLong(),
+        tradingVolume = singleValue,
+        volumeWeightedAveragePrice = singleValue,
+        transactionCount = singleValue.toInt()
     )
 }

@@ -20,14 +20,12 @@ import com.yessorae.data.source.ChartNetworkDataSource
 import com.yessorae.data.source.ChartTrainerLocalDBDataSource
 import com.yessorae.data.source.ChartTrainerPreferencesDataSource
 import com.yessorae.data.source.local.database.ChartTrainerLocalDBDataSourceImpl
-import com.yessorae.data.source.local.database.dao.ChartDao
-import com.yessorae.data.source.local.database.dao.ChartGameDao
-import com.yessorae.data.source.local.database.dao.TickDao
-import com.yessorae.data.source.local.database.dao.TradeDao
 import com.yessorae.data.source.network.polygon.PolygonChartNetworkDataSource
-import com.yessorae.data.source.network.polygon.api.PolygonChartApi
-import com.yessorae.domain.common.ChartRequestArgumentHelper
 import com.yessorae.domain.common.ChartTrainerLogger
+import com.yessorae.domain.entity.ChartGame
+import com.yessorae.domain.entity.User
+import com.yessorae.domain.entity.value.Money
+import com.yessorae.domain.entity.value.asMoney
 import com.yessorae.domain.repository.ChartGameRepository
 import com.yessorae.domain.repository.ChartRepository
 import com.yessorae.domain.repository.TradeRepository
@@ -38,12 +36,16 @@ import com.yessorae.domain.usecase.SubscribeChartGameUseCase
 import com.yessorae.domain.usecase.TradeStockUseCase
 import com.yessorae.domain.usecase.UpdateNextTickUseCase
 import com.yessorae.presentation.ui.screen.chartgame.ChartGameViewModel
+import com.yessorae.presentation.ui.screen.chartgame.model.CandleStickChartUi
+import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenState
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenUserAction
+import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -54,18 +56,18 @@ class ChartGameViewModelTest {
     @get:Rule
     val dispatcherRule = MainDispatcherRule(dispatcher)
 
-    private lateinit var polygonChartApi: PolygonChartApi
-    private lateinit var chartGameDao: ChartGameDao
-    private lateinit var chartDao: ChartDao
-    private lateinit var tickDao: TickDao
-    private lateinit var tradeDao: TradeDao
+    // fake
+    private lateinit var polygonChartApi: FakePolygonChartApi
+    private lateinit var chartGameDao: FakeChartGameDao
+    private lateinit var chartDao: FakeChartDao
+    private lateinit var tickDao: FakeTickDao
+    private lateinit var tradeDao: FakeTradeDao
+    private lateinit var chartRequestArgumentHelper: FakeChartRequestArgumentHelper
+    private lateinit var chartTrainerPreferencesDataSource: ChartTrainerPreferencesDataSource
 
-    private lateinit var chartRequestArgumentHelper: ChartRequestArgumentHelper
-
-    // datasource
+    // real datasource
     private lateinit var chartNetworkDataSource: ChartNetworkDataSource
     private lateinit var localDBDataSource: ChartTrainerLocalDBDataSource
-    private lateinit var chartTrainerPreferencesDataSource: ChartTrainerPreferencesDataSource
 
     // repository
     private lateinit var userRepository: UserRepository
@@ -84,32 +86,28 @@ class ChartGameViewModelTest {
 
     private lateinit var viewModel: ChartGameViewModel
 
-    private val testTicks = (1..300).map {
-        createTickDto(
-            closePrice = it.toDouble(),
-            openPrice = it.toDouble(),
-            maxPrice = it.toDouble(),
-            minPrice = it.toDouble(),
-            startTimestamp = it.toLong(),
-            volumeWeightedAveragePrice = it.toDouble(),
-            transactionCount = it
-        )
-    }
-    private val APPLE_TICKER = "AAPL"
-    private val TESLA_TICKER = "TSLA"
+    private val DUMMY_TICKER = "DUMMY"
+    private val DUMMY_TICK_VALUE = 0.0
 
 
-    fun setup(
-        chartApi: PolygonChartApi = FakePolygonChartApi(),
-        randomChartRequestArgumentHelper: ChartRequestArgumentHelper = FakeChartRequestArgumentHelper()
-    ) {
+    @Before
+    fun setup() {
         // api
-        polygonChartApi = chartApi
+        polygonChartApi = FakePolygonChartApi()
+        polygonChartApi.setTickerToDto(
+            ticker = DUMMY_TICKER,
+            dto = createChartDto(
+                ticker = DUMMY_TICKER,
+                ticks = (1..100).map {
+                    createTickDto(singleValue = DUMMY_TICK_VALUE)
+                }
+            )
+        )
 
         // dao
         chartGameDao = FakeChartGameDao()
         tickDao = FakeTickDao()
-        chartDao = FakeChartDao(ticksFlow = (tickDao as FakeTickDao).ticksFlow)
+        chartDao = FakeChartDao(ticksFlow = tickDao.ticksFlow)
         tradeDao = FakeTradeDao()
 
         // datasource
@@ -125,7 +123,8 @@ class ChartGameViewModelTest {
         chartTrainerPreferencesDataSource = FakeChartTrainerPreferencesDataSource()
 
         // helper
-        chartRequestArgumentHelper = randomChartRequestArgumentHelper
+        chartRequestArgumentHelper = FakeChartRequestArgumentHelper()
+        chartRequestArgumentHelper.currentRandomTicker = DUMMY_TICKER
 
         // repository
         userRepository = UserRepositoryImpl(
@@ -192,39 +191,70 @@ class ChartGameViewModelTest {
         )
     }
 
+    fun createUser(
+        balance: Money,
+        winCount: Int = 0,
+        loseCount: Int = 0,
+        averageRateOfProfit: Double = 0.0
+    ) = User(
+        balance = balance,
+        winCount = winCount,
+        loseCount = loseCount,
+        averageRateOfProfit = averageRateOfProfit
+    )
+
     @Test
-    fun chart_is_changed_and_game_is_re_initialized_when_click_new_chart_button() = runTest {
-        // given
-        setup(
-            chartApi = FakePolygonChartApi(
-                tickerToDtoMap = mapOf(
-                    APPLE_TICKER to createChartDto(ticker = APPLE_TICKER, ticks = testTicks),
-                    TESLA_TICKER to createChartDto(ticker = TESLA_TICKER, ticks = testTicks)
-                )
-            ),
-            randomChartRequestArgumentHelper = FakeChartRequestArgumentHelper(
-                getTicker = { callingCount ->
-                    if (callingCount > 0) {
-                        APPLE_TICKER
-                    } else {
-                        TESLA_TICKER
-                    }
+    fun `screenState should show loading when initially`() = runTest {
+        assertEquals(
+            true,
+            viewModel.screenState.value.showLoading
+        )
+    }
+
+    @Test
+    fun `screenState should match with datasource when collect`() = runTest {
+        val appleTicker = "AAPL"
+        val appleTickValue = 1.0
+        val tickListSize = 100
+        val totalTurn = 50
+        val initialBalance = 3000.asMoney()
+        val user = createUser(balance = initialBalance)
+        polygonChartApi.setTickerToDto(
+            ticker = appleTicker,
+            dto = createChartDto(
+                ticker = appleTicker,
+                ticks = (1..tickListSize).map {
+                    createTickDto(singleValue = appleTickValue)
                 }
             )
         )
-        viewModel.screenState.launchIn(this)
-
-        // when
-        viewModel.handleChartGameScreenUserAction(
-            userAction = ChartGameScreenUserAction.ClickNewChartButton(
-                gameId = 1L
-            )
-        )
-
+        chartRequestArgumentHelper.currentRandomTicker = appleTicker
+        chartTrainerPreferencesDataSource.updateUser(user)
+        chartTrainerPreferencesDataSource.updateTotalTurn(totalTurn)
 
         viewModel.screenState.test {
+            val visibleTickListSize = tickListSize - totalTurn
             assertEquals(
-                ...
+                ChartGameScreenState(
+                    currentTurn = ChartGame.START_TURN,
+                    totalTurn = totalTurn,
+                    showLoading = false,
+                    gameProgress = 0.02f,
+                    candleStickChart = CandleStickChartUi(
+                        opening = (1..visibleTickListSize).map { appleTickValue },
+                        closing = (1..visibleTickListSize).map { appleTickValue },
+                        low = (1..visibleTickListSize).map { appleTickValue },
+                        high = (1..visibleTickListSize).map { appleTickValue }
+                    ),
+                    clickData = ChartGameScreenState.ClickData(
+                        // FakeDao 에서 ID 를 1부터 부여함
+                        gameId = 1L,
+                        currentBalance = initialBalance,
+                        currentStockPrice = appleTickValue.asMoney(),
+                        currentTurn = ChartGame.START_TURN,
+                    )
+                ),
+                awaitItem()
             )
         }
     }

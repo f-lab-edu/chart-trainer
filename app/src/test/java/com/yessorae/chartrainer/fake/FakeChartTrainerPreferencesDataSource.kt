@@ -24,8 +24,7 @@ class FakeChartTrainerPreferencesDataSource : ChartTrainerPreferencesDataSource 
     override val lastChartGameIdFlow: Flow<Long?> get() = _lastChartGameIdFlow
 
     override suspend fun getUser(): User = _userFlow.firstOrNull() ?: User.createInitialUser()
-    override suspend fun getCommissionRate(): Double =
-        _commissionRateFlow.firstOrNull() ?: DEFAULT_COMMISSION_RATE
+    override suspend fun getCommissionRate(): Double = _commissionRateFlow.firstOrNull() ?: DEFAULT_COMMISSION_RATE
     override suspend fun getTotalTurn(): Int = _totalTurnFlow.firstOrNull() ?: DEFAULT_TOTAL_TURN
     override suspend fun getTickUnit(): TickUnit = _tickUnitFlow.firstOrNull() ?: defaultTickUnit
 

@@ -58,8 +58,7 @@ class ChartTrainerPreferencesDataSourceImpl @Inject constructor(
 
     override suspend fun getUser(): User = userFlow.firstOrNull() ?: User.createInitialUser()
 
-    override suspend fun getCommissionRate(): Double =
-        commissionRateFlow.firstOrNull() ?: DEFAULT_COMMISSION_RATE
+    override suspend fun getCommissionRate(): Double = commissionRateFlow.firstOrNull() ?: DEFAULT_COMMISSION_RATE
 
     override suspend fun getTotalTurn(): Int = totalTurnFlow.firstOrNull() ?: DEFAULT_TOTAL_TURN
 

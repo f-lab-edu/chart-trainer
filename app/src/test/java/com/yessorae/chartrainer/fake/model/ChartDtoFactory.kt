@@ -2,7 +2,6 @@ package com.yessorae.chartrainer.fake.model
 
 import com.yessorae.data.source.network.polygon.model.chart.ChartDto
 import com.yessorae.data.source.network.polygon.model.chart.TickDto
-import java.time.LocalDateTime
 
 fun createChartDto(
     ticker: String = "AAPL",

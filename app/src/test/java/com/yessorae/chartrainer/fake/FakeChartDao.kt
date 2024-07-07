@@ -23,7 +23,9 @@ class FakeChartDao(
     }
 
     override suspend fun update(entity: ChartEntity) {
-        super.update(entity)
+        items.find { it.id == entity.id }?.let {
+            items[items.indexOf(it)] = entity
+        }
         updateFlow()
     }
 
@@ -32,14 +34,14 @@ class FakeChartDao(
         updateFlow()
     }
 
-    private fun updateFlow() {
-        chartsFlow.value = items
-    }
-
     override suspend fun getChartWithTicks(id: Long): ChartWithTicksEntity {
         return ChartWithTicksEntity(
             chart = getChart(id = id),
             ticks = ticksFlow.value.filter { it.chartId == id }
         )
+    }
+
+    private fun updateFlow() {
+        chartsFlow.value = items
     }
 }

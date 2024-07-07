@@ -18,7 +18,9 @@ class FakeTickDao : FakeBaseDao<TickEntity>(), TickDao {
     }
 
     override suspend fun update(entity: TickEntity) {
-        super.update(entity)
+        items.find { it.id == entity.id }?.let {
+            items[items.indexOf(it)] = entity
+        }
         updateFlow()
     }
 

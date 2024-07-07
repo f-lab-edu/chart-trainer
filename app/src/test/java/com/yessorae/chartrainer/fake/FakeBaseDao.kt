@@ -20,13 +20,6 @@ abstract class FakeBaseDao<T> : BaseDao<T> {
         entities.forEach { update(it) }
     }
 
-    override suspend fun update(entity: T) {
-        val index = items.indexOf(entity)
-        if (index != -1) {
-            items[index] = entity
-        }
-    }
-
     override suspend fun insertOrReplaceAll(entities: List<T>) {
         entities.forEach { insertOrReplace(it) }
     }

@@ -53,7 +53,9 @@ class FakeChartGameDao : FakeBaseDao<ChartGameEntity>(), ChartGameDao {
     }
 
     override suspend fun update(entity: ChartGameEntity) {
-        super.update(entity)
+        items.find { it.id == entity.id }?.let {
+            items[items.indexOf(it)] = entity
+        }
         updateFlow()
     }
 

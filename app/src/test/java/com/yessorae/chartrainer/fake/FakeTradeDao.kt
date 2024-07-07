@@ -18,7 +18,9 @@ class FakeTradeDao : FakeBaseDao<TradeEntity>(), TradeDao {
     }
 
     override suspend fun update(entity: TradeEntity) {
-        super.update(entity)
+        items.find { it.id == entity.id }?.let {
+            items[items.indexOf(it)] = entity
+        }
         updateFlow()
     }
 

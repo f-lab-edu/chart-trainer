@@ -51,8 +51,7 @@ class ChartGameRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun fetchChartGame(gameId: Long): ChartGame =
-        localDataSource.getChartGame(id = gameId).asDomainModel()
+    override suspend fun fetchChartGame(gameId: Long): ChartGame = localDataSource.getChartGame(id = gameId).asDomainModel()
 
     override suspend fun updateChartGame(chartGame: ChartGame): Unit =
         withContext(dispatcher) {
@@ -61,8 +60,7 @@ class ChartGameRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun fetchLastChartGameId(): Flow<Long?> =
-        chartGamePreferencesDataSource.lastChartGameIdFlow
+    override fun fetchLastChartGameId(): Flow<Long?> = chartGamePreferencesDataSource.lastChartGameIdFlow
 
     override suspend fun clearLastChartGameId() {
         chartGamePreferencesDataSource.clearLastChartGameId()

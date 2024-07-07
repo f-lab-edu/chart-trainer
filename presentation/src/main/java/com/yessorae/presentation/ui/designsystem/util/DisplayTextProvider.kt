@@ -38,11 +38,9 @@ fun TradeType.asColor(): Color =
 
 fun Money.asDefaultDisplayText(): String = "%.2f".format(value)
 
-fun Money.asDisplayTotalProfit(): String =
-    (if (value > 0.0) "+" else "-") + "%.2f".format(value.absoluteValue)
+fun Money.asDisplayTotalProfit(): String = (if (value > 0.0) "+" else "-") + "%.2f".format(value.absoluteValue)
 
-fun Double.asSignedDisplayText(): String =
-    (if (this > 0f) "+" else "-") + "%.2f".format(this.absoluteValue)
+fun Double.asSignedDisplayText(): String = (if (this > 0f) "+" else "-") + "%.2f".format(this.absoluteValue)
 
 fun getDisplayDateRangeText(
     startDate: LocalDateTime?,

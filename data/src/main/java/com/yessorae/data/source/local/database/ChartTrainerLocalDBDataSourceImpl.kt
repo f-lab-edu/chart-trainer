@@ -20,17 +20,13 @@ class ChartTrainerLocalDBDataSourceImpl @Inject constructor(
     private val tradeDao: TradeDao,
     private val tickDao: TickDao
 ) : ChartTrainerLocalDBDataSource {
-    override fun getChartGameAsFlow(id: Long): Flow<ChartGameEntity> =
-        chartGameDao.getChartGameAsFlow(id = id)
+    override fun getChartGameAsFlow(id: Long): Flow<ChartGameEntity> = chartGameDao.getChartGameAsFlow(id = id)
 
-    override fun getChartGamePagingSource(): PagingSource<Int, ChartGameEntity> =
-        chartGameDao.getChartGamePagingSource()
+    override fun getChartGamePagingSource(): PagingSource<Int, ChartGameEntity> = chartGameDao.getChartGamePagingSource()
 
-    override suspend fun getChartGame(id: Long): ChartGameEntity =
-        chartGameDao.getChartGame(id = id)
+    override suspend fun getChartGame(id: Long): ChartGameEntity = chartGameDao.getChartGame(id = id)
 
-    override suspend fun getTrades(gameId: Long): List<TradeEntity> =
-        tradeDao.getTrades(gameId = gameId)
+    override suspend fun getTrades(gameId: Long): List<TradeEntity> = tradeDao.getTrades(gameId = gameId)
 
     override suspend fun getChartWithTicks(gameId: Long): ChartWithTicksEntity {
         val chartId = chartGameDao.getChartId(gameId = gameId)
@@ -46,8 +42,7 @@ class ChartTrainerLocalDBDataSourceImpl @Inject constructor(
 
     override suspend fun insertTrade(entity: TradeEntity): Long = tradeDao.insert(entity = entity)
 
-    override suspend fun insertTicks(entities: List<TickEntity>) =
-        tickDao.insertAll(entities = entities)
+    override suspend fun insertTicks(entities: List<TickEntity>) = tickDao.insertAll(entities = entities)
 
     override suspend fun updateChartGame(entity: ChartGameEntity) =
         chartGameDao.update(

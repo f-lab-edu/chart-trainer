@@ -17,7 +17,7 @@ class FakeChartDao(
     }
 
     override suspend fun insert(entity: ChartEntity): Long {
-        val id = super.insert(entity)
+        val id = super.insert(entity.copy(id = currentId))
         updateFlow()
         return id
     }

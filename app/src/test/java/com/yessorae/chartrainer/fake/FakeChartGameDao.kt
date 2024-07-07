@@ -6,16 +6,16 @@ import com.yessorae.data.source.local.database.dao.ChartGameDao
 import com.yessorae.data.source.local.database.model.ChartGameEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class FakeChartGameDao : FakeBaseDao<ChartGameEntity>(), ChartGameDao {
     private val fakeChartGameTable = MutableStateFlow<List<ChartGameEntity>>(emptyList())
 
     override fun getChartGameAsFlow(id: Long): Flow<ChartGameEntity> {
-        return MutableStateFlow(
-            fakeChartGameTable.value.find {
-                it.id == id
-            } ?: throw IllegalArgumentException("ChartGame not found")
-        )
+        return fakeChartGameTable.map { list ->
+            list.find { it.id == id } ?: throw IllegalArgumentException("ChartGame not found")
+        }
     }
 
     override suspend fun getChartGame(id: Long): ChartGameEntity {
@@ -47,7 +47,7 @@ class FakeChartGameDao : FakeBaseDao<ChartGameEntity>(), ChartGameDao {
     }
 
     override suspend fun insert(entity: ChartGameEntity): Long {
-        val id = super.insert(entity)
+        val id = super.insert(entity.copy(id = currentId))
         updateFlow()
         return id
     }

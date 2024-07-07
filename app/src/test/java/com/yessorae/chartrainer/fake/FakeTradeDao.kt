@@ -12,7 +12,7 @@ class FakeTradeDao : FakeBaseDao<TradeEntity>(), TradeDao {
     }
 
     override suspend fun insert(entity: TradeEntity): Long {
-        val id = super.insert(entity)
+        val id = super.insert(entity.copy(id = currentId))
         updateFlow()
         return id
     }

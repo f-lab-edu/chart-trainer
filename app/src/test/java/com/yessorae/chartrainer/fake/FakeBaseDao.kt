@@ -4,7 +4,8 @@ import com.yessorae.data.source.local.database.dao.BaseDao
 
 abstract class FakeBaseDao<T> : BaseDao<T> {
     protected val items = mutableListOf<T>()
-    private var currentId = 1L
+    var currentId = 1L
+        private set
 
     override suspend fun insertAll(entities: List<T>) {
         entities.forEach { insert(it) }

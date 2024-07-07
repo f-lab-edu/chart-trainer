@@ -30,8 +30,7 @@ object DatabaseModule {
     fun providesChartDao(database: ChartTrainerDatabase): ChartDao = database.getChartDao()
 
     @Provides
-    fun provideChartGameDao(database: ChartTrainerDatabase): ChartGameDao =
-        database.getChartGameDao()
+    fun provideChartGameDao(database: ChartTrainerDatabase): ChartGameDao = database.getChartGameDao()
 
     @Provides
     fun provideTickDao(database: ChartTrainerDatabase): TickDao = database.getTickDao()

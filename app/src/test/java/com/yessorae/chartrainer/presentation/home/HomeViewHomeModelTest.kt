@@ -35,19 +35,20 @@ import com.yessorae.presentation.ui.screen.home.model.HomeScreenEvent
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenUserAction
 import com.yessorae.presentation.ui.screen.home.model.SettingDialogState
 import junit.framework.TestCase.assertEquals
-import kotlin.random.Random
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.random.Random
 
 class HomeViewHomeModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = UnconfinedTestDispatcher()
 
-    @get:Rule
+    @JvmField
+    @Rule
     val dispatcherRule = MainDispatcherRule(dispatcher)
 
     // dao
@@ -131,339 +132,315 @@ class HomeViewHomeModelTest {
         )
     }
 
-//    @Test
-//    fun initiate_state_is_loading() = runTest {
-//        viewModel.screenState.test {
-//            assertEquals(
-//                createHomeState(
-//                    screenLoading = true,
-//                    error = false
-//                ),
-//                awaitItem()
-//            )
-//        }
-//    }
+    @Test
+    fun `initial state should be loading`() = runTest {
+        assertEquals(
+            createHomeState(
+                screenLoading = true,
+                error = false
+            ),
+            viewModel.screenState.value
+        )
+    }
+
 
     @Test
-    fun test_datasource_data_to_ui_state_mapping() =
-        runTest {
-            chartTrainerPreferencesDataSource.apply {
-                updateUser(
-                    user = User(
-                        balance = 1000.asMoney(),
-                        winCount = 99,
-                        loseCount = 1,
-                        averageRateOfProfit = 0.99
-                    )
+    fun `state should match with datasource when success`() = runTest {
+        chartTrainerPreferencesDataSource.apply {
+            updateUser(
+                user = User(
+                    balance = 1000.asMoney(),
+                    winCount = 99,
+                    loseCount = 1,
+                    averageRateOfProfit = 0.99
                 )
-                updateLastChartGameId(gameId = 1L)
-                updateTickUnit(tickUnit = TickUnit.HOUR)
-                updateTotalTurn(turn = 1)
-                updateCommissionRate(rate = 0.2)
-            }
-
-            viewModel.screenState.test {
-                assertEquals(
-                    createHomeState(
-                        userInfoUi = createUserInfoUi(
-                            currentBalance = 1000.asMoney(),
-                            winCount = 99,
-                            loseCount = 1,
-                            averageRateOfProfit = 0.99f,
-                            rateOfWinning = 0.99f,
-                            rateOfLosing = 0.01f
-                        ),
-                        settingInfoUi = createSettingInfoUi(
-                            commissionRate = 0.2f,
-                            totalTurn = 1,
-                            tickUnit = TickUnit.HOUR
-                        ),
-                        bottomButtonState = HomeBottomButtonUi.KeepGoingGameOrQuit(
-                            clickData = HomeBottomButtonUi.KeepGoingGameOrQuit.ClickData(
-                                lastChartGameId = 1L
-                            )
-                        ),
-                        screenLoading = false,
-                        error = false
-                    ),
-                    awaitItem()
-                )
-            }
+            )
+            updateLastChartGameId(gameId = 1L)
+            updateTickUnit(tickUnit = TickUnit.HOUR)
+            updateTotalTurn(turn = 1)
+            updateCommissionRate(rate = 0.2)
         }
 
-    @Test
-    fun rate_bar_is_shown_when_has_play_history() {
-        createUserInfoUi()
+        viewModel.screenState.test {
+            assertEquals(
+                createHomeState(
+                    userInfoUi = createUserInfoUi(
+                        currentBalance = 1000.asMoney(),
+                        winCount = 99,
+                        loseCount = 1,
+                        averageRateOfProfit = 0.99f,
+                        rateOfWinning = 0.99f,
+                        rateOfLosing = 0.01f
+                    ),
+                    settingInfoUi = createSettingInfoUi(
+                        commissionRate = 0.2f,
+                        totalTurn = 1,
+                        tickUnit = TickUnit.HOUR
+                    ),
+                    bottomButtonState = HomeBottomButtonUi.KeepGoingGameOrQuit(
+                        clickData = HomeBottomButtonUi.KeepGoingGameOrQuit.ClickData(
+                            lastChartGameId = 1L
+                        )
+                    ),
+                    screenLoading = false,
+                    error = false
+                ),
+                awaitItem()
+            )
+        }
     }
 
     @Test
-    fun test_bottom_button_state_is_keep_going_game_or_quit_when_last_chart_game_id_is_not_null() =
-        runTest {
-            val lastChartGameId = 1L
-            chartTrainerPreferencesDataSource.updateLastChartGameId(lastChartGameId)
+    fun `bottomButtonState should keepGoingGame or quit when lastChartGameId has value`() = runTest {
+        val lastChartGameId = 1L
+        chartTrainerPreferencesDataSource.updateLastChartGameId(lastChartGameId)
 
-            viewModel.screenState.test {
-                assertEquals(
-                    HomeBottomButtonUi.KeepGoingGameOrQuit(
-                        clickData = HomeBottomButtonUi.KeepGoingGameOrQuit.ClickData(
-                            lastChartGameId = lastChartGameId
-                        )
-                    ),
-                    awaitItem().bottomButtonState
-                )
-            }
-        }
-
-    @Test
-    fun test_bottom_button_state_is_new_game_when_last_chart_game_id_is_null() =
-        runTest {
-            chartTrainerPreferencesDataSource.clearLastChartGameId()
-
-            viewModel.screenState.test {
-                assertEquals(
-                    HomeBottomButtonUi.NewGame,
-                    awaitItem().bottomButtonState
-                )
-            }
-        }
-
-    @Test
-    fun test_navigation_to_new_chart_game_when_click_start_chart_game() =
-        runTest {
-            viewModel.screenEvent.test {
-                viewModel.onUserAction(userAction = HomeScreenUserAction.ClickStartChartGame)
-
-                assertEquals(
-                    HomeScreenEvent.NavigateToChartGameScreen(chartGameId = null),
-                    awaitItem()
-                )
-            }
-        }
-
-    @Test
-    fun test_navigation_to_existing_chart_game_when_click_keep_going_chart_game() =
-        runTest {
-            viewModel.screenEvent.test {
-                viewModel.onUserAction(
-                    userAction = HomeScreenUserAction.ClickKeepGoingChartGame(
-                        lastChartGameId = 1L
+        viewModel.screenState.test {
+            assertEquals(
+                HomeBottomButtonUi.KeepGoingGameOrQuit(
+                    clickData = HomeBottomButtonUi.KeepGoingGameOrQuit.ClickData(
+                        lastChartGameId = lastChartGameId
                     )
-                )
-
-                assertEquals(
-                    HomeScreenEvent.NavigateToChartGameScreen(chartGameId = 1L),
-                    awaitItem()
-                )
-            }
+                ),
+                awaitItem().bottomButtonState
+            )
         }
+    }
 
     @Test
-    fun test_bottom_button_state_is_new_game_when_click_quit_in_progress_chart_game() =
-        runTest {
+    fun `bottomButtonState should be newGame when lastChartGameId is cleared`() = runTest {
+        chartTrainerPreferencesDataSource.clearLastChartGameId()
+
+        viewModel.screenState.test {
+            assertEquals(
+                HomeBottomButtonUi.NewGame,
+                awaitItem().bottomButtonState
+            )
+        }
+    }
+
+    @Test
+    fun `screeEvent should emit navigateToChartGameScreen when user click start chart game button`() = runTest {
+        viewModel.screenEvent.test {
+            viewModel.onUserAction(userAction = HomeScreenUserAction.ClickStartChartGame)
+
+            assertEquals(
+                HomeScreenEvent.NavigateToChartGameScreen(chartGameId = null),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `screenEvent should emit navigateToChartGameScreen with value when user click keep going chart game button`() = runTest {
+        viewModel.screenEvent.test {
             viewModel.onUserAction(
-                userAction = HomeScreenUserAction.ClickQuitInProgressChartGame(
+                userAction = HomeScreenUserAction.ClickKeepGoingChartGame(
                     lastChartGameId = 1L
                 )
             )
 
-            viewModel.screenState.test {
-                assertEquals(
-                    HomeBottomButtonUi.NewGame,
-                    awaitItem().bottomButtonState
-                )
-            }
+            assertEquals(
+                HomeScreenEvent.NavigateToChartGameScreen(chartGameId = 1L),
+                awaitItem()
+            )
         }
+    }
 
     @Test
-    fun test_commission_rate_setting_dialog_is_shown_when_click_commission_rate() =
-        runTest {
-            viewModel.onUserAction(userAction = HomeScreenUserAction.ClickCommissionRate)
+    fun `bottomButtonState should be newGame when user click quit in progress chart game`() = runTest {
+        viewModel.onUserAction(
+            userAction = HomeScreenUserAction.ClickQuitInProgressChartGame(
+                lastChartGameId = 1L
+            )
+        )
 
-            viewModel.screenState.test {
-                assertEquals(
-                    SettingDialogState.CommissionRate(initialValue = ""),
-                    awaitItem().settingDialogState
-                )
-            }
+        viewModel.screenState.test {
+            assertEquals(
+                HomeBottomButtonUi.NewGame,
+                awaitItem().bottomButtonState
+            )
         }
+    }
 
     @Test
-    fun test_commission_rate_ui_is_updated_when_update_with_valid_value() =
-        runTest {
+    fun `settingDialogState should be commissionRate when user click commission rate`() = runTest {
+        viewModel.onUserAction(userAction = HomeScreenUserAction.ClickCommissionRate)
+
+        viewModel.screenState.test {
+            assertEquals(
+                SettingDialogState.CommissionRate(initialValue = ""),
+                awaitItem().settingDialogState
+            )
+        }
+    }
+
+    @Test
+    fun `settingInfoUi should be updated when user update commission rate with valid value`() = runTest {
+        viewModel.onUserAction(
+            userAction = HomeScreenUserAction.UpdateCommissionRate("123")
+        )
+
+        viewModel.screenState.test {
+            assertEquals(
+                viewModel.screenState.value.settingInfoUi.copy(
+                    commissionRate = 0.123f
+                ),
+                awaitItem().settingInfoUi
+            )
+        }
+    }
+
+    @Test
+    fun `screenEvent should emit commissionRateSettingError when user update commission rate with invalid value`() = runTest {
+        viewModel.screenEvent.test {
             viewModel.onUserAction(
-                userAction = HomeScreenUserAction.UpdateCommissionRate("123")
+                userAction = HomeScreenUserAction.UpdateCommissionRate("invalid number")
             )
 
-            viewModel.screenState.test {
-                assertEquals(
-                    viewModel.screenState.value.settingInfoUi.copy(
-                        commissionRate = 0.123f
-                    ),
-                    awaitItem().settingInfoUi
-                )
-            }
+            assertEquals(
+                HomeScreenEvent.CommissionRateSettingError,
+                awaitItem()
+            )
         }
+    }
 
     @Test
-    fun test_commission_rate_setting_error_is_shown_when_update_with_invalid_value() =
-        runTest {
-            viewModel.screenEvent.test {
-                viewModel.onUserAction(
-                    userAction = HomeScreenUserAction.UpdateCommissionRate("invalid number")
-                )
+    fun `settingDialogState should be totalTurn when user click total turn`() = runTest {
+        viewModel.onUserAction(
+            userAction = HomeScreenUserAction.ClickTotalTurn
+        )
 
-                assertEquals(
-                    HomeScreenEvent.CommissionRateSettingError,
-                    awaitItem()
-                )
-            }
+        viewModel.screenState.test {
+            assertEquals(
+                SettingDialogState.TotalTurn(initialValue = ""),
+                awaitItem().settingDialogState
+            )
         }
+    }
 
     @Test
-    fun test_total_turn_setting_dialog_is_shown_when_click_total_turn() =
-        runTest {
+    fun `settingInfoUi should be updated when user update total turn with valid value`() = runTest {
+        viewModel.onUserAction(
+            userAction = HomeScreenUserAction.UpdateTotalTurn("60")
+        )
+
+        viewModel.screenState.test {
+            assertEquals(
+                viewModel.screenState.value.settingInfoUi.copy(
+                    totalTurn = 60
+                ),
+                awaitItem().settingInfoUi
+            )
+        }
+    }
+
+    @Test
+    fun `screenEvent should emit totalTurnSettingError when user update total turn with not a number value`() = runTest {
+        viewModel.screenEvent.test {
             viewModel.onUserAction(
-                userAction = HomeScreenUserAction.ClickTotalTurn
+                userAction = HomeScreenUserAction.UpdateTotalTurn("not number")
             )
 
-            viewModel.screenState.test {
-                assertEquals(
-                    SettingDialogState.TotalTurn(initialValue = ""),
-                    awaitItem().settingDialogState
-                )
-            }
+            assertEquals(
+                HomeScreenEvent.TotalTurnSettingError,
+                awaitItem()
+            )
         }
+    }
 
     @Test
-    fun test_total_turn_ui_is_updated_when_update_with_valid_value() =
-        runTest {
+    fun `screenEvent should emit totalTurnSettingError when user update total turn with value smaller minimum`() = runTest {
+        val invalidValue = Random.nextInt(until = MIN_TOTAL_TURN)
+
+        viewModel.screenEvent.test {
             viewModel.onUserAction(
-                userAction = HomeScreenUserAction.UpdateTotalTurn("60")
+                userAction = HomeScreenUserAction.UpdateTotalTurn("$invalidValue")
             )
 
-            viewModel.screenState.test {
-                assertEquals(
-                    viewModel.screenState.value.settingInfoUi.copy(
-                        totalTurn = 60
-                    ),
-                    awaitItem().settingInfoUi
-                )
-            }
+            assertEquals(
+                HomeScreenEvent.TotalTurnSettingError,
+                awaitItem()
+            )
         }
+    }
 
     @Test
-    fun test_total_turn_setting_error_is_shown_when_update_with_not_number_value() =
-        runTest {
-            viewModel.screenEvent.test {
-                viewModel.onUserAction(
-                    userAction = HomeScreenUserAction.UpdateTotalTurn("not number")
-                )
+    fun `screenEvent should emit totalTurnSettingError when user update total turn with value bigger than maximum`() = runTest {
+        val invalidValue = Random.nextInt(from = MAX_TOTAL_TURN + 1, until = Int.MAX_VALUE)
 
-                assertEquals(
-                    HomeScreenEvent.TotalTurnSettingError,
-                    awaitItem()
-                )
-            }
-        }
-
-    @Test
-    fun test_total_turn_setting_error_is_shown_when_update_with_smaller_than_min_value() =
-        runTest {
-            val invalidValue = Random.nextInt(until = MIN_TOTAL_TURN)
-
-            viewModel.screenEvent.test {
-                viewModel.onUserAction(
-                    userAction = HomeScreenUserAction.UpdateTotalTurn("$invalidValue")
-                )
-
-                assertEquals(
-                    HomeScreenEvent.TotalTurnSettingError,
-                    awaitItem()
-                )
-            }
-        }
-
-    @Test
-    fun test_total_turn_setting_error_is_shown_when_update_with_bigger_than_max_value() =
-        runTest {
-            val invalidValue = Random.nextInt(from = MAX_TOTAL_TURN + 1, until = Int.MAX_VALUE)
-
-            viewModel.screenEvent.test {
-                viewModel.onUserAction(
-                    userAction = HomeScreenUserAction.UpdateTotalTurn("$invalidValue")
-                )
-
-                assertEquals(
-                    HomeScreenEvent.TotalTurnSettingError,
-                    awaitItem()
-                )
-            }
-        }
-
-    @Test
-    fun test_tick_unit_setting_dialog_is_shown_when_click_tick_unit() =
-        runTest {
-            val existingValue = viewModel.screenState.value.settingInfoUi.tickUnit
+        viewModel.screenEvent.test {
             viewModel.onUserAction(
-                userAction = HomeScreenUserAction.ClickTickUnit
+                userAction = HomeScreenUserAction.UpdateTotalTurn("$invalidValue")
             )
 
-            viewModel.screenState.test {
-                assertEquals(
-                    SettingDialogState.TickUnit(
-                        initialTickUnit = existingValue
-                    ),
-                    awaitItem().settingDialogState
-                )
-            }
+            assertEquals(
+                HomeScreenEvent.TotalTurnSettingError,
+                awaitItem()
+            )
         }
+    }
 
     @Test
-    fun test_tick_unit_ui_is_updated_when_click_update_tick_unit() =
-        runTest {
+    fun `settingDialogState should be tickUnit when user click tick unit`() = runTest {
+        val existingValue = viewModel.screenState.value.settingInfoUi.tickUnit
+        viewModel.onUserAction(
+            userAction = HomeScreenUserAction.ClickTickUnit
+        )
+
+        viewModel.screenState.test {
+            assertEquals(
+                SettingDialogState.TickUnit(
+                    initialTickUnit = existingValue
+                ),
+                awaitItem().settingDialogState
+            )
+        }
+    }
+
+    @Test
+    fun `settingInfoUi should be updated when user update tick unit`() = runTest {
+        viewModel.onUserAction(
+            userAction = HomeScreenUserAction.UpdateTickUnit(
+                newValue = TickUnit.HOUR
+            )
+        )
+
+        viewModel.screenState.test {
+            assertEquals(
+                viewModel.screenState.value.settingInfoUi.copy(
+                    tickUnit = TickUnit.HOUR
+                ),
+                awaitItem().settingInfoUi
+            )
+        }
+    }
+
+    @Test
+    fun `screenEvent should emit navigateToChartGameHistoryScreen when user click chart game history button`() = runTest {
+        viewModel.screenEvent.test {
             viewModel.onUserAction(
-                userAction = HomeScreenUserAction.UpdateTickUnit(
-                    newValue = TickUnit.HOUR
-                )
+                userAction = HomeScreenUserAction.ClickChartGameHistory
             )
 
-            viewModel.screenState.test {
-                assertEquals(
-                    viewModel.screenState.value.settingInfoUi.copy(
-                        tickUnit = TickUnit.HOUR
-                    ),
-                    awaitItem().settingInfoUi
-                )
-            }
-        }
-
-    @Test
-    fun test_navigation_to_chart_game_history_when_click_chart_game_history_button() =
-        runTest {
-            viewModel.screenEvent.test {
-                viewModel.onUserAction(
-                    userAction = HomeScreenUserAction.ClickChartGameHistory
-                )
-
-                assertEquals(
-                    HomeScreenEvent.NavigateToChartGameHistoryScreen,
-                    awaitItem()
-                )
-            }
-        }
-
-    @Test
-    fun test_setting_dialog_is_dismissed_when_user_dismiss_dialog() =
-        runTest {
-            viewModel.onUserAction(
-                userAction = HomeScreenUserAction.DismissDialog
+            assertEquals(
+                HomeScreenEvent.NavigateToChartGameHistoryScreen,
+                awaitItem()
             )
-
-            viewModel.screenState.test {
-                assertEquals(
-                    SettingDialogState.None,
-                    awaitItem().settingDialogState
-                )
-            }
         }
+    }
+
+    @Test
+    fun `settingDialogState should be none when user dismiss dialog`() = runTest {
+        viewModel.onUserAction(
+            userAction = HomeScreenUserAction.DismissDialog
+        )
+
+        viewModel.screenState.test {
+            assertEquals(
+                SettingDialogState.None,
+                awaitItem().settingDialogState
+            )
+        }
+    }
 }

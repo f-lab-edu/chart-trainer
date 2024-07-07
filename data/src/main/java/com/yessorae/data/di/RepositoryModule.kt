@@ -19,9 +19,7 @@ import javax.inject.Singleton
 abstract class RepositoryModule {
     @Binds
     @Singleton
-    abstract fun bindsChartGameRepository(
-        chartGameRepository: ChartGameRepositoryImpl
-    ): ChartGameRepository
+    abstract fun bindsChartGameRepository(chartGameRepository: ChartGameRepositoryImpl): ChartGameRepository
 
     @Binds
     @Singleton

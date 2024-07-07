@@ -1,6 +1,5 @@
 package com.yessorae.chartrainer.presentation.home
 
-import android.util.Log
 import app.cash.turbine.test
 import com.yessorae.chartrainer.MainDispatcherRule
 import com.yessorae.chartrainer.fake.FakeChartDao
@@ -34,21 +33,11 @@ import com.yessorae.presentation.ui.screen.home.HomeViewModel
 import com.yessorae.presentation.ui.screen.home.model.HomeBottomButtonUi
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenEvent
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenUserAction
-import com.yessorae.presentation.ui.screen.home.model.HomeState
 import com.yessorae.presentation.ui.screen.home.model.SettingDialogState
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectIndexed
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.time.withTimeout
-import kotlinx.coroutines.withTimeout
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -58,6 +47,8 @@ class HomeViewHomeModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = UnconfinedTestDispatcher()
 
+    @JvmField
+    @Rule
     val dispatcherRule = MainDispatcherRule(dispatcher)
 
     // dao
@@ -142,7 +133,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun initiate_state_is_loading() = runTest {
+    fun `initial state should be loading`() = runTest {
         assertEquals(
             createHomeState(
                 screenLoading = true,
@@ -154,7 +145,7 @@ class HomeViewHomeModelTest {
 
 
     @Test
-    fun test_datasource_data_to_ui_state_mapping() = runTest {
+    fun `state should match with datasource when success`() = runTest {
         chartTrainerPreferencesDataSource.apply {
             updateUser(
                 user = User(
@@ -200,7 +191,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_bottom_button_state_is_keep_going_game_or_quit_when_last_chart_game_id_is_not_null() = runTest {
+    fun `bottomButtonState should keepGoingGame or quit when lastChartGameId has value`() = runTest {
         val lastChartGameId = 1L
         chartTrainerPreferencesDataSource.updateLastChartGameId(lastChartGameId)
 
@@ -217,7 +208,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_bottom_button_state_is_new_game_when_last_chart_game_id_is_null() = runTest {
+    fun `bottomButtonState should be newGame when lastChartGameId is cleared`() = runTest {
         chartTrainerPreferencesDataSource.clearLastChartGameId()
 
         viewModel.screenState.test {
@@ -229,7 +220,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_navigation_to_new_chart_game_when_click_start_chart_game() = runTest {
+    fun `screeEvent should emit navigateToChartGameScreen when user click start chart game button`() = runTest {
         viewModel.screenEvent.test {
             viewModel.onUserAction(userAction = HomeScreenUserAction.ClickStartChartGame)
 
@@ -241,7 +232,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_navigation_to_existing_chart_game_when_click_keep_going_chart_game() = runTest {
+    fun `screenEvent should emit navigateToChartGameScreen with value when user click keep going chart game button`() = runTest {
         viewModel.screenEvent.test {
             viewModel.onUserAction(
                 userAction = HomeScreenUserAction.ClickKeepGoingChartGame(
@@ -257,7 +248,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_bottom_button_state_is_new_game_when_click_quit_in_progress_chart_game() = runTest {
+    fun `bottomButtonState should be newGame when user click quit in progress chart game`() = runTest {
         viewModel.onUserAction(
             userAction = HomeScreenUserAction.ClickQuitInProgressChartGame(
                 lastChartGameId = 1L
@@ -273,7 +264,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_commission_rate_setting_dialog_is_shown_when_click_commission_rate() = runTest {
+    fun `settingDialogState should be commissionRate when user click commission rate`() = runTest {
         viewModel.onUserAction(userAction = HomeScreenUserAction.ClickCommissionRate)
 
         viewModel.screenState.test {
@@ -285,7 +276,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_commission_rate_ui_is_updated_when_update_with_valid_value() = runTest {
+    fun `settingInfoUi should be updated when user update commission rate with valid value`() = runTest {
         viewModel.onUserAction(
             userAction = HomeScreenUserAction.UpdateCommissionRate("123")
         )
@@ -301,7 +292,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_commission_rate_setting_error_is_shown_when_update_with_invalid_value() = runTest {
+    fun `screenEvent should emit commissionRateSettingError when user update commission rate with invalid value`() = runTest {
         viewModel.screenEvent.test {
             viewModel.onUserAction(
                 userAction = HomeScreenUserAction.UpdateCommissionRate("invalid number")
@@ -315,7 +306,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_total_turn_setting_dialog_is_shown_when_click_total_turn() = runTest {
+    fun `settingDialogState should be totalTurn when user click total turn`() = runTest {
         viewModel.onUserAction(
             userAction = HomeScreenUserAction.ClickTotalTurn
         )
@@ -329,7 +320,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_total_turn_ui_is_updated_when_update_with_valid_value() = runTest {
+    fun `settingInfoUi should be updated when user update total turn with valid value`() = runTest {
         viewModel.onUserAction(
             userAction = HomeScreenUserAction.UpdateTotalTurn("60")
         )
@@ -345,7 +336,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_total_turn_setting_error_is_shown_when_update_with_not_number_value() = runTest {
+    fun `screenEvent should emit totalTurnSettingError when user update total turn with not a number value`() = runTest {
         viewModel.screenEvent.test {
             viewModel.onUserAction(
                 userAction = HomeScreenUserAction.UpdateTotalTurn("not number")
@@ -359,7 +350,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_total_turn_setting_error_is_shown_when_update_with_smaller_than_min_value() = runTest {
+    fun `screenEvent should emit totalTurnSettingError when user update total turn with value smaller minimum`() = runTest {
         val invalidValue = Random.nextInt(until = MIN_TOTAL_TURN)
 
         viewModel.screenEvent.test {
@@ -375,7 +366,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_total_turn_setting_error_is_shown_when_update_with_bigger_than_max_value() = runTest {
+    fun `screenEvent should emit totalTurnSettingError when user update total turn with value bigger than maximum`() = runTest {
         val invalidValue = Random.nextInt(from = MAX_TOTAL_TURN + 1, until = Int.MAX_VALUE)
 
         viewModel.screenEvent.test {
@@ -391,7 +382,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_tick_unit_setting_dialog_is_shown_when_click_tick_unit() = runTest {
+    fun `settingDialogState should be tickUnit when user click tick unit`() = runTest {
         val existingValue = viewModel.screenState.value.settingInfoUi.tickUnit
         viewModel.onUserAction(
             userAction = HomeScreenUserAction.ClickTickUnit
@@ -408,7 +399,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_tick_unit_ui_is_updated_when_click_update_tick_unit() = runTest {
+    fun `settingInfoUi should be updated when user update tick unit`() = runTest {
         viewModel.onUserAction(
             userAction = HomeScreenUserAction.UpdateTickUnit(
                 newValue = TickUnit.HOUR
@@ -426,7 +417,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_navigation_to_chart_game_history_when_click_chart_game_history_button() = runTest {
+    fun `screenEvent should emit navigateToChartGameHistoryScreen when user click chart game history button`() = runTest {
         viewModel.screenEvent.test {
             viewModel.onUserAction(
                 userAction = HomeScreenUserAction.ClickChartGameHistory
@@ -440,7 +431,7 @@ class HomeViewHomeModelTest {
     }
 
     @Test
-    fun test_setting_dialog_is_dismissed_when_user_dismiss_dialog() = runTest {
+    fun `settingDialogState should be none when user dismiss dialog`() = runTest {
         viewModel.onUserAction(
             userAction = HomeScreenUserAction.DismissDialog
         )

@@ -10,6 +10,5 @@ class SubscribeLastGameIdUseCase @Inject constructor(
     private val chartGameRepository: ChartGameRepository
 ) {
 
-    operator fun invoke(): Flow<Result<Long?>> =
-        chartGameRepository.fetchLastChartGameId().delegateValueResultFlow()
+    operator fun invoke(): Flow<Result<Long?>> = chartGameRepository.fetchLastChartGameId().delegateValueResultFlow()
 }

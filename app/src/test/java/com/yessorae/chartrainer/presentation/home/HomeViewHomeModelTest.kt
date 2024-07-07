@@ -1,5 +1,6 @@
 package com.yessorae.chartrainer.presentation.home
 
+import android.util.Log
 import app.cash.turbine.test
 import com.yessorae.chartrainer.MainDispatcherRule
 import com.yessorae.chartrainer.fake.FakeChartDao
@@ -33,21 +34,30 @@ import com.yessorae.presentation.ui.screen.home.HomeViewModel
 import com.yessorae.presentation.ui.screen.home.model.HomeBottomButtonUi
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenEvent
 import com.yessorae.presentation.ui.screen.home.model.HomeScreenUserAction
+import com.yessorae.presentation.ui.screen.home.model.HomeState
 import com.yessorae.presentation.ui.screen.home.model.SettingDialogState
 import junit.framework.TestCase.assertEquals
-import kotlin.random.Random
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.time.withTimeout
+import kotlinx.coroutines.withTimeout
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.random.Random
 
 class HomeViewHomeModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = UnconfinedTestDispatcher()
 
-    @get:Rule
     val dispatcherRule = MainDispatcherRule(dispatcher)
 
     // dao
@@ -131,18 +141,17 @@ class HomeViewHomeModelTest {
         )
     }
 
-//    @Test
-//    fun initiate_state_is_loading() = runTest {
-//        viewModel.screenState.test {
-//            assertEquals(
-//                createHomeState(
-//                    screenLoading = true,
-//                    error = false
-//                ),
-//                awaitItem()
-//            )
-//        }
-//    }
+    @Test
+    fun initiate_state_is_loading() = runTest {
+        assertEquals(
+            createHomeState(
+                screenLoading = true,
+                error = false
+            ),
+            viewModel.screenState.value
+        )
+    }
+
 
     @Test
     fun test_datasource_data_to_ui_state_mapping() = runTest {

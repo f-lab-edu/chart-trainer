@@ -434,12 +434,26 @@ class ChartGameViewModelTest {
 
     @Test
     fun `screenState should update next tick when click user next tick button`() = runTest {
+        chartTrainerPreferencesDataSource.updateTotalTurn(50)
+        viewModel.screenState.test {
+            val oldState = awaitItem()
+            val gameId = oldState.clickData.gameId
 
-    }
+            viewModel.handleChartGameScreenUserAction(
+                userAction = ChartGameScreenUserAction.ClickNextTickButton(gameId = gameId)
+            )
 
-    @Test
-    fun `screenEvent should emit moveToTradeHistory when user click chart game history button`() = runTest {
-
+            assertEquals(
+                oldState.copy(
+                    currentTurn = 2,
+                    gameProgress = 0.04f,
+                    clickData = oldState.clickData.copy(
+                        currentTurn = 2
+                    )
+                ),
+                awaitItem()
+            )
+        }
     }
 }
 

@@ -18,8 +18,10 @@ class FakeTradeDao : FakeBaseDao<TradeEntity>(), TradeDao {
     }
 
     override suspend fun update(entity: TradeEntity) {
-        items.find { it.id == entity.id }?.let {
-            items[items.indexOf(it)] = entity
+        items = items.toMutableList().apply {
+            this.find { it.id == entity.id }?.let {
+                set(indexOf(it), entity)
+            }
         }
         updateFlow()
     }

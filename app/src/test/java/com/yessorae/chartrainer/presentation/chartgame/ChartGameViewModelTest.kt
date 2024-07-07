@@ -37,6 +37,7 @@ import com.yessorae.domain.usecase.TradeStockUseCase
 import com.yessorae.domain.usecase.UpdateNextTickUseCase
 import com.yessorae.presentation.ui.screen.chartgame.ChartGameViewModel
 import com.yessorae.presentation.ui.screen.chartgame.model.CandleStickChartUi
+import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameEvent
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenState
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenUserAction
 import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi
@@ -86,7 +87,7 @@ class ChartGameViewModelTest {
     private lateinit var viewModel: ChartGameViewModel
 
     private val DUMMY_TICKER = "DUMMY"
-    private val DUMMY_TICK_VALUE = 0.0
+    private val DUMMY_TICK_VALUE = 3.0
 
 
     @Before
@@ -315,4 +316,37 @@ class ChartGameViewModelTest {
                 )
             }
         }
+
+    @Test
+    fun `screenEvent should emit MoveToBack when user click quit chart game button`() = runTest {
+        viewModel.screenEvent.test {
+            viewModel.handleChartGameScreenUserAction(
+                userAction = ChartGameScreenUserAction.ClickQuitGameButton(gameId = 1L)
+            )
+
+            assertEquals(
+                ChartGameEvent.MoveToBack,
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `screenState should not be completed but be ended when user click quit chart game button`() = runTest {
+        viewModel.screenState.test {
+            val old = awaitItem()
+            viewModel.handleChartGameScreenUserAction(
+                userAction = ChartGameScreenUserAction.ClickQuitGameButton(gameId = 1L)
+            )
+
+            assertEquals(
+                old.copy(
+                    isGameEnd = true
+                ),
+                awaitItem()
+            )
+        }
+    }
 }
+
+

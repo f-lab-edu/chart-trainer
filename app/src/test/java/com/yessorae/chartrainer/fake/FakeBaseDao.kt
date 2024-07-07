@@ -3,7 +3,7 @@ package com.yessorae.chartrainer.fake
 import com.yessorae.data.source.local.database.dao.BaseDao
 
 abstract class FakeBaseDao<T> : BaseDao<T> {
-    protected val items = mutableListOf<T>()
+    protected var items: List<T> = listOf()
     var currentId = 1L
         private set
 
@@ -12,7 +12,9 @@ abstract class FakeBaseDao<T> : BaseDao<T> {
     }
 
     override suspend fun insert(entity: T): Long {
-        items.add(entity)
+        items = items.toMutableList().apply {
+            add(entity)
+        }
         return currentId++
     }
 
@@ -33,6 +35,8 @@ abstract class FakeBaseDao<T> : BaseDao<T> {
     }
 
     override suspend fun delete(entity: T) {
-        items.remove(entity)
+        items = items.toMutableList().apply {
+            remove(entity)
+        }
     }
 }

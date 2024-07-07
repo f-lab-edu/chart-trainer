@@ -10,6 +10,8 @@ data class ChartGame(
     val chartId: Long,
     // 현재 턴
     val currentTurn: Int,
+    // 현재 Tick 리스트에서 가장 최근으로 보여야할 인덱스
+    val lastVisibleTickIndex: Int,
     // 전체 턴
     val totalTurn: Int,
     // 게임 전 잔고
@@ -59,15 +61,15 @@ data class ChartGame(
 
         return copy(
             currentBalance = currentBalance +
-                if (newTrade.type.isBuy()) {
-                    -(newTrade.totalTradeMoney + newTrade.commission).value
-                } else {
-                    (newTrade.totalTradeMoney - newTrade.commission).value
-                }.asMoney(),
+                    if (newTrade.type.isBuy()) {
+                        -(newTrade.totalTradeMoney + newTrade.commission).value
+                    } else {
+                        (newTrade.totalTradeMoney - newTrade.commission).value
+                    }.asMoney(),
             totalStockCount = newTotalStockCount,
             averageStockPrice = if (newTrade.type.isBuy()) {
                 (averageStockPrice * totalStockCount + newTrade.totalTradeMoney) /
-                    newTotalStockCount
+                        newTotalStockCount
             } else {
                 averageStockPrice
             },
@@ -75,9 +77,15 @@ data class ChartGame(
         )
     }
 
-    internal fun getChartChangeResult(closeStockPrice: Money): ChartGame {
+    internal fun getChartChangeResult(
+        chartId: Long,
+        lastVisibleTickIndex: Int,
+        closeStockPrice: Money
+    ): ChartGame {
         return copy(
+            chartId = chartId,
             currentTurn = START_TURN,
+            lastVisibleTickIndex = lastVisibleTickIndex,
             currentBalance = startBalance,
             closeStockPrice = closeStockPrice,
             totalStockCount = 0,
@@ -97,6 +105,7 @@ data class ChartGame(
 
         fun new(
             chartId: Long,
+            lastVisibleTickIndex: Int,
             totalTurn: Int,
             startBalance: Money,
             closeStockPrice: Money
@@ -104,6 +113,7 @@ data class ChartGame(
             return ChartGame(
                 chartId = chartId,
                 currentTurn = START_TURN,
+                lastVisibleTickIndex = lastVisibleTickIndex,
                 totalTurn = totalTurn,
                 startBalance = startBalance,
                 currentBalance = startBalance,

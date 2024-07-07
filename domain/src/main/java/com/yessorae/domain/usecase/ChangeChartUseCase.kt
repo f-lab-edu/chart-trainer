@@ -2,6 +2,7 @@ package com.yessorae.domain.usecase
 
 import com.yessorae.domain.common.Result
 import com.yessorae.domain.common.delegateEmptyResultFlow
+import com.yessorae.domain.entity.ChartGame
 import com.yessorae.domain.exception.ChartGameException
 import com.yessorae.domain.repository.ChartGameRepository
 import com.yessorae.domain.repository.ChartRepository
@@ -11,7 +12,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class ChangeChartUseCase @Inject constructor(
-    private val userRepository: UserRepository,
     private val chartRepository: ChartRepository,
     private val chartGameRepository: ChartGameRepository
 ) {
@@ -25,18 +25,23 @@ class ChangeChartUseCase @Inject constructor(
                 )
             }
 
-            val totalTurn = userRepository.fetchTotalTurn()
+            val totalTurn = oldChartGame.totalTurn
 
             val newChart = chartRepository.fetchNewChartRandomly(totalTurn = totalTurn)
-
-            if (newChart.ticks.size < totalTurn) {
+            val lastVisibleTickIndex =
+                (newChart.ticks.size - 1) - (totalTurn - ChartGame.START_TURN)
+            if (lastVisibleTickIndex < 0) {
                 throw ChartGameException.CanNotChangeChartException(
                     message = "can't change chart because new chart has not enough ticks"
                 )
             }
-            val closeStockPrice = newChart.ticks[totalTurn - 1].closePrice
+            val closeStockPrice = newChart.ticks[lastVisibleTickIndex].closePrice
 
-            val newChartGame = oldChartGame.getChartChangeResult(closeStockPrice = closeStockPrice)
+            val newChartGame = oldChartGame.getChartChangeResult(
+                chartId = newChart.id,
+                lastVisibleTickIndex = lastVisibleTickIndex,
+                closeStockPrice = closeStockPrice
+            )
 
             chartGameRepository.updateChartGame(
                 chartGame = newChartGame

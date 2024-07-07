@@ -8,9 +8,9 @@ import com.yessorae.domain.exception.ChartGameException.CanNotCreateChartGame
 import com.yessorae.domain.repository.ChartGameRepository
 import com.yessorae.domain.repository.ChartRepository
 import com.yessorae.domain.repository.UserRepository
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
 class SubscribeChartGameUseCase @Inject constructor(
     private val userRepository: UserRepository,
@@ -43,34 +43,33 @@ class SubscribeChartGameUseCase @Inject constructor(
         val totalTurn = userRepository.fetchTotalTurn()
 
         val newChart = chartRepository.fetchNewChartRandomly(totalTurn = totalTurn)
-
-        val lastVisibleTickIndex = (newChart.ticks.size - 1) - (totalTurn - ChartGame.START_TURN)
-
-        if (lastVisibleTickIndex < 0) {
+        val initialLastVisibleTickIndex =
+            (newChart.ticks.size - 1) - (totalTurn - ChartGame.START_TURN)
+        if (initialLastVisibleTickIndex < 0) {
             throw CanNotCreateChartGame(
                 message = "can't change chart because new chart has not enough ticks"
             )
         }
-
         val newGameId = chartGameRepository.createNewChartGame(
             chartGame = ChartGame.new(
                 chartId = newChart.id,
+                lastVisibleTickIndex = initialLastVisibleTickIndex,
                 totalTurn = totalTurn,
                 startBalance = userRepository.fetchUser().balance,
-                closeStockPrice = newChart.ticks[lastVisibleTickIndex].closePrice
+                closeStockPrice = newChart.ticks[initialLastVisibleTickIndex].closePrice
             )
         )
-
         chartGameRepository.updateLastChartGameId(gameId = newGameId)
 
         return chartGameRepository
             .fetchChartGameFlow(gameId = newGameId)
             .map { chartGame ->
+                val chart = chartRepository.fetchChart(gameId = chartGame.id)
                 SuccessData(
                     chartGame = chartGame,
-                    visibleTicks = newChart.ticks.subList(
+                    visibleTicks = chart.ticks.subList(
                         fromIndex = 0,
-                        toIndex = lastVisibleTickIndex
+                        toIndex = chartGame.lastVisibleTickIndex
                     )
                 )
             }

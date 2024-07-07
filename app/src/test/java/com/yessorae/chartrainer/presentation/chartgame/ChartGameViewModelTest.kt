@@ -41,7 +41,6 @@ import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenState
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenUserAction
 import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -153,7 +152,6 @@ class ChartGameViewModelTest {
             chartGameRepository = chartGameRepository
         )
         changeChartUseCase = ChangeChartUseCase(
-            userRepository = userRepository,
             chartRepository = chartRepository,
             chartGameRepository = chartGameRepository
         )
@@ -258,4 +256,63 @@ class ChartGameViewModelTest {
             )
         }
     }
+
+    @Test
+    fun `screenState should change chart with initial game state when click new chart button`() =
+        runTest {
+            // 첫번째 저장되는 차트게임 ID 는 1이다.
+            val gameId = 1L
+            val teslaTicker = "TSLA"
+            val teslaTickValue = 2.0
+            val tickListSize = 100
+            val totalTurn = 50
+            val initialBalance = 3000.asMoney()
+            val user = createUser(balance = initialBalance)
+            polygonChartApi.setTickerToDto(
+                ticker = teslaTicker,
+                dto = createChartDto(
+                    ticker = teslaTicker,
+                    ticks = (1..tickListSize).map {
+                        createTickDto(singleValue = teslaTickValue)
+                    }
+                )
+            )
+            chartTrainerPreferencesDataSource.updateUser(user)
+            chartTrainerPreferencesDataSource.updateTotalTurn(totalTurn)
+
+            chartRequestArgumentHelper.currentRandomTicker = teslaTicker
+            viewModel.handleChartGameScreenUserAction(
+                userAction = ChartGameScreenUserAction.ClickNewChartButton(gameId = gameId)
+            )
+
+            viewModel.screenState.test {
+                val visibleTickListSize = tickListSize - totalTurn
+                assertEquals(
+                    ChartGameScreenState(
+                        currentTurn = ChartGame.START_TURN,
+                        totalTurn = totalTurn,
+                        totalProfit = 0.0,
+                        rateOfProfit = 0.0,
+                        gameProgress = 0.02f,
+                        showLoading = false,
+                        candleStickChart = CandleStickChartUi(
+                            opening = (1..visibleTickListSize).map { teslaTickValue },
+                            closing = (1..visibleTickListSize).map { teslaTickValue },
+                            low = (1..visibleTickListSize).map { teslaTickValue },
+                            high = (1..visibleTickListSize).map { teslaTickValue }
+                        ),
+                        tradeOrderUi = TradeOrderUi.Hide,
+                        clickData = ChartGameScreenState.ClickData(
+                            gameId = gameId,
+                            ownedAverageStockPrice = Money.ZERO,
+                            currentBalance = initialBalance,
+                            currentStockPrice = teslaTickValue.asMoney(),
+                            currentTurn = ChartGame.START_TURN,
+                            ownedStockCount = 0
+                        )
+                    ),
+                    awaitItem()
+                )
+            }
+        }
 }

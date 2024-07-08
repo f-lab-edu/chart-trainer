@@ -41,7 +41,9 @@ import com.yessorae.presentation.ui.screen.chartgame.model.CandleStickChartUi
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameEvent
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenState
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenUserAction
+import com.yessorae.presentation.ui.screen.chartgame.model.PercentageOrderShortCut
 import com.yessorae.presentation.ui.screen.chartgame.model.SellingOrderUiUserAction
+import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderKeyPad
 import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi
 import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi.Companion.copyWith
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -570,6 +572,11 @@ class ChartGameViewModelTest {
     }
 
     @Test
+    fun `screenState should change `() = runTest {
+
+    }
+
+    @Test
     fun `screenState should show selling trade ui when user click sell button`() = runTest {
         viewModel.screenState.test {
             val oldState = awaitItem()
@@ -727,6 +734,147 @@ class ChartGameViewModelTest {
             )
         }
     }
+
+    @Test
+    fun `selling tradeOrderUi should change stockCountInput with ratio when user click ratio shortcut button`() = runTest {
+        viewModel.screenState.test {
+            awaitItem()
+            viewModel.handleChartGameScreenUserAction(userAction = createUserActionOfClickSellButton())
+            val oldState = awaitItem()
+
+            viewModel.handleSellOrderUiUserAction(
+                userAction = SellingOrderUiUserAction.ClickRatioShortCut(
+                    percentage = PercentageOrderShortCut.PERCENTAGE_10,
+                    ownedStockCount = 10
+                )
+            )
+
+            assertEquals(
+                oldState.copy(
+                    tradeOrderUi = oldState.tradeOrderUi.copyWith(
+                        stockCountInput = "1"
+                    )
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `selling tradeOrderUi should concat new keypad input with existing input when user click number keypad`() = runTest {
+        viewModel.screenState.test {
+            awaitItem()
+            viewModel.handleChartGameScreenUserAction(userAction = createUserActionOfClickSellButton())
+            val oldState = awaitItem()
+
+            viewModel.handleSellOrderUiUserAction(
+                userAction = SellingOrderUiUserAction.ClickKeyPad(
+                    keyPad = TradeOrderKeyPad.Number(value = "7"),
+                    stockCountInput = "1",
+                    ownedStockCount = 20
+                )
+            )
+
+            assertEquals(
+                oldState.copy(
+                    tradeOrderUi = oldState.tradeOrderUi.copyWith(
+                        stockCountInput = "17"
+                    )
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `selling tradeOrderUi should update stockCountInput to ownedStockCount when user click number keypad and over the ownedStockCount`() =
+        runTest {
+            viewModel.screenState.test {
+                awaitItem()
+                viewModel.handleChartGameScreenUserAction(userAction = createUserActionOfClickSellButton())
+                val oldState = awaitItem()
+
+                viewModel.handleSellOrderUiUserAction(
+                    userAction = SellingOrderUiUserAction.ClickKeyPad(
+                        keyPad = TradeOrderKeyPad.Number(value = "7"),
+                        stockCountInput = "1",
+                        ownedStockCount = 10
+                    )
+                )
+
+                assertEquals(
+                    oldState.copy(
+                        tradeOrderUi = oldState.tradeOrderUi.copyWith(
+                            stockCountInput = "10"
+                        )
+                    ),
+                    awaitItem()
+                )
+            }
+        }
+
+
+    @Test
+    fun `selling tradeOrderUi should clear last number of stockCountInput when user click delete keypad`() =
+        runTest {
+            viewModel.screenState.test {
+                awaitItem()
+                viewModel.handleChartGameScreenUserAction(userAction = createUserActionOfClickSellButton())
+                val oldState = awaitItem()
+
+                viewModel.handleSellOrderUiUserAction(
+                    userAction = SellingOrderUiUserAction.ClickKeyPad(
+                        keyPad = TradeOrderKeyPad.Delete,
+                        stockCountInput = "10",
+                        ownedStockCount = 11
+                    )
+                )
+
+                assertEquals(
+                    oldState.copy(
+                        tradeOrderUi = oldState.tradeOrderUi.copyWith(
+                            stockCountInput = "1"
+                        )
+                    ),
+                    awaitItem()
+                )
+            }
+        }
+
+    @Test
+    fun `selling tradeOrderUi should clear stockCountInput when user click deleteAll keypad`() =
+        runTest {
+            viewModel.screenState.test {
+                awaitItem()
+                viewModel.handleChartGameScreenUserAction(userAction = createUserActionOfClickSellButton())
+                awaitItem()
+                viewModel.handleSellOrderUiUserAction(
+                    userAction = SellingOrderUiUserAction.ClickKeyPad(
+                        keyPad = TradeOrderKeyPad.Number("1"),
+                        stockCountInput = "1",
+                        ownedStockCount = 10
+                    )
+                )
+                val oldState = awaitItem()
+
+                viewModel.handleSellOrderUiUserAction(
+                    userAction = SellingOrderUiUserAction.ClickKeyPad(
+                        keyPad = TradeOrderKeyPad.DeleteAll,
+                        stockCountInput = "10",
+                        ownedStockCount = 10
+                    )
+                )
+
+                assertEquals(
+                    oldState.copy(
+                        tradeOrderUi = oldState.tradeOrderUi.copyWith(
+                            stockCountInput = ""
+                        )
+                    ),
+                    awaitItem()
+                )
+            }
+        }
 }
 
 

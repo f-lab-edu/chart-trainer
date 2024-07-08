@@ -394,7 +394,7 @@ class ChartGameViewModel @Inject constructor(
                                     }
                                 }
 
-                                is TradeOrderKeyPad.DeleteAll -> null
+                                is TradeOrderKeyPad.DeleteAll -> ""
                             }
                         )
                     )

@@ -24,6 +24,7 @@ import com.yessorae.data.source.network.polygon.PolygonChartNetworkDataSource
 import com.yessorae.domain.common.ChartTrainerLogger
 import com.yessorae.domain.entity.ChartGame
 import com.yessorae.domain.entity.User
+import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
 import com.yessorae.domain.entity.value.asMoney
 import com.yessorae.domain.repository.ChartGameRepository
@@ -36,11 +37,13 @@ import com.yessorae.domain.usecase.SubscribeChartGameUseCase
 import com.yessorae.domain.usecase.TradeStockUseCase
 import com.yessorae.domain.usecase.UpdateNextTickUseCase
 import com.yessorae.presentation.ui.screen.chartgame.ChartGameViewModel
+import com.yessorae.presentation.ui.screen.chartgame.model.BuyingOrderUiUserAction
 import com.yessorae.presentation.ui.screen.chartgame.model.CandleStickChartUi
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameEvent
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenState
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenUserAction
 import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi
+import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi.Companion.copyWith
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -88,6 +91,34 @@ class ChartGameViewModelTest {
 
     private val DUMMY_TICKER = "DUMMY"
     private val DUMMY_TICK_VALUE = 3.0
+
+    private fun createClickBuyButton(
+        gameId: Long = 0L,
+        ownedStockCount: Int = 0,
+        ownedAverageStockPrice: Money = Money.ZERO,
+        currentBalance: Money = Money.ZERO,
+        currentStockPrice: Money = Money.ZERO,
+        currentTurn: Int = 0
+    ) = ChartGameScreenUserAction.ClickBuyButton(
+        gameId = gameId,
+        ownedStockCount = ownedStockCount,
+        ownedAverageStockPrice = ownedAverageStockPrice,
+        currentBalance = currentBalance,
+        currentStockPrice = currentStockPrice,
+        currentTurn = currentTurn
+    )
+
+    private fun createUser(
+        balance: Money,
+        winCount: Int = 0,
+        loseCount: Int = 0,
+        averageRateOfProfit: Double = 0.0
+    ) = User(
+        balance = balance,
+        winCount = winCount,
+        loseCount = loseCount,
+        averageRateOfProfit = averageRateOfProfit
+    )
 
 
     @Before
@@ -189,18 +220,6 @@ class ChartGameViewModelTest {
             savedStateHandle = savedStateHandle
         )
     }
-
-    fun createUser(
-        balance: Money,
-        winCount: Int = 0,
-        loseCount: Int = 0,
-        averageRateOfProfit: Double = 0.0
-    ) = User(
-        balance = balance,
-        winCount = winCount,
-        loseCount = loseCount,
-        averageRateOfProfit = averageRateOfProfit
-    )
 
     @Test
     fun `screenState should show loading when initially`() = runTest {
@@ -342,8 +361,48 @@ class ChartGameViewModelTest {
 
             assertEquals(
                 old.copy(
-                    isGameEnd = true
+                    isGameEnd = true,
+                    isGameComplete = false
                 ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `screenState should update next tick when click user next tick button`() = runTest {
+        chartTrainerPreferencesDataSource.updateTotalTurn(50)
+        viewModel.screenState.test {
+            val oldState = awaitItem()
+            val gameId = oldState.clickData.gameId
+
+            viewModel.handleChartGameScreenUserAction(
+                userAction = ChartGameScreenUserAction.ClickNextTickButton(gameId = gameId)
+            )
+
+            assertEquals(
+                oldState.copy(
+                    currentTurn = 2,
+                    gameProgress = 0.04f,
+                    clickData = oldState.clickData.copy(
+                        currentTurn = 2
+                    )
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `screenEvent should emit moveToTradeHistory when user click chart game history button`() = runTest {
+        val gameId = 1L
+        viewModel.screenEvent.test {
+            viewModel.handleChartGameScreenUserAction(
+                userAction = ChartGameScreenUserAction.ClickChartGameScreenHistoryButton(gameId = gameId)
+            )
+
+            assertEquals(
+                ChartGameEvent.MoveToTradeHistory(gameId = gameId),
                 awaitItem()
             )
         }
@@ -433,22 +492,22 @@ class ChartGameViewModelTest {
     }
 
     @Test
-    fun `screenState should update next tick when click user next tick button`() = runTest {
-        chartTrainerPreferencesDataSource.updateTotalTurn(50)
+    fun `buyingTradeOrderUi should show keypad when user click show keypad button`() = runTest {
         viewModel.screenState.test {
-            val oldState = awaitItem()
-            val gameId = oldState.clickData.gameId
-
+            awaitItem()
             viewModel.handleChartGameScreenUserAction(
-                userAction = ChartGameScreenUserAction.ClickNextTickButton(gameId = gameId)
+                userAction = createClickBuyButton()
+            )
+            val old = awaitItem()
+
+            viewModel.handleBuyingOrderUiUserAction(
+                userAction = BuyingOrderUiUserAction.ClickShowKeyPad
             )
 
             assertEquals(
-                oldState.copy(
-                    currentTurn = 2,
-                    gameProgress = 0.04f,
-                    clickData = oldState.clickData.copy(
-                        currentTurn = 2
+                old.copy(
+                    tradeOrderUi = old.tradeOrderUi.copyWith(
+                        showKeyPad = true
                     )
                 ),
                 awaitItem()
@@ -457,15 +516,69 @@ class ChartGameViewModelTest {
     }
 
     @Test
-    fun `screenEvent should emit moveToTradeHistory when user click chart game history button`() = runTest {
-        val gameId = 1L
-        viewModel.screenEvent.test {
-            viewModel.handleChartGameScreenUserAction(
-                userAction = ChartGameScreenUserAction.ClickChartGameScreenHistoryButton(gameId = gameId)
+    fun `screenState should be updated with trade result and hide tradeOrderUi when user click buy stock button`() = runTest {
+        chartTrainerPreferencesDataSource.updateUser(createUser(balance = 10000.asMoney()))
+        chartTrainerPreferencesDataSource.updateCommissionRate(0.01)
+        viewModel.screenState.test {
+            val oldState = awaitItem()
+            val gameId = oldState.clickData.gameId
+
+            viewModel.handleBuyingOrderUiUserAction(
+                userAction = BuyingOrderUiUserAction.ClickTrade(
+                    gameId = gameId,
+                    ownedStockCount = 0,
+                    ownedAverageStockPrice = Money.ZERO,
+                    stockCountInput = "4",
+                    currentStockPrice = 500.asMoney(),
+                    currentTurn = 1
+                )
             )
 
             assertEquals(
-                ChartGameEvent.MoveToTradeHistory(gameId = gameId),
+                oldState.copy(
+                    showLoading = true
+                ),
+                awaitItem()
+            )
+            assertEquals(
+                oldState.copy(
+                    totalProfit = -0.2,
+                    rateOfProfit = -0.00002,
+                    tradeOrderUi = TradeOrderUi.Hide,
+                    clickData = oldState.clickData.copy(
+                        ownedAverageStockPrice = 500.asMoney(),
+                        currentBalance = 7999.8.asMoney(),
+                        ownedStockCount = 4,
+                    )
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `screenState should hide tradeOrderUi when user click cancel button`() = runTest {
+        viewModel.screenState.test {
+            awaitItem()
+            viewModel.handleChartGameScreenUserAction(
+                // TODO::NOW 해당 값은 어떤 값이어도 의미 없음 -> factory 로 감추기
+                userAction = ChartGameScreenUserAction.ClickBuyButton(
+                    gameId = 1L,
+                    ownedStockCount = 10,
+                    ownedAverageStockPrice = 500.asMoney(),
+                    currentBalance = 2900.asMoney(),
+                    currentStockPrice = 1000.asMoney(),
+                    currentTurn = 10
+                )
+            )
+            val oldState = awaitItem()
+
+            viewModel.handleBuyingOrderUiUserAction(userAction = BuyingOrderUiUserAction.ClickCancelButton)
+
+            assertEquals(
+                oldState.copy(
+                    tradeOrderUi = TradeOrderUi.Hide
+                ),
                 awaitItem()
             )
         }

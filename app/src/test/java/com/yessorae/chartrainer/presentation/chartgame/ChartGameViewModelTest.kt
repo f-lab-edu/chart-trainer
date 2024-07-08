@@ -560,20 +560,30 @@ class ChartGameViewModelTest {
     fun `screenState should hide tradeOrderUi when user click cancel button`() = runTest {
         viewModel.screenState.test {
             awaitItem()
-            viewModel.handleChartGameScreenUserAction(
-                // TODO::NOW 해당 값은 어떤 값이어도 의미 없음 -> factory 로 감추기
-                userAction = ChartGameScreenUserAction.ClickBuyButton(
-                    gameId = 1L,
-                    ownedStockCount = 10,
-                    ownedAverageStockPrice = 500.asMoney(),
-                    currentBalance = 2900.asMoney(),
-                    currentStockPrice = 1000.asMoney(),
-                    currentTurn = 10
-                )
-            )
+            viewModel.handleChartGameScreenUserAction(userAction = createClickBuyButton())
             val oldState = awaitItem()
 
             viewModel.handleBuyingOrderUiUserAction(userAction = BuyingOrderUiUserAction.ClickCancelButton)
+
+            assertEquals(
+                oldState.copy(
+                    tradeOrderUi = TradeOrderUi.Hide
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `screenState should hide tradeOrderUi when user do system back`() = runTest {
+        viewModel.screenState.test {
+            awaitItem()
+            viewModel.handleChartGameScreenUserAction(userAction = createClickBuyButton())
+            val oldState = awaitItem()
+
+            viewModel.handleBuyingOrderUiUserAction(
+                userAction = BuyingOrderUiUserAction.DoSystemBack
+            )
 
             assertEquals(
                 oldState.copy(

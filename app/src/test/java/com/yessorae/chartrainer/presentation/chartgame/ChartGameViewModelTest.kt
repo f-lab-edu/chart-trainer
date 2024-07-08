@@ -24,7 +24,6 @@ import com.yessorae.data.source.network.polygon.PolygonChartNetworkDataSource
 import com.yessorae.domain.common.ChartTrainerLogger
 import com.yessorae.domain.entity.ChartGame
 import com.yessorae.domain.entity.User
-import com.yessorae.domain.entity.trade.TradeType
 import com.yessorae.domain.entity.value.Money
 import com.yessorae.domain.entity.value.asMoney
 import com.yessorae.domain.repository.ChartGameRepository
@@ -42,9 +41,11 @@ import com.yessorae.presentation.ui.screen.chartgame.model.CandleStickChartUi
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameEvent
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenState
 import com.yessorae.presentation.ui.screen.chartgame.model.ChartGameScreenUserAction
+import com.yessorae.presentation.ui.screen.chartgame.model.SellingOrderUiUserAction
 import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi
 import com.yessorae.presentation.ui.screen.chartgame.model.TradeOrderUi.Companion.copyWith
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -92,7 +93,7 @@ class ChartGameViewModelTest {
     private val DUMMY_TICKER = "DUMMY"
     private val DUMMY_TICK_VALUE = 3.0
 
-    private fun createClickBuyButton(
+    private fun createUserActionClickBuyButton(
         gameId: Long = 0L,
         ownedStockCount: Int = 0,
         ownedAverageStockPrice: Money = Money.ZERO,
@@ -107,6 +108,21 @@ class ChartGameViewModelTest {
         currentStockPrice = currentStockPrice,
         currentTurn = currentTurn
     )
+
+    private fun createUserActionOfClickSellButton(
+        gameId: Long = 0L,
+        ownedStockCount: Int = 0,
+        ownedAverageStockPrice: Money = Money.ZERO,
+        currentStockPrice: Money = Money.ZERO,
+        currentTurn: Int = 0
+    ) = ChartGameScreenUserAction.ClickSellButton(
+        gameId = gameId,
+        ownedAverageStockPrice = ownedAverageStockPrice,
+        currentStockPrice = currentStockPrice,
+        currentTurn = currentTurn,
+        ownedStockCount = ownedStockCount
+    )
+
 
     private fun createUser(
         balance: Money,
@@ -451,6 +467,109 @@ class ChartGameViewModelTest {
     }
 
     @Test
+    fun `buying TradeOrderUi should show keypad when user click show keypad button`() = runTest {
+        viewModel.screenState.test {
+            awaitItem()
+            viewModel.handleChartGameScreenUserAction(
+                userAction = createUserActionClickBuyButton()
+            )
+            val old = awaitItem()
+
+            viewModel.handleBuyingOrderUiUserAction(
+                userAction = BuyingOrderUiUserAction.ClickShowKeyPad
+            )
+
+            assertEquals(
+                old.copy(
+                    tradeOrderUi = old.tradeOrderUi.copyWith(
+                        showKeyPad = true
+                    )
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `screenState should be updated with buying trade result and hide tradeOrderUi when user click buy stock button`() = runTest {
+        chartTrainerPreferencesDataSource.updateUser(createUser(balance = 10000.asMoney()))
+        chartTrainerPreferencesDataSource.updateCommissionRate(0.01)
+        viewModel.screenState.test {
+            val oldState = awaitItem()
+            val gameId = oldState.clickData.gameId
+
+            viewModel.handleBuyingOrderUiUserAction(
+                userAction = BuyingOrderUiUserAction.ClickTrade(
+                    gameId = gameId,
+                    ownedStockCount = 0,
+                    ownedAverageStockPrice = Money.ZERO,
+                    stockCountInput = "4",
+                    currentStockPrice = 500.asMoney(),
+                    currentTurn = 1
+                )
+            )
+
+            assertEquals(
+                oldState.copy(
+                    showLoading = true
+                ),
+                awaitItem()
+            )
+            assertEquals(
+                oldState.copy(
+                    totalProfit = -0.2,
+                    rateOfProfit = -0.00002,
+                    tradeOrderUi = TradeOrderUi.Hide,
+                    clickData = oldState.clickData.copy(
+                        ownedAverageStockPrice = 500.asMoney(),
+                        currentBalance = 7999.8.asMoney(),
+                        ownedStockCount = 4,
+                    )
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `screenState should hide buying tradeOrderUi when user click cancel button`() = runTest {
+        viewModel.screenState.test {
+            awaitItem()
+            viewModel.handleChartGameScreenUserAction(userAction = createUserActionClickBuyButton())
+            val oldState = awaitItem()
+
+            viewModel.handleBuyingOrderUiUserAction(userAction = BuyingOrderUiUserAction.ClickCancelButton)
+
+            assertEquals(
+                oldState.copy(
+                    tradeOrderUi = TradeOrderUi.Hide
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `screenState should hide buying tradeOrderUi when user do system back`() = runTest {
+        viewModel.screenState.test {
+            awaitItem()
+            viewModel.handleChartGameScreenUserAction(userAction = createUserActionClickBuyButton())
+            val oldState = awaitItem()
+
+            viewModel.handleBuyingOrderUiUserAction(
+                userAction = BuyingOrderUiUserAction.DoSystemBack
+            )
+
+            assertEquals(
+                oldState.copy(
+                    tradeOrderUi = TradeOrderUi.Hide
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
     fun `screenState should show selling trade ui when user click sell button`() = runTest {
         viewModel.screenState.test {
             val oldState = awaitItem()
@@ -492,16 +611,16 @@ class ChartGameViewModelTest {
     }
 
     @Test
-    fun `buyingTradeOrderUi should show keypad when user click show keypad button`() = runTest {
+    fun `selling tradeOrderUi should show keypad when user click show keypad button`() = runTest {
         viewModel.screenState.test {
             awaitItem()
             viewModel.handleChartGameScreenUserAction(
-                userAction = createClickBuyButton()
+                userAction = createUserActionOfClickSellButton()
             )
             val old = awaitItem()
 
-            viewModel.handleBuyingOrderUiUserAction(
-                userAction = BuyingOrderUiUserAction.ClickShowKeyPad
+            viewModel.handleSellOrderUiUserAction(
+                userAction = SellingOrderUiUserAction.ClickShowKeyPad
             )
 
             assertEquals(
@@ -516,13 +635,15 @@ class ChartGameViewModelTest {
     }
 
     @Test
-    fun `screenState should be updated with trade result and hide tradeOrderUi when user click buy stock button`() = runTest {
+    fun `screenState should be updated with selling trade result and hide tradeOrderUi when user click sell stock button`() = runTest {
+        val gameId = 1L
         chartTrainerPreferencesDataSource.updateUser(createUser(balance = 10000.asMoney()))
         chartTrainerPreferencesDataSource.updateCommissionRate(0.01)
-        viewModel.screenState.test {
-            val oldState = awaitItem()
-            val gameId = oldState.clickData.gameId
+        val job = viewModel.screenState.launchIn(this)
 
+        viewModel.screenState.test {
+            // 첫 로딩 성공상태
+            awaitItem()
             viewModel.handleBuyingOrderUiUserAction(
                 userAction = BuyingOrderUiUserAction.ClickTrade(
                     gameId = gameId,
@@ -533,62 +654,75 @@ class ChartGameViewModelTest {
                     currentTurn = 1
                 )
             )
+            // 매수 로딩
+            awaitItem()
+            // 매수 성공상태
+            val oldState = awaitItem()
 
+            viewModel.handleSellOrderUiUserAction(
+                userAction = SellingOrderUiUserAction.ClickTrade(
+                    gameId = gameId,
+                    ownedStockCount = 4,
+                    ownedAverageStockPrice = 500.asMoney(),
+                    stockCountInput = "1",
+                    currentStockPrice = 1000.asMoney(),
+                    currentTurn = 2
+                )
+            )
+
+            // 매도 로딩 상태
             assertEquals(
                 oldState.copy(
                     showLoading = true
                 ),
                 awaitItem()
             )
+            // 매도 성공 상태
             assertEquals(
                 oldState.copy(
-                    totalProfit = -0.2,
-                    rateOfProfit = -0.00002,
+                    totalProfit = 499.7,
+                    rateOfProfit = 0.04997,
                     tradeOrderUi = TradeOrderUi.Hide,
                     clickData = oldState.clickData.copy(
                         ownedAverageStockPrice = 500.asMoney(),
-                        currentBalance = 7999.8.asMoney(),
-                        ownedStockCount = 4,
+                        currentBalance = 8999.7.asMoney(),
+                        ownedStockCount = 3,
                     )
                 ),
                 awaitItem()
             )
+
+            job.cancel()
         }
     }
 
     @Test
-    fun `screenState should hide tradeOrderUi when user click cancel button`() = runTest {
+    fun `screenState should hide selling tradeOrderUi when user click cancel button`() = runTest {
         viewModel.screenState.test {
             awaitItem()
-            viewModel.handleChartGameScreenUserAction(userAction = createClickBuyButton())
+            viewModel.handleChartGameScreenUserAction(userAction = createUserActionOfClickSellButton())
             val oldState = awaitItem()
 
-            viewModel.handleBuyingOrderUiUserAction(userAction = BuyingOrderUiUserAction.ClickCancelButton)
+            viewModel.handleSellOrderUiUserAction(userAction = SellingOrderUiUserAction.ClickCancelButton)
 
             assertEquals(
-                oldState.copy(
-                    tradeOrderUi = TradeOrderUi.Hide
-                ),
+                oldState.copy(tradeOrderUi = TradeOrderUi.Hide),
                 awaitItem()
             )
         }
     }
 
     @Test
-    fun `screenState should hide tradeOrderUi when user do system back`() = runTest {
+    fun `screenState should hide selling tradeOrderUi when user do system back`() = runTest {
         viewModel.screenState.test {
             awaitItem()
-            viewModel.handleChartGameScreenUserAction(userAction = createClickBuyButton())
+            viewModel.handleChartGameScreenUserAction(userAction = createUserActionOfClickSellButton())
             val oldState = awaitItem()
 
-            viewModel.handleBuyingOrderUiUserAction(
-                userAction = BuyingOrderUiUserAction.DoSystemBack
-            )
+            viewModel.handleSellOrderUiUserAction(userAction = SellingOrderUiUserAction.DoSystemBack)
 
             assertEquals(
-                oldState.copy(
-                    tradeOrderUi = TradeOrderUi.Hide
-                ),
+                oldState.copy(tradeOrderUi = TradeOrderUi.Hide),
                 awaitItem()
             )
         }

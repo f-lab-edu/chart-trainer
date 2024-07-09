@@ -21,5 +21,5 @@ object PolygonConstant {
     const val DEFAULT_SORT_QUERY_VALUE = "asc"
     const val DEFAULT_MULTIPLIER_PATH_VALUE = 1
     const val TIME_SPAN_DAY_PATH_VALUE = "day"
-    const val TIME_SPAN_HOUR_PATH_VALUE = "day"
+    const val TIME_SPAN_HOUR_PATH_VALUE = "hour"
 }

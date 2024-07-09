@@ -30,6 +30,7 @@ class TradeStockUseCase @Inject constructor(
                     type = type,
                     commissionRate = userRepository.fetchCommissionRate()
                 )
+
                 tradeRepository.createTrade(trade = trade)
 
                 val oldChartGame = chartGameRepository.fetchChartGame(gameId = gameId)

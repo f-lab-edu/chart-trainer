@@ -14,6 +14,8 @@ data class ChartGameEntity(
     val chartId: Long,
     @ColumnInfo(name = COL_CURRENT_TURN)
     val currentTurn: Int,
+    @ColumnInfo(name = COL_LAST_VISIBLE_TICK_INDEX)
+    val lastVisibleTickIndex: Int,
     @ColumnInfo(name = COL_TOTAL_TURN)
     val totalTurn: Int,
     @ColumnInfo(name = COL_START_BALANCE)
@@ -37,6 +39,7 @@ data class ChartGameEntity(
         const val NAME = "chart_game_table"
         const val COL_CHART_ID = "chart_id"
         const val COL_CURRENT_TURN = "current_turn"
+        const val COL_LAST_VISIBLE_TICK_INDEX = "last_visible_tick_index"
         const val COL_TOTAL_TURN = "total_turn"
         const val COL_START_BALANCE = "start_balance"
         const val COL_CURRENT_BALANCE = "current_balance"
@@ -54,6 +57,7 @@ fun ChartGame.asEntity() =
         id = id,
         chartId = chartId,
         currentTurn = currentTurn,
+        lastVisibleTickIndex = lastVisibleTickIndex,
         totalTurn = totalTurn,
         startBalance = startBalance,
         currentBalance = currentBalance,
@@ -70,6 +74,7 @@ fun ChartGameEntity.asDomainModel() =
         id = id,
         chartId = chartId,
         currentTurn = currentTurn,
+        lastVisibleTickIndex = lastVisibleTickIndex,
         totalTurn = totalTurn,
         startBalance = startBalance,
         currentBalance = currentBalance,

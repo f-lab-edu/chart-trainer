@@ -4,16 +4,12 @@ import com.yessorae.data.source.network.polygon.model.chart.ChartDto
 import com.yessorae.data.source.network.polygon.model.chart.TickDto
 
 fun createChartDto(
-    ticker: String = "AAPL",
+    ticker: String,
+    ticks: List<TickDto> = listOf(),
+    ticksCount: Int = ticks.size,
     adjusted: Boolean = true,
     queryCount: Int = 10,
     requestId: String = "123456789",
-    ticks: List<TickDto> = listOf(
-        createTickDto(),
-        createTickDto(),
-        createTickDto()
-    ),
-    ticksCount: Int = ticks.size,
     status: String = "success"
 ): ChartDto {
     return ChartDto(
@@ -46,5 +42,21 @@ fun createTickDto(
         tradingVolume = tradingVolume,
         volumeWeightedAveragePrice = volumeWeightedAveragePrice,
         transactionCount = transactionCount
+    )
+}
+
+/**
+ * 다양한 값이 필요하지 않을 때 간소하게 테스트하기 위한 Factory 함수
+ */
+fun createTickDto(singleValue: Double): TickDto {
+    return TickDto(
+        closePrice = singleValue,
+        maxPrice = singleValue,
+        minPrice = singleValue,
+        openPrice = singleValue,
+        startTimestamp = singleValue.toLong(),
+        tradingVolume = singleValue,
+        volumeWeightedAveragePrice = singleValue,
+        transactionCount = singleValue.toInt()
     )
 }

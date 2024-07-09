@@ -88,7 +88,7 @@ class ChartGameViewModel @Inject constructor(
                             }
 
                             else -> {
-                                handleCommonFailure(result.throwable)
+                                handleNotHandlingFailure(result.throwable)
                             }
                         }
                     }
@@ -219,7 +219,7 @@ class ChartGameViewModel @Inject constructor(
             }
 
             is BuyingOrderUiUserAction.ClickTrade -> {
-                val count = userAction.stockCountInput
+                val count = userAction.stockCountInput?.toIntOrNull()
 
                 if (count == null) {
                     emitScreenEvent(event = ChartGameEvent.InputBuyingStockCount)
@@ -232,7 +232,7 @@ class ChartGameViewModel @Inject constructor(
                         ownedStockCount = userAction.ownedStockCount,
                         ownedAverageStockPrice = userAction.ownedAverageStockPrice,
                         stockPrice = userAction.currentStockPrice,
-                        count = count.toInt(),
+                        count = count,
                         turn = userAction.currentTurn,
                         type = TradeType.BUY
                     )
@@ -270,10 +270,16 @@ class ChartGameViewModel @Inject constructor(
                                         ""
                                     } else {
                                         val newValue = oldValue + keyPad.value
-                                        newValue.toInt().coerceAtMost(
-                                            maximumValue = userAction.maxAvailableStockCount
-                                        )
-                                            .toString()
+
+                                        newValue.toIntOrNull()
+                                            ?.coerceAtMost(
+                                                maximumValue = userAction.maxAvailableStockCount
+                                            )
+                                            ?.toString()
+                                            ?: run {
+                                                emitScreenEvent(event = ChartGameEvent.InputBuyingStockCount)
+                                                oldValue
+                                            }
                                     }
                                 }
 
@@ -333,19 +339,20 @@ class ChartGameViewModel @Inject constructor(
             }
 
             is SellingOrderUiUserAction.ClickTrade -> {
-                val count = userAction.stockCountInput
+                val count = userAction.stockCountInput.toIntOrNull()
 
                 if (count == null) {
                     emitScreenEvent(event = ChartGameEvent.InputSellingStockCount)
                     return
                 }
+
                 tradeStock(
                     tradeStockParam = TradeStockUseCase.Param(
                         gameId = userAction.gameId,
                         ownedStockCount = userAction.ownedStockCount,
                         ownedAverageStockPrice = userAction.ownedAverageStockPrice,
                         stockPrice = userAction.currentStockPrice,
-                        count = count.toInt(),
+                        count = count,
                         turn = userAction.currentTurn,
                         type = TradeType.SELL
                     )
@@ -380,9 +387,13 @@ class ChartGameViewModel @Inject constructor(
                                 is TradeOrderKeyPad.Number -> {
                                     val oldValue = userAction.stockCountInput
                                     val newValue = oldValue + keyPad.value
-                                    newValue.toInt()
-                                        .coerceAtMost(userAction.ownedStockCount)
-                                        .toString()
+                                    newValue.toIntOrNull()
+                                        ?.coerceAtMost(userAction.ownedStockCount)
+                                        ?.toString()
+                                        ?: run {
+                                            emitScreenEvent(ChartGameEvent.InputSellingStockCount)
+                                            oldValue
+                                        }
                                 }
 
                                 is TradeOrderKeyPad.Delete -> {
@@ -394,7 +405,7 @@ class ChartGameViewModel @Inject constructor(
                                     }
                                 }
 
-                                is TradeOrderKeyPad.DeleteAll -> null
+                                is TradeOrderKeyPad.DeleteAll -> ""
                             }
                         )
                     )
@@ -428,7 +439,6 @@ class ChartGameViewModel @Inject constructor(
                     is Result.Failure -> {
                         emitScreenEvent(ChartGameEvent.TradeFail)
                         hideTradeOrderUi()
-                        _screenState.update { old -> old.copy(showLoading = false) }
                     }
                 }
             }
@@ -454,8 +464,9 @@ class ChartGameViewModel @Inject constructor(
             _screenEvent.emit(event)
         }
 
-    private fun handleCommonFailure(throwable: Throwable) {
+    private fun handleNotHandlingFailure(throwable: Throwable) {
         _screenState.update { old -> old.copy(showLoading = false) }
+        emitScreenEvent(event = ChartGameEvent.UnknownError)
         logger.cehLog(
             throwable = throwable
         )

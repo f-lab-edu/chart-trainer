@@ -142,14 +142,20 @@ class ChartGameTest {
         val sut: ChartGame = createTestChartGame(
             startBalance = Money.of(100_000.0)
         )
+        val newChartId = 3L
+        val newChartInitialListVisibleIndex = 50
 
         val result: ChartGame = sut.getChartChangeResult(
-            closeStockPrice = Money.of(50_000.0)
+            chartId = newChartId,
+            closeStockPrice = Money.of(50_000.0),
+            lastVisibleTickIndex = newChartInitialListVisibleIndex
         )
 
         assertEquals(
             sut.copy(
+                chartId = newChartId,
                 currentTurn = ChartGame.START_TURN,
+                lastVisibleTickIndex = newChartInitialListVisibleIndex,
                 currentBalance = Money.of(100_000.0),
                 closeStockPrice = Money.of(50_000.0),
                 totalStockCount = 0,

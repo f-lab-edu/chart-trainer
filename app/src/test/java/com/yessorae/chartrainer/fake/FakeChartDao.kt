@@ -12,18 +12,26 @@ class FakeChartDao(
     private val chartsFlow = MutableStateFlow<List<ChartEntity>>(emptyList())
 
     override suspend fun getChart(id: Long): ChartEntity {
+        if (throwUnknownException) throw Exception()
+
         return chartsFlow.value.find { it.id == id }
             ?: throw IllegalArgumentException("Chart not found")
     }
 
     override suspend fun insert(entity: ChartEntity): Long {
-        val id = super.insert(entity)
+        val id = super.insert(entity.copy(id = currentId))
         updateFlow()
         return id
     }
 
     override suspend fun update(entity: ChartEntity) {
-        super.update(entity)
+        if (throwUnknownException) throw Exception()
+
+        items = items.toMutableList().apply {
+            this.find { it.id == entity.id }?.let {
+                set(indexOf(it), entity)
+            }
+        }
         updateFlow()
     }
 
@@ -32,14 +40,16 @@ class FakeChartDao(
         updateFlow()
     }
 
-    private fun updateFlow() {
-        chartsFlow.value = items
-    }
-
     override suspend fun getChartWithTicks(id: Long): ChartWithTicksEntity {
+        if (throwUnknownException) throw Exception()
+
         return ChartWithTicksEntity(
             chart = getChart(id = id),
             ticks = ticksFlow.value.filter { it.chartId == id }
         )
+    }
+
+    private fun updateFlow() {
+        chartsFlow.value = items
     }
 }

@@ -42,10 +42,7 @@ data class CandleStickChartUi(
     val closing: List<Double> = listOf(),
     val low: List<Double> = listOf(),
     val high: List<Double> = listOf()
-) {
-    private val isEmpty: Boolean =
-        opening.isEmpty() || closing.isEmpty() || low.isEmpty() || high.isEmpty()
-}
+)
 
 sealed class TradeOrderUi {
     data class Buy(
@@ -112,22 +109,37 @@ sealed class TradeOrderUi {
             return currentStockPrice * input
         }
 
-        fun TradeOrderUi.copyWith(
-            showKeyPad: Boolean? = null,
-            stockCountInput: String? = null
-        ): TradeOrderUi {
+        fun TradeOrderUi.copyWith(showKeyPad: Boolean? = null): TradeOrderUi {
             return when (val old = this) {
                 is Buy -> {
                     old.copy(
-                        showKeyPad = showKeyPad ?: old.showKeyPad,
-                        stockCountInput = stockCountInput ?: old.stockCountInput
+                        showKeyPad = showKeyPad ?: old.showKeyPad
                     )
                 }
 
                 is Sell -> {
                     old.copy(
-                        showKeyPad = showKeyPad ?: old.showKeyPad,
-                        stockCountInput = stockCountInput ?: old.stockCountInput
+                        showKeyPad = showKeyPad ?: old.showKeyPad
+                    )
+                }
+
+                is Hide -> {
+                    Hide
+                }
+            }
+        }
+
+        fun TradeOrderUi.copyWith(stockCountInput: String): TradeOrderUi {
+            return when (val old = this) {
+                is Buy -> {
+                    old.copy(
+                        stockCountInput = stockCountInput
+                    )
+                }
+
+                is Sell -> {
+                    old.copy(
+                        stockCountInput = stockCountInput
                     )
                 }
 

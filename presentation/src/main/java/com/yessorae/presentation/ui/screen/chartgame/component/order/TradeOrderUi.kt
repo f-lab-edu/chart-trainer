@@ -72,9 +72,7 @@ fun TradeOrderUi(
                             BuyingOrderUiUserAction.ClickKeyPad(
                                 keyPad = tradeOrderKeyPad,
                                 stockCountInput = stockCountInput,
-                                maxAvailableStockCount =
-                                tradeOrderUi.clickData.maxAvailableStockCount,
-                                ownedStockCount = tradeOrderUi.clickData.ownedStockCount
+                                maxAvailableStockCount = tradeOrderUi.clickData.maxAvailableStockCount
                             )
                         )
                     },
@@ -82,9 +80,7 @@ fun TradeOrderUi(
                         onBuyingUserAction(
                             BuyingOrderUiUserAction.ClickRatioShortCut(
                                 percentage = percentage,
-                                maxAvailableStockCount =
-                                tradeOrderUi.clickData.maxAvailableStockCount,
-                                ownedStockCount = tradeOrderUi.clickData.ownedStockCount
+                                maxAvailableStockCount = tradeOrderUi.clickData.maxAvailableStockCount
                             )
                         )
                     },

@@ -88,7 +88,7 @@ class ChartGameViewModel @Inject constructor(
                             }
 
                             else -> {
-                                handleCommonFailure(result.throwable)
+                                handleNotHandlingFailure(result.throwable)
                             }
                         }
                     }
@@ -454,8 +454,9 @@ class ChartGameViewModel @Inject constructor(
             _screenEvent.emit(event)
         }
 
-    private fun handleCommonFailure(throwable: Throwable) {
+    private fun handleNotHandlingFailure(throwable: Throwable) {
         _screenState.update { old -> old.copy(showLoading = false) }
+        emitScreenEvent(event = ChartGameEvent.UnknownError)
         logger.cehLog(
             throwable = throwable
         )

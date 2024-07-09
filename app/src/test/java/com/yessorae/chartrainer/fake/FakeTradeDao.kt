@@ -8,6 +8,8 @@ class FakeTradeDao : FakeBaseDao<TradeEntity>(), TradeDao {
     private val tradesFlow = MutableStateFlow<List<TradeEntity>>(emptyList())
 
     override suspend fun getTrades(gameId: Long): List<TradeEntity> {
+        if (throwUnknownException) throw Exception()
+
         return tradesFlow.value.filter { it.gameId == gameId }
     }
 
@@ -18,6 +20,8 @@ class FakeTradeDao : FakeBaseDao<TradeEntity>(), TradeDao {
     }
 
     override suspend fun update(entity: TradeEntity) {
+        if (throwUnknownException) throw Exception()
+
         items = items.toMutableList().apply {
             this.find { it.id == entity.id }?.let {
                 set(indexOf(it), entity)

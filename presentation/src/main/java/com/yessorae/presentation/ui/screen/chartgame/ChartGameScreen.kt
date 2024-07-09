@@ -189,6 +189,11 @@ private fun ChartGameEventHandler(
                     navigateToBack()
                 }
 
+                is ChartGameEvent.UnknownError -> {
+                    context.showToast(R.string.common_error_toast)
+                    navigateToBack()
+                }
+
                 is ChartGameEvent.GameHasEnded -> {
                     context.showToast(R.string.chart_game_toast_game_has_ended)
                     navigateToChartGameHistory(event.gameId)

@@ -8,6 +8,8 @@ class FakeTickDao : FakeBaseDao<TickEntity>(), TickDao {
     val ticksFlow = MutableStateFlow<List<TickEntity>>(emptyList())
 
     override suspend fun getTicks(chartId: Long): List<TickEntity> {
+        if (throwUnknownException) throw Exception()
+
         return ticksFlow.value.filter { it.chartId == chartId }
     }
 
@@ -18,6 +20,8 @@ class FakeTickDao : FakeBaseDao<TickEntity>(), TickDao {
     }
 
     override suspend fun update(entity: TickEntity) {
+        if (throwUnknownException) throw Exception()
+
         items = items.toMutableList().apply {
             this.find { it.id == entity.id }?.let {
                 set(indexOf(it), entity)

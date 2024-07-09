@@ -4,11 +4,12 @@ import com.yessorae.domain.common.Result
 import com.yessorae.domain.common.delegateValueResultFlow
 import com.yessorae.domain.entity.ChartGame
 import com.yessorae.domain.entity.tick.Tick
-import com.yessorae.domain.exception.ChartGameException.CanNotCreateChartGame
+import com.yessorae.domain.exception.ChartGameException
 import com.yessorae.domain.repository.ChartGameRepository
 import com.yessorae.domain.repository.ChartRepository
 import com.yessorae.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -42,24 +43,35 @@ class SubscribeChartGameUseCase @Inject constructor(
 
         val totalTurn = userRepository.fetchTotalTurn()
 
-        val newChart = chartRepository.fetchNewChartRandomly(totalTurn = totalTurn)
-        val initialLastVisibleTickIndex =
-            (newChart.ticks.size - 1) - (totalTurn - ChartGame.START_TURN)
-        if (initialLastVisibleTickIndex < 0) {
-            throw CanNotCreateChartGame(
-                message = "can't change chart because new chart has not enough ticks"
-            )
+        val newChart = try {
+            chartRepository.fetchNewChartRandomly(totalTurn = totalTurn)
+        } catch (e: ChartGameException.HardToFetchTradeException) {
+            return flowOf(Result.Failure(e))
         }
-        val newGameId = chartGameRepository.createNewChartGame(
-            chartGame = ChartGame.new(
-                chartId = newChart.id,
-                lastVisibleTickIndex = initialLastVisibleTickIndex,
-                totalTurn = totalTurn,
-                startBalance = userRepository.fetchUser().balance,
-                closeStockPrice = newChart.ticks[initialLastVisibleTickIndex].closePrice
+
+        val initialLastVisibleTickIndex = (newChart.ticks.size - 1) - (totalTurn - ChartGame.START_TURN)
+        if (initialLastVisibleTickIndex < 0) {
+            return flowOf(Result.Failure(ChartGameException.HardToFetchTradeException))
+        }
+        val newGameId = try {
+            chartGameRepository.createNewChartGame(
+                chartGame = ChartGame.new(
+                    chartId = newChart.id,
+                    lastVisibleTickIndex = initialLastVisibleTickIndex,
+                    totalTurn = totalTurn,
+                    startBalance = userRepository.fetchUser().balance,
+                    closeStockPrice = newChart.ticks[initialLastVisibleTickIndex].closePrice
+                )
             )
-        )
-        chartGameRepository.updateLastChartGameId(gameId = newGameId)
+        } catch (e: Exception) {
+            return flowOf(Result.Failure(ChartGameException.UnknownException("${this::class.simpleName}: ${e.message}")))
+        }
+
+        try {
+            chartGameRepository.updateLastChartGameId(gameId = newGameId)
+        } catch (e: Exception) {
+            return flowOf(Result.Failure(ChartGameException.UnknownException("${this::class.simpleName}: ${e.message}")))
+        }
 
         return chartGameRepository
             .fetchChartGameFlow(gameId = newGameId)

@@ -6,6 +6,7 @@ import com.yessorae.chartrainer.MainDispatcherRule
 import com.yessorae.chartrainer.fake.FakeChartDao
 import com.yessorae.chartrainer.fake.FakeChartGameDao
 import com.yessorae.chartrainer.fake.FakeChartRequestArgumentHelper
+import com.yessorae.chartrainer.fake.FakeChartTrainerLogger
 import com.yessorae.chartrainer.fake.FakeChartTrainerPreferencesDataSource
 import com.yessorae.chartrainer.fake.FakePolygonChartApi
 import com.yessorae.chartrainer.fake.FakeTickDao
@@ -54,7 +55,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.math.max
 
 class ChartGameViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -221,12 +221,7 @@ class ChartGameViewModelTest {
             chartGameRepository = chartGameRepository
         )
 
-        logger = object : ChartTrainerLogger {
-            override fun cehLog(throwable: Throwable) {
-                // do nothing
-            }
-            // 기획자가 요청한 데이터가 있다면 mocking 하고 상호작용도 테스트할 것
-        }
+        logger = FakeChartTrainerLogger()
         savedStateHandle = SavedStateHandle()
 
         viewModel = ChartGameViewModel(
@@ -294,6 +289,49 @@ class ChartGameViewModelTest {
                 awaitItem()
             )
         }
+    }
+
+    @Test
+    fun `screenEvent should emit HardToFetchTrade when fail chart loading`() = runTest {
+        val ticker = "this ticker has only 2 ticks"
+        chartTrainerPreferencesDataSource.updateTotalTurn(3)
+        chartRequestArgumentHelper.currentRandomTicker = ticker
+        polygonChartApi.setTickerToDto(
+            ticker = ticker,
+            dto = createChartDto(
+                ticker = ticker,
+                ticks = listOf(
+                    createTickDto(),
+                    createTickDto()
+                )
+            )
+        )
+        val job = viewModel.screenState.launchIn(this@runTest)
+
+        viewModel.screenEvent.test {
+            assertEquals(
+                ChartGameEvent.HardToFetchTrade,
+                awaitItem()
+            )
+        }
+
+        job.cancel()
+    }
+
+    @Test
+    fun `screenEvent should emit unknownError when fail chart loading with unknownError`() = runTest {
+        chartGameDao.throwUnknownException = true
+
+        val job = viewModel.screenState.launchIn(this@runTest)
+
+        viewModel.screenEvent.test {
+            assertEquals(
+                ChartGameEvent.UnknownError,
+                awaitItem()
+            )
+        }
+
+        job.cancel()
     }
 
     @Test

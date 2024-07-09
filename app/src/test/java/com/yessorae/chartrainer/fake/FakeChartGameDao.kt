@@ -13,18 +13,24 @@ class FakeChartGameDao : FakeBaseDao<ChartGameEntity>(), ChartGameDao {
     private val fakeChartGameTable = MutableStateFlow<List<ChartGameEntity>>(emptyList())
 
     override fun getChartGameAsFlow(id: Long): Flow<ChartGameEntity> {
+        if (throwUnknownException) throw Exception()
+
         return fakeChartGameTable.map { list ->
             list.find { it.id == id } ?: throw IllegalArgumentException("ChartGame not found")
         }
     }
 
     override suspend fun getChartGame(id: Long): ChartGameEntity {
+        if (throwUnknownException) throw Exception()
+
         return fakeChartGameTable.value.find {
             it.id == id
         } ?: throw IllegalArgumentException("ChartGame not found")
     }
 
     override fun getChartGamePagingSource(): PagingSource<Int, ChartGameEntity> {
+        if (throwUnknownException) throw Exception()
+
         return object : PagingSource<Int, ChartGameEntity>() {
             override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ChartGameEntity> {
                 return LoadResult.Page(
@@ -41,6 +47,8 @@ class FakeChartGameDao : FakeBaseDao<ChartGameEntity>(), ChartGameDao {
     }
 
     override fun getChartId(gameId: Long): Long {
+        if (throwUnknownException) throw Exception()
+
         return fakeChartGameTable.value.find {
             it.id == gameId
         }?.chartId ?: throw IllegalArgumentException("ChartGame not found")
@@ -53,6 +61,8 @@ class FakeChartGameDao : FakeBaseDao<ChartGameEntity>(), ChartGameDao {
     }
 
     override suspend fun update(entity: ChartGameEntity) {
+        if (throwUnknownException) throw Exception()
+
         items = items.toMutableList().apply {
             this.find { it.id == entity.id }?.let {
                 set(indexOf(it), entity)

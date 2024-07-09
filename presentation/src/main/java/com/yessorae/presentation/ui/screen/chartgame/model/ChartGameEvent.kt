@@ -4,7 +4,7 @@ sealed interface ChartGameEvent {
     object InputBuyingStockCount : ChartGameEvent
     object InputSellingStockCount : ChartGameEvent
     object HardToFetchTrade : ChartGameEvent
-    object UnknownError: ChartGameEvent
+    object UnknownError : ChartGameEvent
     object TradeFail : ChartGameEvent
     object MoveToBack : ChartGameEvent
     data class GameHasEnded(val gameId: Long) : ChartGameEvent

@@ -3,8 +3,7 @@ package com.yessorae.chartrainer.fake
 import com.yessorae.data.source.network.polygon.api.PolygonChartApi
 import com.yessorae.data.source.network.polygon.model.chart.ChartDto
 
-class FakePolygonChartApi(
-) : PolygonChartApi {
+class FakePolygonChartApi() : PolygonChartApi {
     private val tickerToDtoMap: MutableMap<String, ChartDto> = mutableMapOf()
 
     override suspend fun getChartData(

@@ -148,7 +148,7 @@ class ChartGameTest {
         val result: ChartGame = sut.getChartChangeResult(
             chartId = newChartId,
             closeStockPrice = Money.of(50_000.0),
-            lastVisibleTickIndex = newChartInitialListVisibleIndex,
+            lastVisibleTickIndex = newChartInitialListVisibleIndex
         )
 
         assertEquals(

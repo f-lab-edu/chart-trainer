@@ -7,7 +7,6 @@ fun createChartDto(
     ticker: String,
     ticks: List<TickDto> = listOf(),
     ticksCount: Int = ticks.size,
-
     adjusted: Boolean = true,
     queryCount: Int = 10,
     requestId: String = "123456789",
@@ -49,9 +48,7 @@ fun createTickDto(
 /**
  * 다양한 값이 필요하지 않을 때 간소하게 테스트하기 위한 Factory 함수
  */
-fun createTickDto(
-    singleValue: Double,
-): TickDto {
+fun createTickDto(singleValue: Double): TickDto {
     return TickDto(
         closePrice = singleValue,
         maxPrice = singleValue,

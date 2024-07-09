@@ -109,19 +109,17 @@ sealed class TradeOrderUi {
             return currentStockPrice * input
         }
 
-        fun TradeOrderUi.copyWith(
-            showKeyPad: Boolean? = null,
-        ): TradeOrderUi {
+        fun TradeOrderUi.copyWith(showKeyPad: Boolean? = null): TradeOrderUi {
             return when (val old = this) {
                 is Buy -> {
                     old.copy(
-                        showKeyPad = showKeyPad ?: old.showKeyPad,
+                        showKeyPad = showKeyPad ?: old.showKeyPad
                     )
                 }
 
                 is Sell -> {
                     old.copy(
-                        showKeyPad = showKeyPad ?: old.showKeyPad,
+                        showKeyPad = showKeyPad ?: old.showKeyPad
                     )
                 }
 
@@ -131,9 +129,7 @@ sealed class TradeOrderUi {
             }
         }
 
-        fun TradeOrderUi.copyWith(
-            stockCountInput: String
-        ): TradeOrderUi {
+        fun TradeOrderUi.copyWith(stockCountInput: String): TradeOrderUi {
             return when (val old = this) {
                 is Buy -> {
                     old.copy(

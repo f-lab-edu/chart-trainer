@@ -8,10 +8,10 @@ import com.yessorae.domain.exception.ChartGameException
 import com.yessorae.domain.repository.ChartGameRepository
 import com.yessorae.domain.repository.ChartRepository
 import com.yessorae.domain.repository.UserRepository
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 class SubscribeChartGameUseCase @Inject constructor(
     private val userRepository: UserRepository,

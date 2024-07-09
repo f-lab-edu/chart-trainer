@@ -61,15 +61,15 @@ data class ChartGame(
 
         return copy(
             currentBalance = currentBalance +
-                    if (newTrade.type.isBuy()) {
-                        -(newTrade.totalTradeMoney + newTrade.commission).value
-                    } else {
-                        (newTrade.totalTradeMoney - newTrade.commission).value
-                    }.asMoney(),
+                if (newTrade.type.isBuy()) {
+                    -(newTrade.totalTradeMoney + newTrade.commission).value
+                } else {
+                    (newTrade.totalTradeMoney - newTrade.commission).value
+                }.asMoney(),
             totalStockCount = newTotalStockCount,
             averageStockPrice = if (newTrade.type.isBuy()) {
                 (averageStockPrice * totalStockCount + newTrade.totalTradeMoney) /
-                        newTotalStockCount
+                    newTotalStockCount
             } else {
                 averageStockPrice
             },

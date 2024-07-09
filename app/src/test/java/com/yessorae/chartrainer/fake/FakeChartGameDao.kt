@@ -6,7 +6,6 @@ import com.yessorae.data.source.local.database.dao.ChartGameDao
 import com.yessorae.data.source.local.database.model.ChartGameEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class FakeChartGameDao : FakeBaseDao<ChartGameEntity>(), ChartGameDao {

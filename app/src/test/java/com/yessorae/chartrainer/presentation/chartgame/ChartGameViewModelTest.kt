@@ -524,7 +524,7 @@ class ChartGameViewModelTest {
                 val currentStockPrice = 1000.asMoney()
 
                 viewModel.handleChartGameScreenUserAction(
-                    userAction = ChartGameScreenUserAction.ClickBuyButton(
+                    userAction = createUserActionClickBuyButton(
                         gameId = gameId,
                         ownedStockCount = ownedStockCount,
                         ownedAverageStockPrice = ownedAverageStockPrice,
@@ -590,7 +590,7 @@ class ChartGameViewModelTest {
                 val gameId = oldState.clickData.gameId
 
                 viewModel.handleBuyingOrderUiUserAction(
-                    userAction = BuyingOrderUiUserAction.ClickTrade(
+                    userAction = createUserActionClickTrade(
                         gameId = gameId,
                         ownedStockCount = 0,
                         ownedAverageStockPrice = Money.ZERO,
@@ -836,7 +836,7 @@ class ChartGameViewModelTest {
                 val ownedStockCount = 10
 
                 viewModel.handleChartGameScreenUserAction(
-                    ChartGameScreenUserAction.ClickSellButton(
+                    createUserActionOfClickSellButton(
                         gameId = gameId,
                         ownedAverageStockPrice = ownedAverageStockPrice,
                         currentStockPrice = currentStockPrice,
@@ -902,7 +902,7 @@ class ChartGameViewModelTest {
                 // 첫 로딩 성공상태
                 awaitItem()
                 viewModel.handleBuyingOrderUiUserAction(
-                    userAction = BuyingOrderUiUserAction.ClickTrade(
+                    userAction = createUserActionClickTrade(
                         gameId = gameId,
                         ownedStockCount = 0,
                         ownedAverageStockPrice = Money.ZERO,

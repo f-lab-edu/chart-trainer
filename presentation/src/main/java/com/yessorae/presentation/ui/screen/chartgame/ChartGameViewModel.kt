@@ -219,7 +219,7 @@ class ChartGameViewModel @Inject constructor(
             }
 
             is BuyingOrderUiUserAction.ClickTrade -> {
-                val count = userAction.stockCountInput
+                val count = userAction.stockCountInput?.toIntOrNull()
 
                 if (count == null) {
                     emitScreenEvent(event = ChartGameEvent.InputBuyingStockCount)
@@ -232,7 +232,7 @@ class ChartGameViewModel @Inject constructor(
                         ownedStockCount = userAction.ownedStockCount,
                         ownedAverageStockPrice = userAction.ownedAverageStockPrice,
                         stockPrice = userAction.currentStockPrice,
-                        count = count.toInt(),
+                        count = count,
                         turn = userAction.currentTurn,
                         type = TradeType.BUY
                     )
@@ -439,7 +439,6 @@ class ChartGameViewModel @Inject constructor(
                     is Result.Failure -> {
                         emitScreenEvent(ChartGameEvent.TradeFail)
                         hideTradeOrderUi()
-                        _screenState.update { old -> old.copy(showLoading = false) }
                     }
                 }
             }

@@ -51,11 +51,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.yield
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.math.max
 
 class ChartGameViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -125,6 +125,22 @@ class ChartGameViewModelTest {
         currentStockPrice = currentStockPrice,
         currentTurn = currentTurn,
         ownedStockCount = ownedStockCount
+    )
+
+    private fun createUserActionClickTrade(
+        gameId: Long = 0L,
+        ownedStockCount: Int = 0,
+        ownedAverageStockPrice: Money = Money.ZERO,
+        stockCountInput: String = "",
+        currentStockPrice: Money = Money.ZERO,
+        currentTurn: Int = 0
+    ) = BuyingOrderUiUserAction.ClickTrade(
+        gameId = gameId,
+        ownedStockCount = ownedStockCount,
+        ownedAverageStockPrice = ownedAverageStockPrice,
+        stockCountInput = stockCountInput,
+        currentStockPrice = currentStockPrice,
+        currentTurn = currentTurn
     )
 
 
@@ -395,7 +411,7 @@ class ChartGameViewModelTest {
         }
 
     @Test
-    fun `screenEvent should emit MoveToBack when user click quit chart game button`() = runTest {
+    fun `screenEvent should emit moveToBack when user click quit chart game button`() = runTest {
         viewModel.screenEvent.test {
             viewModel.handleChartGameScreenUserAction(
                 userAction = ChartGameScreenUserAction.ClickQuitGameButton(gameId = 1L)
@@ -406,6 +422,29 @@ class ChartGameViewModelTest {
                 awaitItem()
             )
         }
+    }
+
+    @Test
+    fun `screenEvent should emit gameHasEnded when last turn`() = runTest {
+        val gameId = 1L
+        val totalTurn = 2
+        chartTrainerPreferencesDataSource.updateTotalTurn(totalTurn)
+        val job = viewModel.screenState.launchIn(this)
+        yield()
+
+        viewModel.screenEvent.test {
+            repeat(totalTurn - 1) {
+                viewModel.handleChartGameScreenUserAction(
+                    userAction = ChartGameScreenUserAction.ClickNextTickButton(gameId = gameId)
+                )
+            }
+
+            assertEquals(
+                ChartGameEvent.GameHasEnded(gameId = gameId),
+                awaitItem()
+            )
+        }
+        job.cancel()
     }
 
     @Test
@@ -1089,6 +1128,39 @@ class ChartGameViewModelTest {
                 )
             }
         }
+
+    @Test
+    fun `screenEvent should emit tradeFail when unknown trade error`() = runTest {
+        chartGameDao.throwUnknownException = true
+        viewModel.screenEvent.test {
+            viewModel.handleBuyingOrderUiUserAction(userAction = createUserActionClickTrade(stockCountInput = "1"))
+
+            assertEquals(
+                ChartGameEvent.TradeFail,
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `screenState should hide tradeOrderUi and loading when unknown trade error`() = runTest {
+        chartGameDao.throwUnknownException = true
+        viewModel.screenState.test {
+            awaitItem()
+            viewModel.handleChartGameScreenUserAction(userAction = createUserActionClickBuyButton())
+            val oldState = awaitItem()
+
+            viewModel.handleBuyingOrderUiUserAction(userAction = createUserActionClickTrade(stockCountInput = "1"))
+
+            assertEquals(
+                oldState.copy(
+                    tradeOrderUi = TradeOrderUi.Hide,
+                    showLoading = false
+                ),
+                awaitItem()
+            )
+        }
+    }
 }
 
 

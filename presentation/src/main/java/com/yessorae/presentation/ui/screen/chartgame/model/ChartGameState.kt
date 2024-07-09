@@ -42,10 +42,7 @@ data class CandleStickChartUi(
     val closing: List<Double> = listOf(),
     val low: List<Double> = listOf(),
     val high: List<Double> = listOf()
-) {
-    private val isEmpty: Boolean =
-        opening.isEmpty() || closing.isEmpty() || low.isEmpty() || high.isEmpty()
-}
+)
 
 sealed class TradeOrderUi {
     data class Buy(

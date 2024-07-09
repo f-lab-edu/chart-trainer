@@ -56,14 +56,12 @@ sealed interface BuyingOrderUiUserAction {
     data class ClickKeyPad(
         val keyPad: TradeOrderKeyPad,
         val stockCountInput: String,
-        val maxAvailableStockCount: Int,
-        val ownedStockCount: Int
+        val maxAvailableStockCount: Int
     ) : BuyingOrderUiUserAction
 
     data class ClickRatioShortCut(
         val percentage: PercentageOrderShortCut,
-        val maxAvailableStockCount: Int,
-        val ownedStockCount: Int
+        val maxAvailableStockCount: Int
     ) : BuyingOrderUiUserAction
 }
 

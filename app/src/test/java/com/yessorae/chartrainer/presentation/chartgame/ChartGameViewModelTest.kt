@@ -54,6 +54,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.math.max
 
 class ChartGameViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -572,9 +573,145 @@ class ChartGameViewModelTest {
     }
 
     @Test
-    fun `screenState should change `() = runTest {
+    fun `buying tradeOrderUi should change stockCountInput with ratio when user click ratio shortcut button`() = runTest {
+        viewModel.screenState.test {
+            awaitItem()
+            viewModel.handleChartGameScreenUserAction(userAction = createUserActionClickBuyButton())
+            val oldState = awaitItem()
 
+            viewModel.handleBuyingOrderUiUserAction(
+                userAction = BuyingOrderUiUserAction.ClickRatioShortCut(
+                    percentage = PercentageOrderShortCut.PERCENTAGE_10,
+                    maxAvailableStockCount = 10
+                )
+            )
+
+            assertEquals(
+                oldState.copy(
+                    tradeOrderUi = oldState.tradeOrderUi.copyWith(
+                        stockCountInput = "1"
+                    )
+                ),
+                awaitItem()
+            )
+        }
     }
+
+    @Test
+    fun `buying tradeOrderUi should concat new keypad input with existing input when user click number keypad`() = runTest {
+        viewModel.screenState.test {
+            awaitItem()
+            viewModel.handleChartGameScreenUserAction(userAction = createUserActionClickBuyButton())
+            val oldState = awaitItem()
+
+            viewModel.handleBuyingOrderUiUserAction(
+                userAction = BuyingOrderUiUserAction.ClickKeyPad(
+                    keyPad = TradeOrderKeyPad.Number(value = "7"),
+                    stockCountInput = "1",
+                    maxAvailableStockCount = 20
+                )
+            )
+
+            assertEquals(
+                oldState.copy(
+                    tradeOrderUi = oldState.tradeOrderUi.copyWith(
+                        stockCountInput = "17"
+                    )
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `buying tradeOrderUi should change stockCountInput to maxAvailableStockCount when user click number keypad and over the ownedStockCount`() =
+        runTest {
+            viewModel.screenState.test {
+                awaitItem()
+                viewModel.handleChartGameScreenUserAction(userAction = createUserActionClickBuyButton())
+                val oldState = awaitItem()
+
+                viewModel.handleBuyingOrderUiUserAction(
+                    userAction = BuyingOrderUiUserAction.ClickKeyPad(
+                        keyPad = TradeOrderKeyPad.Number(value = "7"),
+                        stockCountInput = "1",
+                        maxAvailableStockCount = 10
+                    )
+                )
+
+                assertEquals(
+                    oldState.copy(
+                        tradeOrderUi = oldState.tradeOrderUi.copyWith(
+                            stockCountInput = "10"
+                        )
+                    ),
+                    awaitItem()
+                )
+            }
+        }
+
+
+    @Test
+    fun `buying tradeOrderUi should clear last number of stockCountInput when user click delete keypad`() =
+        runTest {
+            viewModel.screenState.test {
+                awaitItem()
+                viewModel.handleChartGameScreenUserAction(userAction = createUserActionClickBuyButton())
+                val oldState = awaitItem()
+
+                viewModel.handleBuyingOrderUiUserAction(
+                    userAction = BuyingOrderUiUserAction.ClickKeyPad(
+                        keyPad = TradeOrderKeyPad.Delete,
+                        stockCountInput = "10",
+                        maxAvailableStockCount = 10
+                    )
+                )
+
+                assertEquals(
+                    oldState.copy(
+                        tradeOrderUi = oldState.tradeOrderUi.copyWith(
+                            stockCountInput = "1"
+                        )
+                    ),
+                    awaitItem()
+                )
+            }
+        }
+
+    @Test
+    fun `buying tradeOrderUi should clear stockCountInput when user click deleteAll keypad`() =
+        runTest {
+            viewModel.screenState.test {
+                awaitItem()
+                viewModel.handleChartGameScreenUserAction(userAction = createUserActionClickBuyButton())
+                awaitItem()
+                viewModel.handleBuyingOrderUiUserAction(
+                    userAction = BuyingOrderUiUserAction.ClickKeyPad(
+                        keyPad = TradeOrderKeyPad.Number("0"),
+                        stockCountInput = "1",
+                        maxAvailableStockCount = 10
+                    )
+                )
+                val oldState = awaitItem()
+
+                viewModel.handleBuyingOrderUiUserAction(
+                    userAction = BuyingOrderUiUserAction.ClickKeyPad(
+                        keyPad = TradeOrderKeyPad.DeleteAll,
+                        stockCountInput = "10",
+                        maxAvailableStockCount = 10
+                    )
+                )
+
+                assertEquals(
+                    oldState.copy(
+                        tradeOrderUi = oldState.tradeOrderUi.copyWith(
+                            stockCountInput = ""
+                        )
+                    ),
+                    awaitItem()
+                )
+            }
+        }
 
     @Test
     fun `screenState should show selling trade ui when user click sell button`() = runTest {
@@ -787,7 +924,7 @@ class ChartGameViewModelTest {
     }
 
     @Test
-    fun `selling tradeOrderUi should update stockCountInput to ownedStockCount when user click number keypad and over the ownedStockCount`() =
+    fun `selling tradeOrderUi should change stockCountInput to ownedStockCount when user click number keypad and over the ownedStockCount`() =
         runTest {
             viewModel.screenState.test {
                 awaitItem()

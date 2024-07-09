@@ -270,10 +270,16 @@ class ChartGameViewModel @Inject constructor(
                                         ""
                                     } else {
                                         val newValue = oldValue + keyPad.value
-                                        newValue.toInt().coerceAtMost(
-                                            maximumValue = userAction.maxAvailableStockCount
-                                        )
-                                            .toString()
+
+                                        newValue.toIntOrNull()
+                                            ?.coerceAtMost(
+                                                maximumValue = userAction.maxAvailableStockCount
+                                            )
+                                            ?.toString()
+                                            ?: run {
+                                                emitScreenEvent(event = ChartGameEvent.InputBuyingStockCount)
+                                                oldValue
+                                            }
                                     }
                                 }
 
@@ -333,19 +339,20 @@ class ChartGameViewModel @Inject constructor(
             }
 
             is SellingOrderUiUserAction.ClickTrade -> {
-                val count = userAction.stockCountInput
+                val count = userAction.stockCountInput.toIntOrNull()
 
                 if (count == null) {
                     emitScreenEvent(event = ChartGameEvent.InputSellingStockCount)
                     return
                 }
+
                 tradeStock(
                     tradeStockParam = TradeStockUseCase.Param(
                         gameId = userAction.gameId,
                         ownedStockCount = userAction.ownedStockCount,
                         ownedAverageStockPrice = userAction.ownedAverageStockPrice,
                         stockPrice = userAction.currentStockPrice,
-                        count = count.toInt(),
+                        count = count,
                         turn = userAction.currentTurn,
                         type = TradeType.SELL
                     )
@@ -380,9 +387,13 @@ class ChartGameViewModel @Inject constructor(
                                 is TradeOrderKeyPad.Number -> {
                                     val oldValue = userAction.stockCountInput
                                     val newValue = oldValue + keyPad.value
-                                    newValue.toInt()
-                                        .coerceAtMost(userAction.ownedStockCount)
-                                        .toString()
+                                    newValue.toIntOrNull()
+                                        ?.coerceAtMost(userAction.ownedStockCount)
+                                        ?.toString()
+                                        ?: run {
+                                            emitScreenEvent(ChartGameEvent.InputSellingStockCount)
+                                            oldValue
+                                        }
                                 }
 
                                 is TradeOrderKeyPad.Delete -> {

@@ -69,7 +69,7 @@ sealed interface SellingOrderUiUserAction {
     object ClickShowKeyPad : SellingOrderUiUserAction
 
     data class ClickTrade(
-        val stockCountInput: String?,
+        val stockCountInput: String,
         val gameId: Long,
         val ownedStockCount: Int,
         val ownedAverageStockPrice: Money,

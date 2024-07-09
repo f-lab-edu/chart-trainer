@@ -55,6 +55,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.math.max
 
 class ChartGameViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -688,6 +689,25 @@ class ChartGameViewModelTest {
             }
         }
 
+    @Test
+    fun `screenEvent should emit inputBuyingStockCount when buy count input is not a number`() =
+        runTest {
+            viewModel.screenEvent.test {
+                viewModel.handleChartGameScreenUserAction(userAction = createUserActionClickBuyButton())
+                viewModel.handleBuyingOrderUiUserAction(
+                    userAction = BuyingOrderUiUserAction.ClickKeyPad(
+                        keyPad = TradeOrderKeyPad.Number(value = "it's not a number"),
+                        stockCountInput = "1",
+                        maxAvailableStockCount = 10
+                    )
+                )
+
+                assertEquals(
+                    ChartGameEvent.InputBuyingStockCount,
+                    awaitItem()
+                )
+            }
+        }
 
     @Test
     fun `buying tradeOrderUi should clear last number of stockCountInput when user click delete keypad`() =
@@ -988,6 +1008,25 @@ class ChartGameViewModelTest {
             }
         }
 
+    @Test
+    fun `screenEvent should emit inputSellingStockCount when sell count input is not a number`() =
+        runTest {
+            viewModel.screenEvent.test {
+                viewModel.handleChartGameScreenUserAction(userAction = createUserActionOfClickSellButton())
+                viewModel.handleSellOrderUiUserAction(
+                    userAction = SellingOrderUiUserAction.ClickKeyPad(
+                        keyPad = TradeOrderKeyPad.Number(value = "it's not a number"),
+                        stockCountInput = "1",
+                        ownedStockCount = 10
+                    )
+                )
+
+                assertEquals(
+                    ChartGameEvent.InputSellingStockCount,
+                    awaitItem()
+                )
+            }
+        }
 
     @Test
     fun `selling tradeOrderUi should clear last number of stockCountInput when user click delete keypad`() =
